@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/src/main/scala/firelib/domain/Direction.scala" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/firelib/domain/IFactor.scala" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/firelib/domain/ITimeSeries.scala" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/firelib/domain/MarketDataType.scala" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/firelib/domain/ModelConfig.scala" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/firelib/domain/OptimizedParameter.scala" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/firelib/domain/ResearchMode.scala" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/firelib/domain/TickerConfig.scala" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/firelib/domain/TickerType.scala" charset="windows-1251" />
+    <file url="file://$PROJECT_DIR$/src/main/scala/firelib/util/Utils.scala" charset="windows-1251" />
+    <file url="PROJECT" charset="UTF-8" />
+  </component>
+</project>
+
