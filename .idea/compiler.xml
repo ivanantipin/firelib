@@ -22,9 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="firelib" />
         <module name="ScalaTest" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel target="1.8" />
   </component>
 </project>
 

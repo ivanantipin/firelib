@@ -1,6 +1,14 @@
 package firelib.domain
 
-object OrderType extends Enumeration {
-  type OrderType = Value
-  val Limit, Market, Stop = Value
+object OrderTypeEnum {
+    val Limit = new OrderType("Limit")
+    val Market = new OrderType("Market")
+    val Stop = new OrderType("Stop")
 }
+
+sealed class OrderType(val Name: String) {
+    override def toString: String = Name
+}
+
+
+

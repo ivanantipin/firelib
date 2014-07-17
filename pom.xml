@@ -48,6 +48,19 @@
         </dependency>
 
         <dependency>
+            <groupId>org.scalanlp</groupId>
+            <artifactId>breeze-math_2.9.2</artifactId>
+            <version>0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.scalanlp</groupId>
+            <artifactId>breeze-learn_2.9.2</artifactId>
+            <version>0.2</version>
+        </dependency>
+
+
+        <dependency>
             <groupId>com.github.nscala-time</groupId>
             <artifactId>nscala-time_2.9.1</artifactId>
             <version>1.2.0</version>
