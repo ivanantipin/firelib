@@ -8,7 +8,7 @@ trait IModel extends IStepListener {
 
     val name: String
 
-    def initModel(modelProps: Map[String, String], marketStubs: List[IMarketStub], distributor: IMarketDataDistributor)
+    def initModel(modelProps: Map[String, String], marketStubs: Seq[IMarketStub], distributor: IMarketDataDistributor)
 
     def trades: Seq[Trade]
 

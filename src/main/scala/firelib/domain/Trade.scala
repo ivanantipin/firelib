@@ -7,9 +7,7 @@ import scala.collection.mutable
 
 class Trade(var Qty: Int, var Price: Double, val TradeSide: Side, val SrcOrder: Order, val DtGmt: DateTime, val Security: String) {
 
-    if (Qty <= 0) {
-        throw new Exception("amount can't be negative");
-    }
+    assert(Qty > 0,"amount can't be negative")
 
     var Factors: collection.mutable.Map[String, String] = _
 
@@ -24,11 +22,11 @@ class Trade(var Qty: Int, var Price: Double, val TradeSide: Side, val SrcOrder: 
 
 
     def MAE: Double = {
-        return if (TradeSide == Sell) Price - maxHoldingPrice else minHoldingPrice - Price
+        return if (TradeSide == Side.Sell) Price - maxHoldingPrice else minHoldingPrice - Price
     }
 
     def MFE: Double = {
-        return if (TradeSide == Sell) Price - minHoldingPrice else maxHoldingPrice - Price
+        return if (TradeSide == Side.Sell) Price - minHoldingPrice else maxHoldingPrice - Price
     }
 
 
@@ -51,7 +49,9 @@ class Trade(var Qty: Int, var Price: Double, val TradeSide: Side, val SrcOrder: 
 
     def Split(amt: Int): (Trade, Trade) = {
         var amtini = Qty - amt;
-        if (amtini < 0) throw new Exception("negative amount");
+
+        assert(amtini >= 0,"negative amount")
+
         val item1 = new Trade(amt, Price, TradeSide, SrcOrder, DtGmt, Security) {
             placementTime = placementTime
             reason = reason

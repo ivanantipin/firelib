@@ -1,5 +1,6 @@
 ﻿package firelib.backtest
 
+import firelib.util.OptParamsWriter
 import org.joda.time.DateTime
 
 import scala.collection.mutable.ArrayBuffer
@@ -7,36 +8,25 @@ import scala.util.control._
 
 class BacktesterOptimized extends BacktesterBase {
 
-    var reportProcessor: ReportProcessor
 
     override def Run(cfg: ModelConfig) = {
-        //Console.WriteLine("Starting");
+        System.out.println("Starting")
+
         var startTime = DateTime.now();
 
-        reportProcessor = new ReportProcessor(BacktestStatisticsCalculator.CalculateStatisticsForCases,
+        val reportProcessor = new ReportProcessor(BacktestStatisticsCalculator.CalculateStatisticsForCases,
             cfg.OptimizedMetric,
             cfg.OptParams.map(op => op.Name),
             minNumberOfTrades = cfg.OptMinNumberOfTrades);
 
-
-        val executor = new ThreadExecutor(cfg.OptThreadNumber, maxLengthOfQueue = 1)
-        executor.Start();
-
-        // ReSharper disable RedundantArgumentDefaultValue
-        var reportExecutor = new ThreadExecutor(1);
-        // ReSharper restore RedundantArgumentDefaultValue
-
-        reportExecutor.Start();
-
-        var variator = new ParamsVariator(cfg.OptParams);
-
-        var ctx: MarketDataDistributor = null
+        val executor = new ThreadExecutor(cfg.OptThreadNumber, maxLengthOfQueue = 1).Start()
+        val reportExecutor = new ThreadExecutor(1).Start();
+        val variator = new ParamsVariator(cfg.OptParams);
+        val ctx: MarketDataDistributor = null
 
         var mdPlayer: MarketDataPlayer = null
 
-        var interval = cfg.interval
         val (startDtGmt, endDtGmt) = CalcTimeBounds(cfg);
-
 
         if (cfg.OptimizedPeriodDays == -1) {
             throw new Exception("optimized days count not set!!");
@@ -52,9 +42,9 @@ class BacktesterOptimized extends BacktesterBase {
             if (models.length == 0) {
                 Breaks.break
             }
-            val bt = new BacktestTask(startDtGmt, endOfOptimize, mdPlayer, interval.durationMs, models, (mod) => reportExecutor.Execute(Unit => reportProcessor.Process(mod));
+            val task = new BacktestTask(startDtGmt, endOfOptimize, mdPlayer, cfg.interval.durationMs, models, (mod) => reportExecutor.Execute(reportProcessor.Process(mod)));
 
-            executor.Execute(Unit => bt.run)
+            executor.Execute(task.run)
 
             System.out.println("models scheduled " + models.length)
 
@@ -73,7 +63,7 @@ class BacktesterOptimized extends BacktesterBase {
         var bm = reportProcessor.BestModels.last
         (mdPlayer, ctx) = CreateModelBacktestEnvironment(cfg, startDtGmt);
         var model = InitModelWithCustomProps(cfg, mdPlayer, ctx, bm.properties);
-        RunBacktest(startDtGmt, endDtGmt, mdPlayer, interval.durationMs);
+        RunBacktest(startDtGmt, endDtGmt, mdPlayer, cfg.interval.durationMs);
 
 
         WriteModelPnlStat(cfg, model);
@@ -86,20 +76,17 @@ class BacktesterOptimized extends BacktesterBase {
 
         def run() = {
             RunBacktest(StartDtGmt, EndDtGmt, MdPlayer, stepMs);
-            if (callback != null) {
-                callback(Models);
-            }
+            callback(Models);
         }
     }
 
     private def WriteOptimizedReport(cfg: ModelConfig, reportProcessor: ReportProcessor, endOfOptimize: DateTime) = {
-        var optParamsWriter = new OptParamsWriter {
+        OptParamsWriter.write(
+            cfg.ReportRoot,
+            OptEnd = endOfOptimize,
             Estimates = reportProcessor.Estimates,
-            Merics = cfg.CalculatedMetrics,
-            Opts = cfg.OptParams,
-            OptEnd = endOfOptimize
-        };
-        optParamsWriter.Write(cfg.ReportRoot);
+            optParams = cfg.OptParams,
+            metrics = cfg.CalculatedMetrics);
     }
 
 

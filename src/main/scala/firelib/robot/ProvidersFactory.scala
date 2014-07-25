@@ -1,13 +1,12 @@
-using System;
-using Fire.Common.Threading;
-using QuantLib.Common;
+package firelib.robot
 
-namespace Fire.Common.Robot
-{
-    public class ProvidersFactory
+import firelib.backtest.IThreadExecutor
+
+public class ProvidersFactory
     {
-        public void Create(ModelRuntimeConfig cfg, IThreadExecutor executor,  out ITradeGate tradeGate, out IMarketDataProvider marketDataProvider)
+        def Create(cfg : ModelRuntimeConfig, executor : IThreadExecutor) : (ITradeGate, IMarketDataProvider) =
         {
+/*
             if (cfg.GatewayType == "IB")
             {
                 tradeGate = ReflectionCreator<ITradeGate>.Create("IbTradeGate");
@@ -16,7 +15,7 @@ namespace Fire.Common.Robot
                 tradeGate.Start();
                 return;
             }
+*/
             throw new Exception("not supported gateway type " + cfg.GatewayType);
         }
     }
-}

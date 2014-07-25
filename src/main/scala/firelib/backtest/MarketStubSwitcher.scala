@@ -10,13 +10,11 @@ class MarketStubSwitcher(val first: IMarketStub, val secondary: IMarketStub) ext
 
     def Position = activeStub.Position
 
-    def UnconfirmedPosition = activeStub.UnconfirmedPosition
-
     def HasPendingState = activeStub.HasPendingState
 
     def Security = activeStub.Security
 
-    def SubmitOrders(orders: Order*) = activeStub.SubmitOrders(orders)
+    def SubmitOrders(orders: Seq[Order]) = activeStub.SubmitOrders(orders)
 
     def SwitchStubs() = {
         if (activeStub == first) {
@@ -37,7 +35,7 @@ class MarketStubSwitcher(val first: IMarketStub, val secondary: IMarketStub) ext
 
     def orders = activeStub.orders
 
-    def CancelOrderByIds(orderIds: Array[String]) = activeStub.CancelOrderByIds(orderIds)
+    def CancelOrderByIds(orderIds: Seq[String]) = activeStub.CancelOrderByIds(orderIds)
 
     def AddCallback(callback: ITradeGateCallback) = activeStub.AddCallback(callback)
 

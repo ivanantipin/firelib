@@ -3,83 +3,66 @@ package firelib.backtest
 
 import firelib.domain._
 
-import scala.collection.mutable.{HashMap, ListBuffer}
+import scala.collection.mutable.ArrayBuffer
 
 
-class MarketDataDistributor(tickerConfigs: List[TickerConfig], val intervalService: IIntervalService) extends IMarketDataDistributor with IQuoteListener[Ohlc] with IQuoteListener[Tick] {
+class MarketDataDistributor(length : Int, val intervalService: IIntervalService) extends IMarketDataDistributor with IMarketDataListener {
 
-
-    val tickerUnits = tickerConfigs.map(tc => new TickerUnit())
-
-    val series = new Array[HashMap[Interval, TimeSeries[Ohlc]]](tickerConfigs.length)
-
-
-    for (i <- 0 until series.length) {
-        series(i) = new HashMap[Interval, TimeSeries[Ohlc]]();
-    }
 
     val DEFAULT_TIME_SERIES_HISTORY_LENGTH = 100;
 
-    class TickerUnit {
+    val tsContainers = Array.fill(length){new TsContainer()}
 
-        val quoteListeners = new ListBuffer[Ohlc => Unit]()
+    val listeners = new ArrayBuffer[IMarketDataListener]()
 
-        val timeSeries = new ListBuffer[ITimeSeries[Ohlc]]()
+    class TsContainer {
 
-        val tickSubscribers = new ListBuffer[Tick => Unit]()
+        val timeSeries = new ArrayBuffer[(Interval,ITimeSeries[Ohlc])]()
 
         def AddOhlc(ohlc: Ohlc) = {
-            timeSeries.foreach(ts => ts(0).AddOhlc(ohlc))
+            timeSeries.foreach(ts => ts._2(0).AddOhlc(ohlc))
         }
 
         def AddTick(tick: Tick) = {
-            timeSeries.foreach(ts => ts(0).AddTick(tick))
-
-            tickSubscribers.foreach(ts => ts(tick))
-
+            timeSeries.foreach(ts => ts._2(0).AddTick(tick))
         }
 
 
-        def AddTickSubscriber(subsc: Tick => Unit) = {
-            tickSubscribers += subsc
+        def hasTsForInterval(interval : Interval) = timeSeries.exists(t=>t._1 == interval)
+
+        def getTsForInterval(interval : Interval) : ITimeSeries[Ohlc] = timeSeries.find(t=>t._1 == interval).get._2
+
+    }
+
+    override def onOhlc(idx: Int, ohlc: Ohlc, next: Ohlc): Unit = {
+        tsContainers(idx).AddOhlc(ohlc);
+        listeners.foreach(l=>l.onOhlc(idx,ohlc,next))
+    }
+
+    override def onTick(idx: Int, tick: Tick, next: Tick): Unit = {
+        tsContainers(idx).AddTick(tick);
+        listeners.foreach(l=>l.onTick(idx,tick,next))
+    }
+
+
+    def activateOhlcTimeSeries(idx: Int, interval: Interval, len: Int): ITimeSeries[Ohlc] = {
+        if (!tsContainers(idx).hasTsForInterval(interval)) {
+            CreateTimeSerie(idx, interval, len)
         }
-
-
-        def AddTimeSerie(timeSerie: ITimeSeries[Ohlc]) = {
-            timeSeries += timeSerie
-        }
-
-    }
-
-
-    def AddQuote(idx: Int, quote: Ohlc) {
-        tickerUnits(idx).AddOhlc(quote);
-    }
-
-    def AddQuote(idx: Int, quote: Tick) = {
-        tickerUnits(idx).AddTick(quote);
-    }
-
-
-    def SubscribeForTick(tickerId: Int, subscr: Tick => Unit) = {
-        tickerUnits(tickerId).AddTickSubscriber(subscr);
-    }
-
-    def activateOhlcTimeSeries(tickerId: Int, interval: Interval, len: Int): ITimeSeries[Ohlc] = {
-        if (!series(tickerId).contains(interval)) {
-            series(tickerId)(interval) = CreateTimeSerie(tickerId, interval, len)
-        }
-        var hist = series(tickerId)(interval)
+        var hist = tsContainers(idx).getTsForInterval(interval)
         hist.AdjustSizeIfNeeded(len);
         return hist;
     }
 
-    def CreateTimeSerie(tickerId: Int, interval: Interval, len: Int): TimeSeries[Ohlc] = {
+    private def CreateTimeSerie(tickerId: Int, interval: Interval, len: Int): TimeSeries[Ohlc] = {
         val lenn = if (len == -1) DEFAULT_TIME_SERIES_HISTORY_LENGTH else len
+
 
         var ret = new TimeSeries[Ohlc](new HistoryCircular[Ohlc](len, () => new Ohlc()));
 
-        tickerUnits(tickerId).AddTimeSerie(ret);
+        val series = (interval, ret)
+
+        tsContainers(tickerId).timeSeries += series;
 
         intervalService.AddListener(interval, (dt) => {
             var prev = ret(0)
@@ -90,4 +73,8 @@ class MarketDataDistributor(tickerConfigs: List[TickerConfig], val intervalServi
         });
         return ret;
     }
+
+
+
+    override def addMdListener(lsn: IMarketDataListener) = listeners += lsn
 }

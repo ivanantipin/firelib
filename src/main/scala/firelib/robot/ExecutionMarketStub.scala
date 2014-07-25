@@ -3,6 +3,7 @@
 import firelib.backtest.IMarketStub
 import firelib.domain._
 import org.joda.time.DateTime
+import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -14,24 +15,24 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val m
 
     private val bidAsk = Array(Double.NaN, Double.NaN);
 
-    private var dtGmt: DateTime
+    private var dtGmt: DateTime =_
 
-    private val orders = new ArrayBuffer[Order]();
+    private val orders_ = new ArrayBuffer[Order]();
 
     private val tradeGateCallbacks = new ArrayBuffer[ITradeGateCallback]();
 
     private var position = 0
 
-    private val trades = new ArrayBuffer[Trade]();
+    private val trades_ = new ArrayBuffer[Trade]();
 
     private var orderIdCnt = 0;
 
-    //private Logger log = LogManager.GetLogger("market stub");
+    val log = LoggerFactory.getLogger(getClass)
 
 
-    def trades: Iterable[Trade] = trades
+    def trades: Iterable[Trade] = trades_
 
-    def orders: Iterable[Order] = orders
+    def orders: Iterable[Order] = orders_
 
     /*public int UnconfirmedPosition {
         get
@@ -42,7 +43,7 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val m
     }*/
 
     def HasPendingState: Boolean = {
-        orders.exists(o => (o.Status.IsPending || (o.OrdType == OrderTypeEnum.Market)))
+        orders_.exists(o => (o.Status.IsPending || (o.OrdType == OrderType.Market)))
     }
 
 
@@ -55,35 +56,34 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val m
         tradeGateCallbacks.clear();
     }
 
-    def FlattenAll(reason: String = null) {
+    def FlattenAll(reason: String = null) = {
         CancelOrders();
         ClosePosition(reason);
     }
 
-    def CancelOrders() {
-        CancelOrderByIds(orders.map(o => o.Id));
+
+    def CancelOrders() : Unit = {
+        CancelOrderByIds(orders_.map(o => o.Id))
     }
 
-    def CancelOrderByIds(orderIds: Traversable[String]) = {
+    def CancelOrderByIds(orderIds: Seq[String]) : Unit = {
 
         for (orderId <- orderIds) {
-            var ordOp = orders.find(o => o.Id == orderId);
-
-            if (ordOp.isEmpty) {
-                //log.Error("cancelling non existing order " + orderId);
-
-                continue;
+            val ordOp = orders_.find(o => o.Id == orderId);
+            if (ordOp.isDefined) {
+                val ord = ordOp.get
+                tradeGate.CancelOrder(orderId);
+                ord.Status = OrderStatus.PendingCancel;
+                tradeGateCallbacks.foreach(tgc => tgc.OnOrderStatus(ord, OrderStatus.PendingCancel))
+            }else {
+                log.error("cancelling non existing order " + orderId);
             }
-            val ord = ordOp.get
-            tradeGate.CancelOrder(orderId);
-            ord.Status = OrderStatusEnum.PendingCancel;
-            tradeGateCallbacks.foreach(tgc => tgc.OnOrderStatus(ord, OrderStatusEnum.PendingCancel))
         }
     }
 
 
-    def SubmitOrders(orders: Iterable[Order]) = {
-        if (this.orders.length > maxOrderCount) {
+    def SubmitOrders(orders: Seq[Order]) = {
+        if (this.orders_.length > maxOrderCount) {
             throw new Exception("max order count exceeded");
         }
 
@@ -91,12 +91,12 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val m
             order.Id = Security + "" + (orderIdCnt += 1);
             order.PlacementTime = dtGmt;
             order.Security = Security;
-            FireOrderState(List(order), OrderStatusEnum.New);
+            FireOrderState(List(order), OrderStatus.New);
             if (order.MinutesToHold != -1) {
                 order.ValidUntil = dtGmt.plusMinutes(order.MinutesToHold);
             }
-            this.orders += order;
-            //log.Info("submitting order " + order);
+            this.orders_ += order;
+            log.info("submitting order " + order);
             tradeGate.SendOrder(order);
         })
     }
@@ -113,9 +113,10 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val m
         if (HasPendingState) {
             return;
         }
-        SubmitOrders(new Order(OrderTypeEnum.Market, 0, math.abs(position), SideEnum.SideForAmt(-position)) {
+        val order: Order = new Order(OrderType.Market, 0, math.abs(position), Side.SideForAmt(-position)) {
             Security = security
-        });
+        }
+        SubmitOrders(List(order));
     }
 
     def UpdateBidAskAndTime(bid: Double, ask: Double, dtGmt: DateTime) {
@@ -126,27 +127,29 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val m
 
 
     def OnOrderStatus(order: Order, status: OrderStatus): Unit = {
-        if (!orders.exists(o => o.Id == order.Id)) {
+        if (!orders_.exists(o => o.Id == order.Id)) {
             return;
         }
-        //log.Info(string.Format("order status {0} status {1} ", order , status));
+        log.info(String.format("order status %s status %s ", order , status));
 
         if (status.IsFinal) {
-            orders.FILTER(o => o.Id != order.Id)
-
+            orders_.remove(orders_.indexWhere(o => o.Id == order.Id))
         }
         tradeGateCallbacks.foreach(tg => tg.OnOrderStatus(order, status))
     }
 
     def OnTrade(trd: Trade): Unit = {
-        if (!orders.exists(o => o.Id == trd.SrcOrder.Id)) {
+        if (!orders_.exists(o => o.Id == trd.SrcOrder.Id)) {
             return;
         }
-        //log.Info(string.Format("on trade {0} ", trd));
-        trades += trd
+        log.info(String.format("on trade %s ", trd));
+        trades_ += trd
         position = trd.AdjustPositionByThisTrade(position);
         trd.PositionAfter = Position;
-        //log.Info(string.Format("position after {0} ", Position));
+        log.info(String.format("position after %s ", Position));
         tradeGateCallbacks.foreach(tgc => tgc.OnTrade(trd));
     }
+
+    override val Position: Int = position
+    override val Security: String = security
 }

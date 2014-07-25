@@ -1,6 +1,6 @@
 package firelib.backtest
 
-object StrategyMetricEnum {
+object StrategyMetric {
     val Trades = new StrategyMetric("Trades")
     val Sharpe = new StrategyMetric("Sharpe")
     val Pnl = new StrategyMetric("Pnl")

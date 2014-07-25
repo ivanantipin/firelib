@@ -3,10 +3,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.firelib</groupId>
-    <artifactId>domain</artifactId>
+    <artifactId>firelib</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>ibgate</module>
+        <module>domain</module>
+    </modules>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>Demo of maven for Scala Lang website</name>
     <url>http://scala-lang.org</url>
 
@@ -59,11 +63,16 @@
             <version>0.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.javolution</groupId>
+            <artifactId>javolution-core-java</artifactId>
+            <version>6.0.0</version>
+        </dependency>
 
         <dependency>
-            <groupId>com.github.nscala-time</groupId>
-            <artifactId>nscala-time_2.9.1</artifactId>
-            <version>1.2.0</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.13</version>
         </dependency>
 
     </dependencies>

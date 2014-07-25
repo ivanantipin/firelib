@@ -2,7 +2,7 @@ package firelib.backtest
 
 trait IThreadExecutor {
 
-    def Execute(task: Unit => Unit);
+    def Execute(task: => Unit);
 
     def Start();
 

@@ -2,24 +2,26 @@ package firelib.backtest
 
 import java.util.concurrent._
 
+import org.slf4j.LoggerFactory
 
-class ThreadExecutor(val threadsNumber: Int = 1, val maxLengthOfQueue: Int = -1, val threadName: String = "pipeline_") extends IThreadExecutor with ThreadFactory {
+
+class ThreadExecutor(val threadsNumber: Int = 1, val maxLengthOfQueue: Int = -1, var threadName: String = "pipeline_") extends IThreadExecutor with ThreadFactory {
 
     val executor = new ThreadPoolExecutor(threadsNumber, threadsNumber, 1, TimeUnit.SECONDS, new ArrayBlockingQueue[Runnable](maxLengthOfQueue), this)
 
-    //private readonly Logger log;
-    //log = LogManager.GetLogger(threadName ?? "pipeline");
+
+    val log = LoggerFactory.getLogger(threadName)
 
     var threadcounter = 0;
 
-    def Execute(act: Unit => Unit) = {
+    def Execute(act: => Unit) = {
         executor.execute(new Runnable {
             override def run = {
                 try {
-                    act()
+                    act
                 } catch {
-                    case e: Exception => {
-                        //TODO log error
+                    case e: _ => {
+                        log.error("exception in pipeline ",e)
                     }
 
                 }
@@ -27,17 +29,20 @@ class ThreadExecutor(val threadsNumber: Int = 1, val maxLengthOfQueue: Int = -1,
         })
     }
 
-    def Start() {}
+    def Start() : IThreadExecutor ={
+        return this
+    }
 
-    def Stop() {
+    def Stop() = {
         executor.shutdown()
-        executor.awaitTermination(-1, TimeUnit.HOURS)
+        executor.awaitTermination(1, TimeUnit.MINUTES)
     }
 
 
     override def newThread(r: Runnable): Thread = {
         val ret: Thread = Executors.defaultThreadFactory().newThread(r)
-        ret.setName(threadName + (threadcounter += 1))
+        threadcounter += 1
+        ret.setName(threadName + threadcounter)
         return ret
     }
 }

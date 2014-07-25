@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/domain/domain.iml" filepath="$PROJECT_DIR$/domain/domain.iml" />
       <module fileurl="file://$PROJECT_DIR$/firelib.iml" filepath="$PROJECT_DIR$/firelib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ibgate/ibgate.iml" filepath="$PROJECT_DIR$/ibgate/ibgate.iml" />
     </modules>
   </component>
 </project>

@@ -8,9 +8,7 @@ import scala.collection.mutable.ArrayBuffer
 class TradeFactorBinder(val stubs: IMarketStub*) extends ITradeGateCallback {
     private val tradeFactors = new ArrayBuffer[IFactor]();
 
-    stubs.foreach(stub => {
-        stub.AddCallback(this);
-    })
+    stubs.foreach(_.AddCallback(this))
 
     override def OnTrade(trade: Trade): Unit = {
         tradeFactors.foreach(f => trade.AddFactor(f.Name, f.Value))

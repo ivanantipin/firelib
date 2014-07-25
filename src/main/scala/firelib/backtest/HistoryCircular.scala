@@ -19,6 +19,7 @@ class HistoryCircular[T](val length: Int, func: () => T) {
     }
 
     def ShiftAndGetLast: T = {
+        Count+=1
         head = (head + 1) % length
         return data(head);
     }
@@ -27,8 +28,6 @@ class HistoryCircular[T](val length: Int, func: () => T) {
         if (historySize < data.length) {
             return;
         }
-        data = Array.fill[T](length) {
-            func()
-        }
+        data = Array.fill[T](length) {func()}
     }
 }

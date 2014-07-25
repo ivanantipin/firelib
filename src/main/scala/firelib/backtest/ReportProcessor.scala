@@ -6,12 +6,6 @@ import firelib.domain.{ExecutionEstimates, Trade}
 import scala.collection.Map
 import scala.collection.mutable.ArrayBuffer
 
-trait IReportProcessor {
-    def Estimates: ArrayBuffer[ExecutionEstimates]
-
-    def BestModelsList: ArrayBuffer[IModel]
-}
-
 
 class ReportProcessor(val estimatedMetrics: (Seq[(Trade, Trade)]) => Map[StrategyMetric, Double], val optimizedFunctionName: StrategyMetric,
 
@@ -21,9 +15,7 @@ class ReportProcessor(val estimatedMetrics: (Seq[(Trade, Trade)]) => Map[Strateg
     private val bestModels = new ArrayBuffer[(Double, IModel, Map[StrategyMetric, Double])]();
     var Estimates = new ArrayBuffer[ExecutionEstimates]()
 
-    def BestModels: ArrayBuffer[IModel] = {
-        bestModels.map(mp => mp._2)
-    }
+    def BestModels: Seq[IModel] = bestModels.map(_._2)
 
     def BestModelsWithMetrics: ArrayBuffer[(IModel, Map[StrategyMetric, Double])] = {
         return bestModels.map(bm => (bm._2, bm._3))
@@ -49,7 +41,7 @@ class ReportProcessor(val estimatedMetrics: (Seq[(Trade, Trade)]) => Map[Strateg
 
         System.out.println("processed " + Estimates.length + " models ")
 
-        bestModels.sortBy(a => a._1)
+        bestModels.sortBy(_._1)
 
 
         while (bestModels.length > topModelsToKeep) {

@@ -7,24 +7,24 @@ import org.joda.time.DateTime
 trait IMarketStub {
 
 
-    val Position: Int
+    def Position: Int
 
     /*
      * this is confirmed position + position for pending market orders
      */
-    val UnconfirmedPosition: Int
+    //val UnconfirmedPosition: Int
 
     /**
      * any market order on market or not accepted limit order
      */
-    var HasPendingState: Int
+    def HasPendingState: Boolean
 
     /**
      * name of security as configured in model config tickers list
      */
     val Security: String
 
-    def SubmitOrders(orders: Order*)
+    def SubmitOrders(orders: Seq[Order])
 
     def FlattenAll(reason: String = null)
 
@@ -34,7 +34,7 @@ trait IMarketStub {
 
     def orders: Seq[Order]
 
-    def CancelOrderByIds(orderIds: Array[String]);
+    def CancelOrderByIds(orderIds: Seq[String]);
 
     def AddCallback(callback: ITradeGateCallback);
 

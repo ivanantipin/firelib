@@ -18,19 +18,19 @@ abstract class BasketModel extends IModel {
     }
 
     def BuyAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
-        stubs(idx).SubmitOrders(new Order(OrderTypeEnum.Limit, price, vol, SideEnum.Buy));
+        stubs(idx).SubmitOrders(List(new Order(OrderType.Limit, price, vol, Side.Buy)));
     }
 
     def SellAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
-        stubs(idx).SubmitOrders(new Order(OrderTypeEnum.Limit, price, vol, SideEnum.Sell));
+        stubs(idx).SubmitOrders(List(new Order(OrderType.Limit, price, vol, Side.Sell)));
     }
 
     def BuyAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
-        stubs(idx).SubmitOrders(new Order(OrderTypeEnum.Stop, price, vol, SideEnum.Buy));
+        stubs(idx).SubmitOrders(List(new Order(OrderType.Stop, price, vol, Side.Buy)));
     }
 
     def SellAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
-        stubs(idx).SubmitOrders(new Order(OrderTypeEnum.Stop, price, vol, SideEnum.Sell));
+        stubs(idx).SubmitOrders(List(new Order(OrderType.Stop, price, vol, Side.Sell)));
     }
 
     def EnableOhlcHistory(intr: Interval, lengthToMaintain: Int = -1): ArrayBuffer[ITimeSeries[Ohlc]] = {
@@ -50,7 +50,7 @@ abstract class BasketModel extends IModel {
     def GetOrderForDiff(currentPosition: Int, targetPos: Int): Order = {
         val vol = targetPos - currentPosition;
         if (vol != 0) {
-            return new Order(OrderTypeEnum.Market, 0, math.abs(vol), if (vol > 0) SideEnum.Buy else SideEnum.Sell);
+            return new Order(OrderType.Market, 0, math.abs(vol), if (vol > 0) Side.Buy else Side.Sell);
         }
         return null
     }
@@ -71,7 +71,7 @@ abstract class BasketModel extends IModel {
         }
         var ord = GetOrderForDiff(stubs(idx).Position, pos);
         if (ord != null) {
-            stubs(idx).SubmitOrders(ord);
+            stubs(idx).SubmitOrders(List(ord));
         }
     }
 
@@ -83,7 +83,7 @@ abstract class BasketModel extends IModel {
 
     def trades: ListBuffer[Trade] = {
         var ret = new ListBuffer[Trade]()
-        stubs.foreach(t => ret ++= t.trades)
+        stubs.foreach(ret ++= _.trades)
         return ret;
     }
 
@@ -99,11 +99,11 @@ abstract class BasketModel extends IModel {
 
 
     protected def FlattenAll(reason: String = null) = {
-        stubs.foreach(t => t.FlattenAll(reason));
+        stubs.foreach(_.FlattenAll(reason));
     }
 
     protected def CancelAllOrders = {
-        stubs.foreach(t => t.CancelOrders)
+        stubs.foreach(_.CancelOrders)
     }
 
     def OnStep(dtGmt: DateTime) = {

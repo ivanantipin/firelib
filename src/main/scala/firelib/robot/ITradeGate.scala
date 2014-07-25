@@ -1,5 +1,6 @@
 package firelib.robot
 
+import firelib.backtest.IThreadExecutor
 import firelib.domain.Order
 
 trait ITradeGate {

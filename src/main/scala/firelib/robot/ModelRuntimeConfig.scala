@@ -1,17 +1,19 @@
 package firelib.robot
 
+import firelib.backtest.ModelConfig
+
 
 class ModelRuntimeConfig {
 
-    var modelConfig: ModelConfig
+    var modelConfig: ModelConfig =_
 
     var GatewayType: String = _
 
     var RunBacktest: Boolean = false;
 
-    var GatewayConfig: Map[String, String]
+    var GatewayConfig: Map[String, String]=_
 
-    var TradeLogDirectory: String
+    var tradeLogDirectory: Option[String]=_
 
     val IbContractMapping = Map[String, String](
         "EURUSD" -> "Symbol=EUR;SecType=CASH;Currency=USD;Exchange=IDEALPRO",

@@ -12,7 +12,7 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
     var bidAsk = Array(Double.NaN, Double.NaN)
 
 
-    var dtGmt: DateTime
+    var dtGmt: DateTime =_
 
     val orders = new mutable.HashMap[String, Order]()
 
@@ -46,21 +46,21 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
     }
 
     def CancelOrders() = {
-        var ords = orders.clone()
+        val ords = orders.clone()
         orders.clear();
-        FireOrderState(ords.values, OrderStatusEnum.Cancelled);
+        FireOrderState(ords.values, OrderStatus.Cancelled);
     }
 
-    def CancelOrderByIds(orderIds: Array[String]) = {
+    def CancelOrderByIds(orderIds: Seq[String]) = {
 
         orderIds.foreach(orderId => {
             var ord = orders.remove(orderId)
-            if (ord.isEmpty) {
-                throw new Exception("no order with id " + orderId);
-            }
+
+            assert(ord.isDefined,"no order with id " + orderId)
+
             FireOrderState(List[Order] {
                 ord.get
-            }, OrderStatusEnum.Cancelled);
+            }, OrderStatus.Cancelled);
         });
     }
 
@@ -69,14 +69,14 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
     }
 
     def SubmitOrders(orders: Seq[Order]) : Unit = {
-        if (this.orders.size > maxOrderCount) {
-            throw new Exception("max order count exceeded");
-        }
+
+        assert(this.orders.size <= maxOrderCount, "max order count exceeded")
+
         orders.foreach(order => {
             order.Id = Security + "" + (orderIdCnt += 1);
             order.PlacementTime = dtGmt;
             order.Security = Security;
-            FireOrderState(List(order), OrderStatusEnum.New);
+            FireOrderState(List(order), OrderStatus.New);
             if (order.MinutesToHold != -1) {
                 order.ValidUntil = dtGmt.plusMinutes(order.MinutesToHold);
             }
@@ -90,24 +90,23 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
         if (position == 0)
             return;
 
-        var ord = new Order(OrderTypeEnum.Market, 0, math.abs(position), SideEnum.SideForAmt(-position)) {
+        val ord = new Order(OrderType.Market, 0, math.abs(position), Side.SideForAmt(-position)) {
             Security = Security
         };
-        var trd = new Trade(math.abs(position), CheckOrderAndGetTradePrice(ord), ord.OrderSide, ord, dtGmt,
+        val trd = new Trade(math.abs(position), CheckOrderAndGetTradePrice(ord), ord.OrderSide, ord, dtGmt,
             Security) {
             reason = reason
         };
         OnTrade(trd);
-        if (position != 0) {
-            throw new Exception("position must be 0 after flatten all!!!");
-        }
+
+        assert(position == 0,"position must be 0 after flatten all!!!")
     }
 
     def UpdateBidAskAndTime(bid: Double, ask: Double, dtGmt: DateTime) = {
         bidAsk(0) = bid;
         bidAsk(1) = ask;
         if (position != 0) {
-            lastPositionTrade.OnPrice(if (lastPositionTrade.TradeSide == SideEnum.Buy) bid else ask);
+            lastPositionTrade.OnPrice(if (lastPositionTrade.TradeSide == Side.Buy) bid else ask);
         }
         this.dtGmt = dtGmt;
         CheckOrders;
@@ -117,15 +116,13 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
 
         orders retain { (id, ord) => {
             if (ChkOrderExecution(ord) != null) {
-                FireOrderState(List(ord), OrderStatusEnum.Done);
+                FireOrderState(List(ord), OrderStatus.Done);
                 false
             }
             else {
-                if (ord.OrdType == OrderTypeEnum.Market) {
-                    throw new Exception("market order should cause position change!!");
-                }
+                assert(ord.OrdType != OrderType.Market, "market order should cause position change!!")
                 if (ord.ValidUntil != null && ord.ValidUntil.isBefore(dtGmt)) {
-                    FireOrderState(List(ord), OrderStatusEnum.Cancelled);
+                    FireOrderState(List(ord), OrderStatus.Cancelled);
                     false
                 }
                 true
@@ -167,23 +164,25 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
     }
 
     def CheckOrderAndGetTradePrice(ord: Order): Double = {
-        if (ord.OrdType == OrderTypeEnum.Market)
-            return if (ord.OrderSide == SideEnum.Buy) bidAsk(1) else bidAsk(0);
+        if (ord.OrdType == OrderType.Market)
+            return if (ord.OrderSide == Side.Buy) bidAsk(1) else bidAsk(0);
 
-        if (ord.OrdType == OrderTypeEnum.Stop) {
-            if (ord.OrderSide == SideEnum.Buy && Middle > ord.Price) {
+        if (ord.OrdType == OrderType.Stop) {
+            if (ord.OrderSide == Side.Buy && Middle > ord.Price) {
                 return bidAsk(1);
             }
-            if (ord.OrderSide == SideEnum.Sell && Middle < ord.Price) {
+            if (ord.OrderSide == Side.Sell && Middle < ord.Price) {
                 return bidAsk(0);
             }
         }
-        if (ord.OrdType == OrderTypeEnum.Limit) {
-            if (ord.OrderSide == SideEnum.Buy && bidAsk(1) < ord.Price ||
-              ord.OrderSide == SideEnum.Sell && bidAsk(0) > ord.Price) {
+        if (ord.OrdType == OrderType.Limit) {
+            if (ord.OrderSide == Side.Buy && bidAsk(1) < ord.Price ||
+              ord.OrderSide == Side.Sell && bidAsk(0) > ord.Price) {
                 return ord.Price;
             }
         }
         Double.NaN
     }
+
+    override def Position: Int = position
 }

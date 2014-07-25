@@ -15,7 +15,7 @@ object BacktestStatisticsCalculator {
 
     def CalculateStatisticsForCases(tradingCases: Seq[(Trade, Trade)]): Map[StrategyMetric, Double] = {
         var ret = mutable.HashMap[StrategyMetric, Double] {
-            StrategyMetricEnum.Trades -> tradingCases.length
+            StrategyMetric.Trades -> tradingCases.length
         }
 
 
@@ -40,7 +40,7 @@ object BacktestStatisticsCalculator {
 
         val (avg, dis) = meanAndVariance(pnls)
 
-        ret(StrategyMetricEnum.Sharpe) = avg / dis
+        ret(StrategyMetric.Sharpe) = avg / dis
 
         for (cas <- tradingCases) {
             if (cas._1.Qty != cas._2.Qty) {
@@ -83,26 +83,26 @@ object BacktestStatisticsCalculator {
         }
 
 
-        ret(StrategyMetricEnum.Pnl) = pnl;
-        ret(StrategyMetricEnum.Pf) = math.min(-onlyProfit / onlyLoss, 4);
-        ret(StrategyMetricEnum.MaxDdStat) = maxDrawDown;
-        ret(StrategyMetricEnum.AvgPnl) = pnl / tradingCases.length;
-        ret(StrategyMetricEnum.MaxProfit) = maxPnl;
-        ret(StrategyMetricEnum.MaxLoss) = maxLoss;
-        ret(StrategyMetricEnum.MaxLossesInRow) = maxLossesInRow;
-        ret(StrategyMetricEnum.MaxProfitsInRow) = maxProfitsInRow;
-        ret(StrategyMetricEnum.ProfitLosses) = (tradingCases.length - lossCount) / tradingCases.length.toDouble;
-        ret(StrategyMetricEnum.AvgLoss) = (onlyLoss) / lossCount;
-        ret(StrategyMetricEnum.AvgProfit) = onlyProfit / (tradingCases.length - lossCount);
+        ret(StrategyMetric.Pnl) = pnl;
+        ret(StrategyMetric.Pf) = math.min(-onlyProfit / onlyLoss, 4);
+        ret(StrategyMetric.MaxDdStat) = maxDrawDown;
+        ret(StrategyMetric.AvgPnl) = pnl / tradingCases.length;
+        ret(StrategyMetric.MaxProfit) = maxPnl;
+        ret(StrategyMetric.MaxLoss) = maxLoss;
+        ret(StrategyMetric.MaxLossesInRow) = maxLossesInRow;
+        ret(StrategyMetric.MaxProfitsInRow) = maxProfitsInRow;
+        ret(StrategyMetric.ProfitLosses) = (tradingCases.length - lossCount) / tradingCases.length.toDouble;
+        ret(StrategyMetric.AvgLoss) = (onlyLoss) / lossCount;
+        ret(StrategyMetric.AvgProfit) = onlyProfit / (tradingCases.length - lossCount);
         if (tradingCases.length != 0)
-            ret(StrategyMetricEnum.AvgHoldingPeriodMin) = holdingPeriodMins / tradingCases.length;
+            ret(StrategyMetric.AvgHoldingPeriodMin) = holdingPeriodMins / tradingCases.length;
 
         holdingPeriodMinsStat = holdingPeriodMinsStat.sorted;
         if (holdingPeriodMinsStat.length > 3) {
-            ret(StrategyMetricEnum.MedianHoldingPeriodMin) = holdingPeriodMinsStat(holdingPeriodMinsStat.length / 2);
+            ret(StrategyMetric.MedianHoldingPeriodMin) = holdingPeriodMinsStat(holdingPeriodMinsStat.length / 2);
         }
         if (tradingCases.length != 0)
-            ret(StrategyMetricEnum.AvgHoldingPeriodSec) = holdingPeriodSecs / tradingCases.length;
+            ret(StrategyMetric.AvgHoldingPeriodSec) = holdingPeriodSecs / tradingCases.length;
         return ret.toMap;
     }
 }
