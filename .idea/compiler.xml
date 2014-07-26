@@ -22,7 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="backtest" />
+        <module name="common" />
         <module name="domain" />
+        <module name="execution" />
+        <module name="ibadapter" />
         <module name="ibgate" />
         <module name="ScalaTest" />
       </profile>
