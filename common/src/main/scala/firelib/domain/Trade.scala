@@ -45,6 +45,8 @@ class Trade(var Qty: Int, var Price: Double, val TradeSide: Side, val SrcOrder: 
         return position + TradeSide.sign * Qty
     }
 
+    def moneyFlow = - Qty * Price * TradeSide.sign
+
 
     def Split(amt: Int): (Trade, Trade) = {
         var amtini = Qty - amt;

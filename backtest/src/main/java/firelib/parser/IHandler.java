@@ -1,4 +1,4 @@
-package firelib.backtest;
+package firelib.parser;
 
 import java.nio.CharBuffer;
 

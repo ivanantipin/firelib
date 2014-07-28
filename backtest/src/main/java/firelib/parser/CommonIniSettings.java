@@ -1,4 +1,4 @@
-package firelib.backtest;
+package firelib.parser;
 
 public class CommonIniSettings
 {
@@ -9,4 +9,6 @@ public class CommonIniSettings
 
     public String TIMEFORMAT;
     public String TIMEZONE;
+
+
 }

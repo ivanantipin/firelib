@@ -1,4 +1,4 @@
-package firelib.backtest;
+package firelib.parser;
 
 import java.nio.CharBuffer;
 import java.util.function.Function;
@@ -6,12 +6,12 @@ import java.util.function.Function;
 /**
  * Created by ivan on 7/27/14.
  */
-class StdParser <T,V> extends BaseHandler<T> {
+class StdHandler<T,V> extends BaseHandler<T> {
 
     private IModifier<T, V> consumer;
     private Function<CharSequence, V> parser;
 
-    public StdParser(IModifier<T,V> consumer, Function<CharSequence,V> parser){
+    public StdHandler(IModifier<T, V> consumer, Function<CharSequence, V> parser){
         this.consumer = consumer;
         this.parser = parser;
     }
@@ -29,6 +29,5 @@ class StdParser <T,V> extends BaseHandler<T> {
         buffer.position(i);
         return true;
     }
-
 
 }

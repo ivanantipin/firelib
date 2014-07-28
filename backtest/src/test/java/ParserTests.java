@@ -1,10 +1,7 @@
-import firelib.backtest.CommonIniSettings;
-import org.junit.Assert;
-import org.junit.Test;
-
-public class ParserTests
+﻿public class ParserTests
     {
-        private static String strTestsRootPath = @"..\..\..\Tests";
+
+        /*private static String strTestsRootPath = @"..\..\..\Tests";
 
 
 
@@ -149,11 +146,11 @@ public class ParserTests
             //D_T_O_H_L_C_V_#_#_A_B_P_U_I
             commonIniSettings.TIMEZONE = "LONDON";
 
-            /*
+            *//*
 11.11.2010,161100,1401.548,1401.892,1400.197,1400.947,1,1402.52,1402.352,1400.703,1401.453,1,111
 11.11.2010,161200,1400.992,1401.598,1400.992,1401.347,1,1401.453,1402.102,1401.453,1401.853,1,102
 11.11.2010,161300,1401.397,1401.397,1399.997,1400.448,1,1401.858,1401.858,1400.502,1400.952,1,116
-             */
+             *//*
 
             var parser =
                 new UltraFastSingleCsvParser(Path.Combine(strTestsRootPath, @"UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/XAUUSD_1.csv"),
@@ -861,5 +858,5 @@ public class ParserTests
 
             public int val { get; set; }
         }
-    }
+*/    }
 

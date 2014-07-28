@@ -1,4 +1,5 @@
-import firelib.common.HistoryCircular
+package firelib.common
+
 import org.junit.Assert._
 import org.junit.{Assert, Test}
 

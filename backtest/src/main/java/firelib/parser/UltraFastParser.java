@@ -1,4 +1,4 @@
-﻿package firelib.backtest;
+package firelib.parser;
 
 import firelib.common.ISimpleReader;
 import firelib.common.Timed;
