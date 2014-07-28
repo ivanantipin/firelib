@@ -1,16 +1,16 @@
 package firelib.common
 
-import org.joda.time.DateTime
+import java.time.Instant
 
 import scala.collection.mutable
 
-class Trade(var Qty: Int, var Price: Double, val TradeSide: Side, val SrcOrder: Order, val DtGmt: DateTime, val Security: String) {
+class Trade(var Qty: Int, var Price: Double, val TradeSide: Side, val SrcOrder: Order, val DtGmt:Instant, val Security: String) {
 
     assert(Qty > 0,"amount can't be negative")
 
     var Factors: collection.mutable.Map[String, String] = _
 
-    var placementTime: DateTime = _;
+    var placementTime: Instant  = _;
 
     var PositionAfter: Int = _
 

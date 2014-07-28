@@ -1,10 +1,9 @@
 package firelib.common
 
-import org.joda.time.DateTime
+import java.time.Instant
 
 
 trait Timed {
 
-    def DtGmt: DateTime
-
+    def DtGmt: Instant
 }

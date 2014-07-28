@@ -7,7 +7,6 @@ import com.ib.client
 import com.ib.client.{Contract, Execution, TagValue, TickType}
 import firelib.common._
 import firelib.robot.{IMarketDataProvider, ITradeGate}
-import org.joda.time.DateTime
 import org.slf4j.LoggerFactory
 
 import scala.collection.mutable
@@ -140,7 +139,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
             orders.find(_.IbId == execution.m_orderId) match {
                 case None => log.error("execution, no order found for ib order id " + execution.m_orderId);
                 case Some(entr) => tradeGateCallbacks.foreach(_.OnTrade(new Trade(execution.m_shares, execution.m_price, entr.ClientOrder.OrderSide, entr.ClientOrder,
-                    DateTime.now(), entr.ClientOrder.Security)));
+                   LocalDInstant, entr.ClientOrder.Security)));
 
             }
         });
@@ -257,7 +256,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
                 return;
             }
 
-            subscriptions(tickerId).LastPriceQuote = new Tick(last = price,DtGmt = DateTime.now())
+            subscriptions(tickerId).LastPriceQuote = new Tick(last = price,dtGmt = LocalDateTime.now())
 
         });
     }

@@ -1,6 +1,6 @@
 package firelib.common
 
-import org.joda.time.DateTime
+import java.time.Instant
 
 
 class Order(val OrdType: OrderType, val Price: Double, val Qty: Int, val OrderSide: Side) {
@@ -17,8 +17,8 @@ class Order(val OrdType: OrderType, val Price: Double, val Qty: Int, val OrderSi
     var Security: String = _
     var Reason: String = _
 
-    var PlacementTime: DateTime = _
-    var ValidUntil: DateTime = _
+    var PlacementTime: Instant  = _
+    var ValidUntil: Instant  = _
     var Status: OrderStatus = _
 
     override def toString: String = {

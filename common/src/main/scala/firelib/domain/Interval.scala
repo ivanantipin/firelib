@@ -1,6 +1,6 @@
 package firelib.common
 
-import org.joda.time.DateTime
+import java.time.Instant
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -9,7 +9,9 @@ sealed class Interval(val Name: String, val durationMs: Int) {
 
     Interval.intervals += this
 
-    def RoundTime(dt: DateTime): DateTime = return new DateTime((dt.getMillis / durationMs) * durationMs)
+    def RoundTime(dt:Instant): Instant  = Instant.ofEpochMilli(  roundEpochMs((dt.toEpochMilli)))
+
+    def roundEpochMs(epochMs : Long): Long  =  (epochMs/ durationMs) * durationMs
 
     override def toString: String = Name
 }

@@ -54,15 +54,9 @@ class ModelConfig {
     )
 
 
-    /*
-
-    */
-
-
     def AddCustomParam(param: String, value: String): ModelConfig = {
         CustomParams(param) = value;
         return this;
     }
-
 
 }

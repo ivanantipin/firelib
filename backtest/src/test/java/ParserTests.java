@@ -1,4 +1,5 @@
-﻿import org.junit.Assert;
+import firelib.backtest.CommonIniSettings;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class ParserTests
@@ -6,26 +7,6 @@ public class ParserTests
         private static String strTestsRootPath = @"..\..\..\Tests";
 
 
-        @Test
-        public void TestRingBuffer()
-        {
-            var bufferPreInited = new HistoryCircular<long[]>(3, () => new[] {0L}, Interval.Sec1);
-            long[] nl = bufferPreInited.ShiftAndGetLast();
-            nl[0] = 1;
-            Assert.assertEquals(1L, bufferPreInited[0][0]);
-
-            nl = bufferPreInited.ShiftAndGetLast();
-            nl[0] = 2;
-            Assert.assertEquals(1L, bufferPreInited[-1][0]);
-            Assert.assertEquals(2L, bufferPreInited[0][0]);
-
-            nl = bufferPreInited.ShiftAndGetLast();
-            nl[0] = 3;
-            nl = bufferPreInited.ShiftAndGetLast();
-            nl[0] = 4;
-            Assert.assertEquals(2L, bufferPreInited[-2][0]);
-            Assert.assertEquals(4L, bufferPreInited[0][0]);
-        }
 
         //-------------------------------------------------------------
 
@@ -33,35 +14,35 @@ public class ParserTests
         @Test
         public void TestUltraFastSingleCsvParser_1()
         {
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             commonIniSettings.DATEFORMAT = "DD.MM.YYYY";
             commonIniSettings.TIMEFORMAT = "HHMMSS";
-            commonIniSettings.COLUMNFORMAT = new[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
+            commonIniSettings.COLUMNFORMAT = new String[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
             commonIniSettings.TIMEZONE = "NY";
 
             var parser =
                 new UltraFastSingleCsvParser(Path.Combine(strTestsRootPath, @"UltraFastParser/TstData2/data1_0.csv"),
                                              commonIniSettings);
 
-            Assert.assertEquals(parser.StartDt, new DateTime(2011, 11, 21, 2, 0, 8, 700));
-            Assert.assertEquals(parser.EndDt, new DateTime(2012, 9, 26, 3, 55, 21, 222));
+            Assert.assertEquals(parser.StartDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
+            Assert.assertEquals(parser.EndDt, new Instant( 2012, 9, 26, 3, 55, 21, 222));
         }
 
         @Test
         public void TestUltraFastSingleCsvParser_2()
         {
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             commonIniSettings.DATEFORMAT = "DD.MM.YYYY";
             commonIniSettings.TIMEFORMAT = "HHMMSS";
-            commonIniSettings.COLUMNFORMAT = new[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
+            commonIniSettings.COLUMNFORMAT = new String[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
             commonIniSettings.TIMEZONE = "NY";
 
             var parser =
                 new UltraFastSingleCsvParser(Path.Combine(strTestsRootPath, @"UltraFastParser/TstData2/data2_0.csv"),
                                              commonIniSettings);
 
-            Assert.assertEquals(parser.StartDt, new DateTime(2011, 11, 21, 2, 0, 8, 700));
-            Assert.assertEquals(parser.EndDt, new DateTime(2011, 11, 21, 2, 0, 8, 700));
+            Assert.assertEquals(parser.StartDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
+            Assert.assertEquals(parser.EndDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
         }
 
         @Test
@@ -70,10 +51,10 @@ public class ParserTests
             //
             // Test that two parsers are able to open the same .csv file simultaneously.
             //
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             commonIniSettings.DATEFORMAT = "DD.MM.YYYY";
             commonIniSettings.TIMEFORMAT = "HHMMSS";
-            commonIniSettings.COLUMNFORMAT = new[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
+            commonIniSettings.COLUMNFORMAT = new String[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
             commonIniSettings.TIMEZONE = "NY";
 
             var parser1 =
@@ -83,11 +64,11 @@ public class ParserTests
                 new UltraFastSingleCsvParser(Path.Combine(strTestsRootPath, @"UltraFastParser/TstData2/data2_0.csv"),
                                              commonIniSettings);
 
-            Assert.assertEquals(parser1.StartDt, new DateTime(2011, 11, 21, 2, 0, 8, 700));
-            Assert.assertEquals(parser1.EndDt, new DateTime(2011, 11, 21, 2, 0, 8, 700));
+            Assert.assertEquals(parser1.StartDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
+            Assert.assertEquals(parser1.EndDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
 
-            Assert.assertEquals(parser2.StartDt, new DateTime(2011, 11, 21, 2, 0, 8, 700));
-            Assert.assertEquals(parser2.EndDt, new DateTime(2011, 11, 21, 2, 0, 8, 700));
+            Assert.assertEquals(parser2.StartDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
+            Assert.assertEquals(parser2.EndDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
         }
 
         @Test
@@ -96,10 +77,10 @@ public class ParserTests
             //
             // Test that parser.StartDt and parser.EndDt contain DateTime.MinValue, DateTime.MaxValue for zero length files.
             //
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             commonIniSettings.DATEFORMAT = "DD.MM.YYYY";
             commonIniSettings.TIMEFORMAT = "HHMMSS";
-            commonIniSettings.COLUMNFORMAT = new[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
+            commonIniSettings.COLUMNFORMAT = new String[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
             commonIniSettings.TIMEZONE = "NY";
 
             var parser =
@@ -117,18 +98,18 @@ public class ParserTests
             // Test that parser.StartDt and parser.EndDt contain DateTime.MinValue, DateTime.MaxValue
             // for file with incomplete first String that contains only date and time.
             //
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             commonIniSettings.DATEFORMAT = "DD.MM.YYYY";
             commonIniSettings.TIMEFORMAT = "HHMMSS";
-            commonIniSettings.COLUMNFORMAT = new[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
+            commonIniSettings.COLUMNFORMAT = new String[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
             commonIniSettings.TIMEZONE = "NY";
 
             var parser =
                 new UltraFastSingleCsvParser(Path.Combine(strTestsRootPath, @"UltraFastParser/LabudaFile/labuda_0.csv"),
                                              commonIniSettings);
 
-            Assert.assertEquals(parser.StartDt, new DateTime(2011, 11, 21, 2, 0, 0, 0));
-            Assert.assertEquals(parser.EndDt, new DateTime(2011, 11, 21, 2, 0, 0, 0));
+            Assert.assertEquals(parser.StartDt, new Instant( 2011, 11, 21, 2, 0, 0, 0));
+            Assert.assertEquals(parser.EndDt, new Instant( 2011, 11, 21, 2, 0, 0, 0));
         }
 
         @Test
@@ -137,10 +118,10 @@ public class ParserTests
             //
             // Check that IQFEED format parsing works.
             //
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             commonIniSettings.DATEFORMAT = "DD.MM.YYYY";
             commonIniSettings.TIMEFORMAT = "HHMMSS";
-            commonIniSettings.COLUMNFORMAT = new[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
+            commonIniSettings.COLUMNFORMAT = new String[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
             commonIniSettings.TIMEZONE = "NY";
 
             var parser =
@@ -152,7 +133,7 @@ public class ParserTests
             var isOk = parser.Read();
 
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2011, 11, 21, 2, 0, 8, 700));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
         }
 
         @Test
@@ -161,7 +142,7 @@ public class ParserTests
             //
             // Check that IQFEED format parsing works.
             //
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             commonIniSettings.DATEFORMAT = "DD.MM.YYYY";
             commonIniSettings.TIMEFORMAT = "HHMMSS";
             commonIniSettings.COLUMNFORMAT = new[] {"D", "T", "O", "H", "L", "C", "V", "#", "#", "A", "B", "P", "U", "I"};
@@ -181,16 +162,16 @@ public class ParserTests
             parser.SeekLocal(parser.StartDt);
 
             Assert.IsTrue(parser.Read());
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2010, 11, 11, 16, 11, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2010, 11, 11, 16, 11, 0));
             Assert.assertEquals(parser.PQuote->Close, 1400.947, 0.001);
             Assert.assertEquals(parser.PQuote->Volume, 1);
             Assert.assertEquals(parser.PQuote->AskPrice, 1400.703, 0.001);
             Assert.IsTrue(parser.Read());
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2010, 11, 11, 16, 12, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2010, 11, 11, 16, 12, 0));
             Assert.assertEquals(parser.PQuote->Close, 1401.347, 0.001);
             Assert.assertEquals(parser.PQuote->AskPrice, 1401.453, 0.001);
             Assert.IsTrue(parser.Read());
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2010, 11, 11, 16, 13, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2010, 11, 11, 16, 13, 0));
             Assert.assertEquals(parser.PQuote->Close, 1400.448, 0.001);
             Assert.assertEquals(parser.PQuote->AskPrice, 1400.502, 0.001);
         }
@@ -201,7 +182,7 @@ public class ParserTests
             //
             // Check that ANFUTURES format parsing works.
             //
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             commonIniSettings.DATEFORMAT = "YYMMDD";
             commonIniSettings.TIMEFORMAT = "HHMMSS";
             commonIniSettings.COLUMNFORMAT = new[] {"D", "T", "P", "V"};
@@ -216,7 +197,7 @@ public class ParserTests
             var isOk = parser.Read();
 
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2010, 3, 10, 16, 30, 0, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2010, 3, 10, 16, 30, 0, 0));
             Assert.assertEquals(parser.PQuote->TrdPrice, 1140.50);
             Assert.assertEquals(parser.PQuote->Volume, 18);
             Assert.assertEquals(parser.PQuote->AskPrice, 0);
@@ -226,13 +207,13 @@ public class ParserTests
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2010, 3, 10, 16, 30, 10, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2010, 3, 10, 16, 30, 10, 0));
             Assert.assertEquals(parser.PQuote->TrdPrice, 1140.50);
             Assert.assertEquals(parser.PQuote->Volume, 1);
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2010, 4, 16, 16, 14, 59, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2010, 4, 16, 16, 14, 59, 0));
             Assert.assertEquals(parser.PQuote->TrdPrice, 1189.75);
             Assert.assertEquals(parser.PQuote->Volume, 4);
         }
@@ -243,7 +224,7 @@ public class ParserTests
             //
             // Check that ANFUTURES format parsing works.
             //
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             commonIniSettings.DATEFORMAT = "YYMMDD";
             commonIniSettings.TIMEFORMAT = "HHMMSS";
             commonIniSettings.COLUMNFORMAT = new[] {"D", "T", "P", "V"};
@@ -260,7 +241,7 @@ public class ParserTests
             var isOk = parser.Read();
 
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2010, 3, 10, 16, 30, 0, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2010, 3, 10, 16, 30, 0, 0));
             Assert.assertEquals(parser.PQuote->TrdPrice, 1140.50);
             Assert.assertEquals(parser.PQuote->Volume, 18);
 
@@ -284,7 +265,7 @@ public class ParserTests
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2010, 3, 10, 16, 30, 10, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2010, 3, 10, 16, 30, 10, 0));
             Assert.assertEquals(parser.PQuote->TrdPrice, 1140.50);
             Assert.assertEquals(parser.PQuote->Volume, 1);
 
@@ -300,7 +281,7 @@ public class ParserTests
             //
             // Check that TICKDATA format parsing works.
             //
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             commonIniSettings.DATEFORMAT = "DD.MM.YYYY";
             commonIniSettings.TIMEFORMAT = "HHMMSS";
             commonIniSettings.COLUMNFORMAT = new[] {"D", "T", "P", "V"};
@@ -317,14 +298,14 @@ public class ParserTests
             var isOk = parser.Read();
 
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2004, 12, 1, 3, 0, 49, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2004, 12, 1, 3, 0, 49, 0));
             Assert.assertEquals(parser.PQuote->TrdPrice, 4138.0);
             Assert.assertEquals(parser.PQuote->Volume, 12);
 
             isOk = parser.Read();
 
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2004, 12, 1, 3, 2, 3, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2004, 12, 1, 3, 2, 3, 0));
             Assert.assertEquals(parser.PQuote->TrdPrice, 4140.0);
             Assert.assertEquals(parser.PQuote->Volume, 1);
         }
@@ -335,7 +316,7 @@ public class ParserTests
             //
             // Check that FORTS FUT format parsing works.
             //
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             commonIniSettings.DATEFORMAT = "YYYY-MM-DD";
             commonIniSettings.TIMEFORMAT = "HH:MM:SS";
             commonIniSettings.COLUMNFORMAT = new[] {"D", "T", "#", "P", "V", "I"};
@@ -352,7 +333,7 @@ public class ParserTests
             var isOk = parser.Read();
 
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2012, 1, 3, 10, 0, 0, 53));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2012, 1, 3, 10, 0, 0, 53));
             Assert.assertEquals(parser.PQuote->TrdPrice, 137495);
             Assert.assertEquals(parser.PQuote->Volume, 1);
             Assert.assertEquals(parser.PQuote->AskPrice, 0);
@@ -363,7 +344,7 @@ public class ParserTests
             isOk = parser.Read();
 
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2012, 1, 3, 10, 0, 0, 53));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2012, 1, 3, 10, 0, 0, 53));
             Assert.assertEquals(parser.PQuote->TrdPrice, 137500);
             Assert.assertEquals(parser.PQuote->Volume, 1);
             Assert.assertEquals(parser.PQuote->AskPrice, 0);
@@ -393,7 +374,7 @@ public class ParserTests
         @Test
         public void TestUltraFastParser_ParseAndMergeCommonIni_1()
         {
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             UltraFastParser.UltraFastParser.ParseAndMergeCommonIni(Path.Combine(strTestsRootPath, @"Seek1/common.ini"),
                                                                    ref commonIniSettings);
 
@@ -406,7 +387,7 @@ public class ParserTests
         @Test
         public void TestUltraFastParser_ParseAndMergeCommonIni_2()
         {
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             UltraFastParser.UltraFastParser.ParseAndMergeCommonIni(
                 Path.Combine(strTestsRootPath, @"CommonIni1/common.ini"),
                 ref commonIniSettings);
@@ -425,7 +406,7 @@ public class ParserTests
         @Test
         public void TestUltraFastParser_ParseAndMergeCommonIni_3()
         {
-            var commonIniSettings = new CommonIniSettings();
+            CommonIniSettings commonIniSettings = new CommonIniSettings();
             UltraFastParser.UltraFastParser.ParseAndMergeCommonIni(
                 Path.Combine(strTestsRootPath, @"CommonIni2/common.ini"),
                 ref commonIniSettings);
@@ -565,11 +546,11 @@ public class ParserTests
             Assert.assertEquals(Path.GetFileName(symbolData[21].fullFileName), "ES_200606.csv");
             Assert.assertEquals(Path.GetFileName(symbolData[22].fullFileName), "ES_200603.csv");
 
-            Assert.assertEquals(symbolData[5].locStartDT, new DateTime(2010, 3, 10, 16, 30, 0));
-            Assert.assertEquals(symbolData[5].locEndDT, new DateTime(2010, 5, 1, 2, 0, 8, 700));
+            Assert.assertEquals(symbolData[5].locStartDT, new Instant( 2010, 3, 10, 16, 30, 0));
+            Assert.assertEquals(symbolData[5].locEndDT, new Instant( 2010, 5, 1, 2, 0, 8, 700));
 
-            Assert.assertEquals(symbolData[5].utcStartDT, new DateTime(2010, 3, 10, 21, 30, 0));
-            Assert.assertEquals(symbolData[5].utcEndDT, new DateTime(2010, 5, 1, 6, 0, 8, 700));
+            Assert.assertEquals(symbolData[5].utcStartDT, new Instant( 2010, 3, 10, 21, 30, 0));
+            Assert.assertEquals(symbolData[5].utcEndDT, new Instant( 2010, 5, 1, 6, 0, 8, 700));
         }
 
         @Test
@@ -590,11 +571,11 @@ public class ParserTests
             Assert.assertEquals(Path.GetFileName(symbolData[1].fullFileName), "XG#_201212.csv");
             Assert.assertEquals(Path.GetFileName(symbolData[2].fullFileName), "XG#_0.csv");
 
-            Assert.assertEquals(symbolData[2].locStartDT, new DateTime(2004, 12, 1, 3, 0, 49, 0));
-            Assert.assertEquals(symbolData[2].locEndDT, new DateTime(2010, 3, 30, 2, 0, 2, 0));
+            Assert.assertEquals(symbolData[2].locStartDT, new Instant( 2004, 12, 1, 3, 0, 49, 0));
+            Assert.assertEquals(symbolData[2].locEndDT, new Instant( 2010, 3, 30, 2, 0, 2, 0));
 
-            Assert.assertEquals(symbolData[2].utcStartDT, new DateTime(2004, 12, 1, 8, 0, 49, 0));
-            Assert.assertEquals(symbolData[2].utcEndDT, new DateTime(2010, 3, 30, 6, 0, 2, 0));
+            Assert.assertEquals(symbolData[2].utcStartDT, new Instant( 2004, 12, 1, 8, 0, 49, 0));
+            Assert.assertEquals(symbolData[2].utcEndDT, new Instant( 2010, 3, 30, 6, 0, 2, 0));
         }
 
         @Test
@@ -625,12 +606,12 @@ public class ParserTests
             var parser =
                 new UltraFastParser.UltraFastParser(Path.Combine(strTestsRootPath, "UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/XG#_0.csv"));
 
-            var isOk = parser.SeekLocal(new DateTime(2013, 1, 2, 2, 0, 5, 000));
+            var isOk = parser.SeekLocal(new Instant( 2013, 1, 2, 2, 0, 5, 000));
             Assert.IsTrue(isOk);
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2013, 1, 2, 2, 0, 5, 000));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2013, 1, 2, 2, 0, 5, 000));
             Assert.assertEquals(parser.PQuote->TrdPrice, 7744.50);
             Assert.assertEquals(parser.PQuote->BidPrice, 7744.00);
             Assert.assertEquals(parser.PQuote->AskPrice, 7744.50);
@@ -638,7 +619,7 @@ public class ParserTests
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2013, 1, 2, 2, 0, 5, 000));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2013, 1, 2, 2, 0, 5, 000));
             Assert.assertEquals(parser.PQuote->TrdPrice, 7744.00);
             Assert.assertEquals(parser.PQuote->BidPrice, 7744.00);
             Assert.assertEquals(parser.PQuote->AskPrice, 7744.50);
@@ -651,12 +632,12 @@ public class ParserTests
             var parser =
                 new UltraFastParser.UltraFastParser(Path.Combine(strTestsRootPath, "UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/XG#_0.csv"));
 
-            var isOk = parser.SeekLocal(new DateTime(2010, 3, 30, 2, 0, 2, 000));
+            var isOk = parser.SeekLocal(new Instant( 2010, 3, 30, 2, 0, 2, 000));
             Assert.IsTrue(isOk);
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2010, 3, 30, 2, 0, 2, 000));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2010, 3, 30, 2, 0, 2, 000));
             Assert.assertEquals(parser.PQuote->TrdPrice, 6165.50);
             Assert.assertEquals(parser.PQuote->BidPrice, 0);
             Assert.assertEquals(parser.PQuote->AskPrice, 0);
@@ -670,7 +651,7 @@ public class ParserTests
                 new UltraFastParser.UltraFastParser(Path.Combine(strTestsRootPath,
                                                                  "UltraFastParser/ZerolenFile/zerolen_0.csv"));
 
-            var isOk = parser.SeekLocal(new DateTime(2010, 3, 30, 2, 0, 2, 000));
+            var isOk = parser.SeekLocal(new Instant( 2010, 3, 30, 2, 0, 2, 000));
             Assert.IsTrue(isOk);
 
             isOk = parser.Read();
@@ -733,12 +714,12 @@ public class ParserTests
             var parser =
                 new UltraFastParser.UltraFastParser(Path.Combine(strTestsRootPath, "UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/XG#_0.csv"));
 
-            var isOk = parser.SeekLocal(new DateTime(1950, 1, 1, 0, 0, 0, 000));
+            var isOk = parser.SeekLocal(new Instant( 1950, 1, 1, 0, 0, 0, 000));
             Assert.IsTrue(isOk);
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2004, 12, 1, 3, 0, 49, 000));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2004, 12, 1, 3, 0, 49, 000));
             Assert.assertEquals(parser.PQuote->TrdPrice, 4138.0);
             Assert.assertEquals(parser.PQuote->BidPrice, 0);
             Assert.assertEquals(parser.PQuote->AskPrice, 0);
@@ -750,12 +731,12 @@ public class ParserTests
         {
             var parser = new UltraFastParser.UltraFastParser(Path.Combine(strTestsRootPath, "UltraFastParser/Seek2/RI#_0.csv"));
 
-            var isOk = parser.SeekLocal(new DateTime(2011, 1, 12, 10, 0, 0));
+            var isOk = parser.SeekLocal(new Instant( 2011, 1, 12, 10, 0, 0));
             Assert.IsTrue(isOk);
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2011, 3, 3, 17, 5, 8, 210));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2011, 3, 3, 17, 5, 8, 210));
             Assert.assertEquals(parser.PQuote->TrdPrice, 201445);
             Assert.assertEquals(parser.PQuote->Volume, 2);
             Assert.assertEquals(parser.PQuote->Id, 280218208UL);
@@ -766,12 +747,12 @@ public class ParserTests
         {
             var parser = new UltraFastParser.UltraFastParser(Path.Combine(strTestsRootPath, "UltraFastParser/Seek2/RI#_0.csv"));
 
-            var isOk = parser.Seek(new DateTime(2010, 1, 11, 7, 30, 0, 81));
+            var isOk = parser.Seek(new Instant( 2010, 1, 11, 7, 30, 0, 81));
             Assert.IsTrue(isOk);
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2010, 1, 11, 10, 30, 0, 173));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2010, 1, 11, 10, 30, 0, 173));
             Assert.assertEquals(parser.PQuote->TrdPrice, 151900);
             Assert.assertEquals(parser.PQuote->Volume, 5);
             Assert.assertEquals(parser.PQuote->Id, 129633023UL);
@@ -785,12 +766,12 @@ public class ParserTests
             //
             var parser = new UltraFastParser.UltraFastParser(Path.Combine(strTestsRootPath, "UltraFastParser/BarData_IQFEED/@ES#_1.csv"));
 
-            var isOk = parser.SeekLocal(new DateTime(2013, 8, 30, 17, 2, 0));
+            var isOk = parser.SeekLocal(new Instant( 2013, 8, 30, 17, 2, 0));
             Assert.IsTrue(isOk);
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2013, 8, 30, 17, 2, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2013, 8, 30, 17, 2, 0));
             Assert.assertEquals(parser.PQuote->Open, 1632.25);
             Assert.assertEquals(parser.PQuote->High, 1632.50);
             Assert.assertEquals(parser.PQuote->Low, 1632.25);
@@ -799,7 +780,7 @@ public class ParserTests
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2013, 8, 30, 17, 3, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2013, 8, 30, 17, 3, 0));
             Assert.assertEquals(parser.PQuote->Open, 1632.25);
             Assert.assertEquals(parser.PQuote->High, 1632.50);
             Assert.assertEquals(parser.PQuote->Low, 1632.25);
@@ -817,12 +798,12 @@ public class ParserTests
                 new UltraFastParser.UltraFastParser(Path.Combine(strTestsRootPath,
                                                                  "UltraFastParser/BarData_IQFEED/@ES#_1.csv"));
 
-            var isOk = parser.SeekLocal(new DateTime(2013, 8, 30, 17, 3, 0));
+            var isOk = parser.SeekLocal(new Instant( 2013, 8, 30, 17, 3, 0));
             Assert.IsTrue(isOk);
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2013, 8, 30, 17, 3, 0));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2013, 8, 30, 17, 3, 0));
             Assert.assertEquals(parser.PQuote->Open, 1632.25);
             Assert.assertEquals(parser.PQuote->High, 1632.50);
             Assert.assertEquals(parser.PQuote->Low, 1632.25);
@@ -836,12 +817,12 @@ public class ParserTests
             var parser =
                 new UltraFastParser.UltraFastParser(Path.Combine(strTestsRootPath, "UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/XG#_0.csv"));
 
-            var isOk = parser.SeekLocal(new DateTime(1950, 1, 1, 0, 0, 0, 000));
+            var isOk = parser.SeekLocal(new Instant( 1950, 1, 1, 0, 0, 0, 000));
             Assert.IsTrue(isOk);
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2004, 12, 1, 3, 0, 49, 000));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2004, 12, 1, 3, 0, 49, 000));
             Assert.assertEquals(parser.PQuote->TrdPrice, 4138.0);
             Assert.assertEquals(parser.PQuote->BidPrice, 0);
             Assert.assertEquals(parser.PQuote->AskPrice, 0);
@@ -855,7 +836,7 @@ public class ParserTests
 
             isOk = parser.Read();
             Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new DateTime(2010, 3, 30, 2, 0, 2, 000));
+            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2010, 3, 30, 2, 0, 2, 000));
             Assert.assertEquals(parser.PQuote->TrdPrice, 6165.50);
             Assert.assertEquals(parser.PQuote->BidPrice, 0);
             Assert.assertEquals(parser.PQuote->AskPrice, 0);

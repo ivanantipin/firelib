@@ -1,4 +1,4 @@
-﻿package firelib.ibadapter;
+package firelib.ibadapter;
 
 import com.ib.client.*;
 import org.slf4j.Logger;
