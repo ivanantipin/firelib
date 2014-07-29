@@ -1,4 +1,4 @@
-﻿public class ParserTests
+public class ParserTests
     {
 
         /*private static String strTestsRootPath = @"..\..\..\Tests";

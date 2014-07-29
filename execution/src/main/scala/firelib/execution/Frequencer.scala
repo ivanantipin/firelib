@@ -1,0 +1,36 @@
+package firelib.robot
+
+import java.time.Instant
+import java.util.concurrent.{CopyOnWriteArrayList, Executors, TimeUnit}
+
+import firelib.common._
+
+import scala.collection.JavaConversions._
+
+class Frequencer(val interval: Interval, val precisionMs: Long = 100) extends Runnable {
+
+    private val timeListeners = new CopyOnWriteArrayList[Instant => Unit]()
+
+    private var lastTimeTrigger: Long = _
+
+    val executor = Executors.newSingleThreadScheduledExecutor()
+
+    def AddListener(act: Instant => Unit) = {
+        timeListeners += act
+    }
+
+    def Start() = {
+        executor.scheduleAtFixedRate(this, precisionMs, precisionMs, TimeUnit.MILLISECONDS)
+    }
+
+    private def NotifyListeners(ctime: Instant) = for (tl <- timeListeners) tl(ctime)
+
+    override def run(): Unit = {
+        val epochTick = System.currentTimeMillis();
+        val rounded = (epochTick / interval.durationMs) * interval.durationMs;
+        if (lastTimeTrigger != rounded) {
+            lastTimeTrigger = rounded;
+            NotifyListeners(Instant.ofEpochMilli(rounded));
+        }
+    }
+}
