@@ -8,36 +8,36 @@ class MarketStubSwitcher(val first: IMarketStub, val secondary: IMarketStub) ext
 
     def Position = activeStub.Position
 
-    def HasPendingState = activeStub.HasPendingState
+    def hasPendingState = activeStub.hasPendingState
 
     val Security = activeStub.Security
 
-    def SubmitOrders(orders: Seq[Order]) = activeStub.SubmitOrders(orders)
+    def submitOrders(orders: Seq[Order]) = activeStub.submitOrders(orders)
 
-    def SwitchStubs() = {
+    def switchStubs() = {
         if (activeStub == first) {
-            first.RemoveCallbacksTo(secondary);
+            first.removeCallbacksTo(secondary);
             activeStub = secondary;
         }
         else {
-            secondary.RemoveCallbacksTo(first);
+            secondary.removeCallbacksTo(first);
             activeStub = first;
         }
     }
 
-    def FlattenAll(reason: String) = activeStub.FlattenAll(reason)
+    def flattenAll(reason: String) = activeStub.flattenAll(reason)
 
     def trades = activeStub.trades
 
-    def CancelOrders = activeStub.CancelOrders
+    def cancelOrders = activeStub.cancelOrders
 
     def orders = activeStub.orders
 
-    def CancelOrderByIds(orderIds: Seq[String]) = activeStub.CancelOrderByIds(orderIds)
+    def cancelOrderByIds(orderIds: Seq[String]) = activeStub.cancelOrderByIds(orderIds)
 
-    def AddCallback(callback: ITradeGateCallback) = activeStub.AddCallback(callback)
+    def addCallback(callback: ITradeGateCallback) = activeStub.addCallback(callback)
 
-    def RemoveCallbacksTo(marketStub: IMarketStub) = activeStub.RemoveCallbacksTo(marketStub)
+    def removeCallbacksTo(marketStub: IMarketStub) = activeStub.removeCallbacksTo(marketStub)
 
-    def UpdateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant) = activeStub.UpdateBidAskAndTime(bid, ask, dtGmt);
+    def updateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant) = activeStub.updateBidAskAndTime(bid, ask, dtGmt);
 }

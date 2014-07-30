@@ -4,8 +4,8 @@ import firelib.common._
 
 trait IMarketDataProvider {
 
-    def SubscribeForTick(tickerId: String, lsn: Tick => Unit)
+    def subscribeForTick(tickerId: String, lsn: Tick => Unit)
 
-    def SubscribeForOhlc(tickerId: String, lsn: Ohlc => Unit)
+    def subscribeForOhlc(tickerId: String, lsn: Ohlc => Unit)
 }
 

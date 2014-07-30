@@ -18,20 +18,20 @@ class BacktesterOptimized extends BacktesterBase {
         var startTime = System.currentTimeMillis();
 
         val reportProcessor = new ReportProcessor(BacktestStatisticsCalculator.CalculateStatisticsForCases,
-            cfg.OptimizedMetric,
-            cfg.OptParams.map(op => op.Name),
-            minNumberOfTrades = cfg.OptMinNumberOfTrades);
+            cfg.optimizedMetric,
+            cfg.optParams.map(op => op.Name),
+            minNumberOfTrades = cfg.optMinNumberOfTrades);
 
-        val executor = new ThreadExecutor(cfg.OptThreadNumber, maxLengthOfQueue = 1).Start()
+        val executor = new ThreadExecutor(cfg.optThreadNumber, maxLengthOfQueue = 1).Start()
         val reportExecutor = new ThreadExecutor(1).Start();
-        val variator = new ParamsVariator(cfg.OptParams);
+        val variator = new ParamsVariator(cfg.optParams);
 
 
         val (startDtGmt, endDtGmt) = CalcTimeBounds(cfg);
 
-        assert(cfg.OptimizedPeriodDays > 0 , "optimized days count not set!!")
+        assert(cfg.optimizedPeriodDays > 0 , "optimized days count not set!!")
 
-        val endOfOptimize = startDtGmt.plus(cfg.OptimizedPeriodDays, ChronoUnit.DAYS);
+        val endOfOptimize = startDtGmt.plus(cfg.optimizedPeriodDays, ChronoUnit.DAYS);
 
         System.out.println("number of models " + variator.Combinations)
 
@@ -79,11 +79,11 @@ class BacktesterOptimized extends BacktesterBase {
 
     private def WriteOptimizedReport(cfg: ModelConfig, reportProcessor: ReportProcessor, endOfOptimize:Instant) = {
         OptParamsWriter.write(
-            cfg.ReportRoot,
+            cfg.reportRoot,
             OptEnd = endOfOptimize,
             Estimates = reportProcessor.Estimates,
-            optParams = cfg.OptParams,
-            metrics = cfg.CalculatedMetrics);
+            optParams = cfg.optParams,
+            metrics = cfg.calculatedMetrics);
     }
 
 
@@ -98,7 +98,7 @@ class BacktesterOptimized extends BacktesterBase {
 
             if (model.hasValidProps) {
                 models += model
-                if (models.length >= cfg.OptBatchSize) {
+                if (models.length >= cfg.optBatchSize) {
                     return models;
                 }
             }

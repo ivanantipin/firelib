@@ -3,50 +3,50 @@ package firelib.common
 import scala.collection.mutable._
 
 class ModelConfig {
-    val TickerIds = ArrayBuffer[TickerConfig]()
+    val tickerIds = ArrayBuffer[TickerConfig]()
 
-    var StartDateGmt: String = _
+    var startDateGmt: String = _
 
-    var EndDate: String = _
+    var endDate: String = _
 
-    var DataServerRoot: String = _
+    var dataServerRoot: String = _
 
-    var BinaryStorageRoot: String = _
+    var binaryStorageRoot: String = _
 
-    var ReportRoot: String = _
+    var reportRoot: String = _
 
-    var ClassName: String = _
+    var className: String = _
 
-    var IntervalName: String = _
+    var intervalName: String = _
 
-    val CustomParams = HashMap[String, String]()
+    val customParams = HashMap[String, String]()
 
-    val OptParams = new ArrayBuffer[OptimizedParameter]
+    val optParams = new ArrayBuffer[OptimizedParameter]
 
 
-    var OptBatchSize = 500
+    var optBatchSize = 500
 
-    var OptThreadNumber = 1
+    var optThreadNumber = 1
 
-    var OptMinNumberOfTrades = 1
+    var optMinNumberOfTrades = 1
 
-    var OptimizedPeriodDays = -1
+    var optimizedPeriodDays = -1
 
-    var Mode = ResearchMode.SimpleRun;
+    var mode = ResearchMode.SimpleRun;
 
-    def AddTickerId(tickerId: TickerConfig): ModelConfig = {
-        if (TickerIds.contains(tickerId)) {
+    def addTickerId(tickerId: TickerConfig): ModelConfig = {
+        if (tickerIds.contains(tickerId)) {
             throw new Exception("ticker id already present " + tickerId);
         }
-        TickerIds += tickerId;
+        tickerIds += tickerId;
         return this;
     }
 
-    def interval = Interval.ResolveFromName(IntervalName)
+    def interval = Interval.resolveFromName(intervalName)
 
-    var OptimizedMetric = StrategyMetric.Sharpe
+    var optimizedMetric = StrategyMetric.Sharpe
 
-    val CalculatedMetrics = List(
+    val calculatedMetrics = List(
         StrategyMetric.Pf,
         StrategyMetric.Pnl,
         StrategyMetric.Sharpe,
@@ -54,8 +54,8 @@ class ModelConfig {
     )
 
 
-    def AddCustomParam(param: String, value: String): ModelConfig = {
-        CustomParams(param) = value;
+    def addCustomParam(param: String, value: String): ModelConfig = {
+        customParams(param) = value;
         return this;
     }
 

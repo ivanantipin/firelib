@@ -6,7 +6,7 @@ import scala.collection.mutable
 
 class ParamsVariator(optParams: Seq[OptimizedParameter]) {
 
-    val optimizationParams = optParams.map(op => op.GetVariations)
+    val optimizationParams = optParams.map(op => op.getVariations)
     var idx = 0;
     val dividers = new Array[Int](optimizationParams.length)
     var Combinations = 1;

@@ -74,7 +74,7 @@ abstract class BacktesterBase(var marketStubFactory: String => IMarketStub = nul
         val intervalService = new IntervalService();
         val readers : Seq[ISimpleReader[Timed]] = if (initializeWithDummyReaders)
             new Array[ISimpleReader[Timed]](0)
-        else CreateReaders(cfg.TickerIds, startDtGmt, cfg.DataServerRoot);
+        else CreateReaders(cfg.tickerIds, startDtGmt, cfg.dataServerRoot);
 
         val mdPlayer = new MarketDataPlayer(mapReadersToAware(readers));
 
@@ -105,11 +105,11 @@ abstract class BacktesterBase(var marketStubFactory: String => IMarketStub = nul
     def Run(cfg: ModelConfig)
 
     private def CalcStartDate(cfg: ModelConfig): Instant = {
-        var startDtGmt = if (cfg.StartDateGmt == null) Instant.EPOCH else DateTimeExt.ParseStandard(cfg.StartDateGmt);
+        var startDtGmt = if (cfg.startDateGmt == null) Instant.EPOCH else DateTimeExt.ParseStandard(cfg.startDateGmt);
 
-        startDtGmt = cfg.interval.RoundTime(startDtGmt);
+        startDtGmt = cfg.interval.roundTime(startDtGmt);
 
-        var readers = CreateReaders(cfg.TickerIds, startDtGmt, cfg.DataServerRoot);
+        var readers = CreateReaders(cfg.tickerIds, startDtGmt, cfg.dataServerRoot);
 
         val maxReadersStartDate = readers.maxBy(r =>r.CurrentQuote.DtGmt.getEpochSecond).CurrentQuote.DtGmt
 
@@ -124,22 +124,22 @@ abstract class BacktesterBase(var marketStubFactory: String => IMarketStub = nul
 
     protected def CalcTimeBounds(cfg: ModelConfig): (Instant,Instant) = {
         val startDt: Instant = CalcStartDate(cfg)
-        val endDt: Instant = if (cfg.EndDate == null) Instant now() else DateTimeExt.ParseStandard(cfg.EndDate)
+        val endDt: Instant = if (cfg.endDate == null) Instant now() else DateTimeExt.ParseStandard(cfg.endDate)
         return (startDt, endDt);
     }
 
     protected def WriteModelPnlStat(cfg: ModelConfig, model: IModel) = {
-        ReportWriter.Write(model, cfg, cfg.ReportRoot);
+        ReportWriter.Write(model, cfg, cfg.reportRoot);
     }
 
     protected def InitModel(cfg: ModelConfig, mdPlayer: MarketDataPlayer, distributor: MarketDataDistributor, opts: Map[String, Int] = Map[String,Int]()): IModel = {
-        return InitModelWithCustomProps(cfg, mdPlayer, distributor, cfg.CustomParams.toMap ++ opts.map(t => (t._1, "" + t._2)));
+        return InitModelWithCustomProps(cfg, mdPlayer, distributor, cfg.customParams.toMap ++ opts.map(t => (t._1, "" + t._2)));
     }
 
     protected def InitModelWithCustomProps(cfg: ModelConfig, mdPlayer: MarketDataPlayer, ctx: MarketDataDistributor,
                                            modelProps: Map[String, String]): IModel = {
-        val model = Class.forName(cfg.ClassName).newInstance().asInstanceOf[IModel];
-        var marketStubs = CreateMarketStubs(cfg.TickerIds, mdPlayer);
+        val model = Class.forName(cfg.className).newInstance().asInstanceOf[IModel];
+        var marketStubs = CreateMarketStubs(cfg.tickerIds, mdPlayer);
         model.initModel(modelProps, marketStubs, ctx);
         mdPlayer.AddStepListenerAtBeginning(model);
         return model;

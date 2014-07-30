@@ -1,5 +1,15 @@
+import java.net.URL;
+
 public class ParserTests
     {
+
+
+
+        String getfile(String name){
+            URL resource = this.getClass().getClassLoader().getResource(name);
+            return resource.getFile();
+        }
+
 
         /*private static String strTestsRootPath = @"..\..\..\Tests";
 
@@ -8,22 +18,6 @@ public class ParserTests
         //-------------------------------------------------------------
 
 
-        @Test
-        public void TestUltraFastSingleCsvParser_1()
-        {
-            CommonIniSettings commonIniSettings = new CommonIniSettings();
-            commonIniSettings.DATEFORMAT = "DD.MM.YYYY";
-            commonIniSettings.TIMEFORMAT = "HHMMSS";
-            commonIniSettings.COLUMNFORMAT = new String[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
-            commonIniSettings.TIMEZONE = "NY";
-
-            var parser =
-                new UltraFastSingleCsvParser(Path.Combine(strTestsRootPath, @"UltraFastParser/TstData2/data1_0.csv"),
-                                             commonIniSettings);
-
-            Assert.assertEquals(parser.StartDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
-            Assert.assertEquals(parser.EndDt, new Instant( 2012, 9, 26, 3, 55, 21, 222));
-        }
 
         @Test
         public void TestUltraFastSingleCsvParser_2()

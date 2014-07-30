@@ -13,7 +13,7 @@ object Side {
 
 }
 
-sealed class Side(val Name: String, val sign: Int) {
+sealed class Side private(val Name: String, val sign: Int) {
 
     def Opposite: Side = {
         if (this == Side.None) {

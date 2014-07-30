@@ -4,7 +4,7 @@ package firelib.common
  * this is listener for market trade/order events
  */
 trait ITradeGateCallback {
-    def OnTrade(trade: Trade)
+    def onTrade(trade: Trade)
 
-    def OnOrderStatus(order: Order, status: OrderStatus)
+    def onOrderStatus(order: Order, status: OrderStatus)
 }

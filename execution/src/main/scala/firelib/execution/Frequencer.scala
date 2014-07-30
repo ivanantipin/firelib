@@ -15,7 +15,7 @@ class Frequencer(val interval: Interval, val precisionMs: Long = 100) extends Ru
 
     val executor = Executors.newSingleThreadScheduledExecutor()
 
-    def AddListener(act: Instant => Unit) = {
+    def addListener(act: Instant => Unit) = {
         timeListeners += act
     }
 
@@ -23,14 +23,14 @@ class Frequencer(val interval: Interval, val precisionMs: Long = 100) extends Ru
         executor.scheduleAtFixedRate(this, precisionMs, precisionMs, TimeUnit.MILLISECONDS)
     }
 
-    private def NotifyListeners(ctime: Instant) = for (tl <- timeListeners) tl(ctime)
+    private def notifyListeners(ctime: Instant) = timeListeners.foreach(_(ctime))
 
     override def run(): Unit = {
         val epochTick = System.currentTimeMillis();
         val rounded = (epochTick / interval.durationMs) * interval.durationMs;
         if (lastTimeTrigger != rounded) {
             lastTimeTrigger = rounded;
-            NotifyListeners(Instant.ofEpochMilli(rounded));
+            notifyListeners(Instant.ofEpochMilli(rounded));
         }
     }
 }

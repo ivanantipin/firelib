@@ -9,9 +9,9 @@ class ModelRuntimeConfig {
 
     var GatewayType: String = _
 
-    var RunBacktest: Boolean = false;
+    var runBacktest: Boolean = false;
 
-    var GatewayConfig: Map[String, String]=_
+    var gatewayConfig: Map[String, String]=_
 
     var tradeLogDirectory: Option[String]=_
 

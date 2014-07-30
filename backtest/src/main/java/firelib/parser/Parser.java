@@ -1,75 +1,91 @@
 package firelib.parser;
 
-import firelib.common.Ohlc;
+import firelib.common.ISimpleReader;
+import firelib.common.Timed;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.nio.CharBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.time.Instant;
+import java.util.function.Supplier;
 
 
-public class Parser {
+public class Parser<T extends Timed> implements ISimpleReader<T> {
 
-    private final FileInputStream inFile;
-    private final InputStreamReader inputStreamReader;
     private final IHandler[] handlers;
-    private CharBuffer charBuffer = CharBuffer.allocate(10000000);
+    private final Supplier<T> factory;
+    private final int capacity = 100000;
+    private final FileChannel fileChannel;
 
-    public Parser(String fileName, IHandler[] handlers) throws Exception {
-        this.handlers = handlers;
-        File aFile = new File(fileName);
-        inFile = new FileInputStream(aFile);
-        inputStreamReader = new InputStreamReader(inFile);
-        charBuffer.flip();
-        bu();
+    private final Charset chset;
+    private Instant startDt;
+    private Instant endDt;
+
+    private T currentQuote;
+
+
+    public Parser(String fileName, IHandler<T>[] handlers, Supplier<T> factory) {
+        try {
+            this.handlers = handlers;
+            this.factory = factory;
+            File aFile = new File(fileName);
+            fileChannel = new RandomAccessFile(aFile, "r").getChannel();
+            chset = Charset.forName("US-ASCII");
+            initFirstAndLast();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private boolean bu() throws Exception {
-        charBuffer.compact();
-        int read = inputStreamReader.read(charBuffer);
-        charBuffer.flip();
-        return read > 0;
+
+    private CharBuffer buffer(long pos){
+        MappedByteBuffer mem = null;
+        try {
+            long len = Math.min(fileChannel.size() - pos, capacity);
+            mem = fileChannel.map(FileChannel.MapMode.READ_ONLY, pos, len);
+            return chset.decode(mem);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    boolean align(){
+    private void initFirstAndLast() throws IOException {
+        CharBuffer buffer = buffer(0);
+        T first = read(buffer);
+        startDt = first.DtGmt();
+
+
+        long lastPos = fileChannel.size() - 400;
+        if(lastPos < 0){
+            buffer = buffer(0);
+        }else{
+            buffer = buffer(lastPos);
+            if(!align(buffer)){
+                throw new RuntimeException("cant read end");
+            }
+        }
+
+        T last = read(buffer);
+        while(last != null){
+            endDt = last.DtGmt();
+            last = read(buffer);
+        }
+    }
+
+
+
+    boolean align(CharBuffer charBuffer){
         while (charBuffer.position() < charBuffer.limit() && charBuffer.get() != '\n') {}
         while (charBuffer.position() < charBuffer.limit() && BaseHandler.sep(charBuffer.charAt(0))) {charBuffer.get();}
         return charBuffer.position() < charBuffer.limit();
     }
 
 
-    //FIXME
-    public void seek(Instant time) throws Exception {
 
-        Ohlc curr = next();
-        while(curr.DtGmt().isBefore(time)){
-            charBuffer.position(charBuffer.position() + 1000000);
-            align();
-            curr = next();
-        }
-        charBuffer.position(charBuffer.position() - 1000000);
-
-        while(curr.DtGmt().isBefore(time)){
-            curr = next();
-        }
-
-    }
-
-    public Ohlc next() throws Exception {
-        Ohlc ret = new Ohlc();
-        for (int i = 0; i < handlers.length; i++) {
-            if (!handlers[i].handle(charBuffer, ret)) {
-                charBuffer.compact();
-                if (bu()) {
-                    i--;
-                } else {
-                    return null;
-                }
-            }
-        }
-        return ret;
-    }
 
     public static void main(String[] args) throws Exception {
         for (int i = 0; i < 10; i++) {
@@ -90,4 +106,65 @@ public class Parser {
 
     }
 
+    @Override
+    public boolean Seek(Instant time) {
+
+        /*Ohlc curr = next();
+        while(curr.DtGmt().isBefore(time)){
+            charBuffer.position(charBuffer.position() + 1000000);
+            align();
+            curr = next();
+        }
+        charBuffer.position(charBuffer.position() - 1000000);
+
+        while(curr.DtGmt().isBefore(time)){
+            curr = next();
+        }*/
+        return false;
+
+    }
+
+    @Override
+    public void Dispose() {
+
+    }
+
+    @Override
+    public void UpdateTimeZoneOffset() {
+
+    }
+
+    @Override
+    public T CurrentQuote() {
+        return currentQuote;
+    }
+
+    @Override
+    public boolean Read() {
+        currentQuote = factory.get();
+        for (int i = 0; i < handlers.length; i++) {
+        }
+        return true;
+    }
+
+    private  T read(CharBuffer buffer) {
+        T q = factory.get();
+        for (int i = 0; i < handlers.length; i++) {
+            if (!handlers[i].handle(buffer, q)) {
+                return null;
+            }
+        }
+        return q;
+    }
+
+
+    @Override
+    public Instant StartTime() {
+        return startDt;
+    }
+
+    @Override
+    public Instant EndTime() {
+        return endDt;
+    }
 }

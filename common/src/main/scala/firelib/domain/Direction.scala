@@ -7,7 +7,7 @@ object Direction {
 
 }
 
-sealed class Direction(val Name: String) {
+sealed class Direction private (val Name: String) {
     override def toString: String = Name
 }
 

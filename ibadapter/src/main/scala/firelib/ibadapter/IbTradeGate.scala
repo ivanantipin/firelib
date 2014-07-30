@@ -45,20 +45,18 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
     //this is called in reader thread!!!
     override def nextValidId(orderId: Int) {
         log.info("received order id " + orderId + " for client id " + clientId);
-        super.nextValidId(orderId);
-        log.info("updated order id " + orderId + " for client id " + clientId);
         orderIdQueue.add(orderId)
     }
 
 
-    def SendOrder(order: Order): Unit = {
+    def sendOrder(order: Order): Unit = {
         log.info("sending order " + order);
         val ibOrder = ConvertOrder(order);
         val orderId = GetNextOrderId;
 
         if (orderId == -1) {
             log.error("failed to get next available order id, rejecting order " + order);
-            callbackExecutor.Execute(() => tradeGateCallbacks.foreach(_.OnOrderStatus(order, OrderStatus.Rejected)));
+            callbackExecutor.Execute(() => tradeGateCallbacks.foreach(_.onOrderStatus(order, OrderStatus.Rejected)));
             return;
         }
 
@@ -68,7 +66,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
         log.info("order placed to socket  " + order + " order id is " + orderId);
     }
 
-    def CancelOrder(orderId: String): Unit = {
+    def cancelOrder(orderId: String): Unit = {
         log.info("cancelling order " + orderId);
         orders.find(_.ClientOrder.Id == orderId) match {
             case Some(e) => {
@@ -79,11 +77,11 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
         }
     }
 
-    def RegisterCallback(tgc: ITradeGateCallback) = {
+    def registerCallback(tgc: ITradeGateCallback) = {
         tradeGateCallbacks += tgc
     }
 
-    def Configure(config: Map[String, String], symbolMapping: Map[String, String], callbackExecutor: IThreadExecutor) = {
+    def configure(config: Map[String, String], symbolMapping: Map[String, String], callbackExecutor: IThreadExecutor) = {
         this.symbolMapping = symbolMapping;
         port = config("port").toInt;
         clientId = config("client.id").toInt;
@@ -116,7 +114,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
 
     val executor = Executors.newSingleThreadScheduledExecutor()
 
-    def Start() = {
+    def start() = {
         executor.scheduleAtFixedRate(new Runnable {
             override def run(): Unit = HeartBeat()
         }, 8, 8, TimeUnit.HOURS)
@@ -134,7 +132,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
 
             orders.find(_.IbId == execution.m_orderId) match {
                 case None => log.error("execution, no order found for ib order id " + execution.m_orderId);
-                case Some(entr) => tradeGateCallbacks.foreach(_.OnTrade(new Trade(execution.m_shares, execution.m_price, entr.ClientOrder.OrderSide, entr.ClientOrder,
+                case Some(entr) => tradeGateCallbacks.foreach(_.onTrade(new Trade(execution.m_shares, execution.m_price, entr.ClientOrder.OrderSide, entr.ClientOrder,
                    Instant.now() , entr.ClientOrder.Security)));
 
             }
@@ -172,13 +170,13 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
 
                 case ("PendingSubmit" | "PendingCancel") =>
 
-                case "Inactive" => tradeGateCallbacks.foreach(_.OnOrderStatus(entr.ClientOrder, OrderStatus.Rejected));
+                case "Inactive" => tradeGateCallbacks.foreach(_.onOrderStatus(entr.ClientOrder, OrderStatus.Rejected));
 
-                case ("PreSubmitted" | "Submitted") => tradeGateCallbacks.foreach(_.OnOrderStatus(entr.ClientOrder, OrderStatus.Accepted))
+                case ("PreSubmitted" | "Submitted") => tradeGateCallbacks.foreach(_.onOrderStatus(entr.ClientOrder, OrderStatus.Accepted))
 
-                case ("Cancelled" | "ApiCancelled" | "ApiCanceled") => tradeGateCallbacks.foreach(_.OnOrderStatus(entr.ClientOrder, OrderStatus.Cancelled))
+                case ("Cancelled" | "ApiCancelled" | "ApiCanceled") => tradeGateCallbacks.foreach(_.onOrderStatus(entr.ClientOrder, OrderStatus.Cancelled))
 
-                case "Filled" => tradeGateCallbacks.foreach(_.OnOrderStatus(entr.ClientOrder, OrderStatus.Done));
+                case "Filled" => tradeGateCallbacks.foreach(_.onOrderStatus(entr.ClientOrder, OrderStatus.Done));
 
             }
         });
@@ -278,7 +276,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
         subscriptions.foreach(_.resubscribe())
     }
 
-    override def SubscribeForTick(tickerId: String, lsn: (Tick) => Unit): Unit = {
+    override def subscribeForTick(tickerId: String, lsn: (Tick) => Unit): Unit = {
         callbackExecutor.Execute(() => {
             var contract = Parse(tickerId);
 
@@ -296,7 +294,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
 
     }
 
-    override def SubscribeForOhlc(tickerId: String, lsn: (Ohlc) => Unit): Unit = {
+    override def subscribeForOhlc(tickerId: String, lsn: (Ohlc) => Unit): Unit = {
 
     }
 }

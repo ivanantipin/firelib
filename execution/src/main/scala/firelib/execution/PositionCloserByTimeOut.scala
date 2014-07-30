@@ -8,7 +8,7 @@ import firelib.common._
 class PositionCloserByTimeOut(val stub: IMarketStub, val holdingTimeSeconds: Int) {
 
     private var posOpenedDtGmt: Instant  = _
-    stub.AddCallback(new TradeGateCallbackAdapter(OnTrade));
+    stub.addCallback(new TradeGateCallbackAdapter(OnTrade));
 
     private def OnTrade(trd: Trade) = {
         posOpenedDtGmt = trd.DtGmt;
@@ -16,7 +16,7 @@ class PositionCloserByTimeOut(val stub: IMarketStub, val holdingTimeSeconds: Int
 
     def ClosePositionIfTimeOut(dtGmt: Instant) = {
         if (stub.Position != 0 && dtGmt.getEpochSecond - posOpenedDtGmt.getEpochSecond > holdingTimeSeconds) {
-            stub.FlattenAll();
+            stub.flattenAll();
         }
     }
 }

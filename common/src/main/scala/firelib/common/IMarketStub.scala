@@ -15,28 +15,28 @@ trait IMarketStub {
     /**
      * any market order on market or not accepted limit order
      */
-    def HasPendingState: Boolean
+    def hasPendingState(): Boolean
 
     /**
      * name of security as configured in model config tickers list
      */
     val Security: String
 
-    def SubmitOrders(orders: Seq[Order])
+    def submitOrders(orders: Seq[Order])
 
-    def FlattenAll(reason: String = null)
+    def flattenAll(reason: String = null)
 
     def trades: Seq[Trade]
 
-    def CancelOrders
+    def cancelOrders()
 
     def orders: Seq[Order]
 
-    def CancelOrderByIds(orderIds: Seq[String]);
+    def cancelOrderByIds(orderIds: Seq[String]);
 
-    def AddCallback(callback: ITradeGateCallback);
+    def addCallback(callback: ITradeGateCallback);
 
-    def RemoveCallbacksTo(marketStub: IMarketStub);
+    def removeCallbacksTo(marketStub: IMarketStub);
 
-    def UpdateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant);
+    def updateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant);
 }

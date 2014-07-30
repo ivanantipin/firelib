@@ -9,7 +9,7 @@ class BidAskUpdater(val stub: Seq[IMarketStub]) extends IMarketDataListener with
 
     def OnStep(dtGmt:Instant) = {
         for (i <- 0 until stub.length) {
-            stub(i).UpdateBidAskAndTime(bid(i), ask(i), dtGmt);
+            stub(i).updateBidAskAndTime(bid(i), ask(i), dtGmt);
         }
     }
 

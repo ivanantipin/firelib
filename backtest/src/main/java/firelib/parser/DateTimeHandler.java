@@ -10,13 +10,13 @@ class DateTimeHandler<T> extends BaseHandler<T> {
     private final IModifier<T, Instant> consumer;
     private ZoneId zoneId;
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy,HHmmss.SSS");
+    DateTimeFormatter formatter;
 
-
-    public DateTimeHandler(IModifier<T,Instant> consumer, ZoneId zoneId){
+    public DateTimeHandler(IModifier<T,Instant> consumer, ZoneId zoneId, String dateFormat){
 
         this.consumer = consumer;
         this.zoneId = zoneId;
+        formatter = DateTimeFormatter.ofPattern(dateFormat);
     }
 
     public boolean handle(CharBuffer buffer, T md) {
@@ -25,7 +25,7 @@ class DateTimeHandler<T> extends BaseHandler<T> {
         i++;
         i = skippTillSep(buffer, i);
 
-        if (i == buffer.limit()) {
+        if (i >= buffer.limit()) {
             return false;
         }
 

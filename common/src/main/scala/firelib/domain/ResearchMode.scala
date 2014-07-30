@@ -7,6 +7,6 @@ object ResearchMode {
     val InOutSample = new ResearchMode("InOutSample")
 }
 
-sealed class ResearchMode(val Name: String) {
+sealed class ResearchMode private (val Name: String) {
     override def toString: String = Name
 }

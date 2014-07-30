@@ -2,52 +2,52 @@ package firelib.common
 
 import java.time.Instant
 
-import scala.collection.mutable.{ArrayBuffer, ListBuffer}
+import scala.collection.mutable.ArrayBuffer
 
 abstract class BasketModel extends IModel {
-    var ModelProperties: Map[String, String] = _
+    private var modelProperties: Map[String, String] = _
     var mdDistributor: IMarketDataDistributor = _
     var DtGmt: Instant  = _
-    var stubs: Array[IMarketStub] = _
+    var marketStubs: Array[IMarketStub] = _
 
-    def InitModel(modelProps: Map[String, String], marketStubs: Array[IMarketStub], ctx: IMarketDataDistributor) = {
+    def InitModel(modelProps: Map[String, String], mktStubs: Array[IMarketStub], ctx: IMarketDataDistributor) = {
         mdDistributor = ctx;
-        stubs = marketStubs;
-        ModelProperties = modelProps;
-        ApplyProperties(modelProps);
+        marketStubs = mktStubs;
+        modelProperties = modelProps;
+        applyProperties(modelProps);
     }
 
-    def BuyAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
-        stubs(idx).SubmitOrders(List(new Order(OrderType.Limit, price, vol, Side.Buy)));
+    def buyAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
+        marketStubs(idx).submitOrders(List(new Order(OrderType.Limit, price, vol, Side.Buy)));
     }
 
-    def SellAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
-        stubs(idx).SubmitOrders(List(new Order(OrderType.Limit, price, vol, Side.Sell)));
+    def sellAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
+        marketStubs(idx).submitOrders(List(new Order(OrderType.Limit, price, vol, Side.Sell)));
     }
 
-    def BuyAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
-        stubs(idx).SubmitOrders(List(new Order(OrderType.Stop, price, vol, Side.Buy)));
+    def buyAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
+        marketStubs(idx).submitOrders(List(new Order(OrderType.Stop, price, vol, Side.Buy)));
     }
 
-    def SellAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
-        stubs(idx).SubmitOrders(List(new Order(OrderType.Stop, price, vol, Side.Sell)));
+    def sellAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
+        marketStubs(idx).submitOrders(List(new Order(OrderType.Stop, price, vol, Side.Sell)));
     }
 
-    def EnableOhlcHistory(intr: Interval, lengthToMaintain: Int = -1): ArrayBuffer[ITimeSeries[Ohlc]] = {
+    def enableOhlcHistory(intr: Interval, lengthToMaintain: Int = -1): ArrayBuffer[ITimeSeries[Ohlc]] = {
         var rt = new ArrayBuffer[ITimeSeries[Ohlc]]();
-        for (i <- 0 until stubs.length) {
+        for (i <- 0 until marketStubs.length) {
             rt += mdDistributor.activateOhlcTimeSeries(i, intr, lengthToMaintain);
         }
         return rt;
     }
 
 
-    def GetTs(mdt: Interval, idx: Int = 0): ITimeSeries[Ohlc] = {
+    def getTs(mdt: Interval, idx: Int = 0): ITimeSeries[Ohlc] = {
         return mdDistributor.activateOhlcTimeSeries(idx, mdt, -1);
     }
 
 
-    def GetOrderForDiff(currentPosition: Int, targetPos: Int): Order = {
+    def getOrderForDiff(currentPosition: Int, targetPos: Int): Order = {
         val vol = targetPos - currentPosition;
         if (vol != 0) {
             return new Order(OrderType.Market, 0, math.abs(vol), if (vol > 0) Side.Buy else Side.Sell);
@@ -59,49 +59,47 @@ abstract class BasketModel extends IModel {
      * override this method for proper logging
      */
 
-    protected def Log(message: String) = {
+    protected def log(message: String) = {
 
     }
 
 
-    protected def ManagePosTo(pos: Int, idx: Int = 0): Unit = {
+    protected def managePosTo(pos: Int, idx: Int = 0): Unit = {
         //if (stubs(idx).Position != stubs(idx).UnconfirmedPosition) {
         //    Log(String.format("Unconfirmed position %s not equals to position %s ignoring managing position to " + pos, stubs(idx).Position, stubs(idx).UnconfirmedPosition));
         //    return;
         //}
-        var ord = GetOrderForDiff(stubs(idx).Position, pos);
+        var ord = getOrderForDiff(marketStubs(idx).Position, pos);
         if (ord != null) {
-            stubs(idx).SubmitOrders(List(ord));
+            marketStubs(idx).submitOrders(List(ord));
         }
     }
 
-    protected def ApplyProperties(mprops: Map[String, String])
+    protected def applyProperties(mprops: Map[String, String])
 
-    protected def OnIntervalEnd(dtGmt:Instant) = {}
+    protected def onIntervalEnd(dtGmt:Instant) = {}
 
-    protected def Position(idx: Int = 0) = stubs(idx).Position
+    protected def position(idx: Int = 0) = marketStubs(idx).Position
 
-    def trades: ListBuffer[Trade] = {
-        var ret = new ListBuffer[Trade]()
-        stubs.foreach(ret ++= _.trades)
-        return ret;
-    }
+    def onBacktestEnd()
 
+    override def properties: Map[String, String] = modelProperties
 
-    def onBacktestEnd
+    override def name: String = getClass.getName
 
+    override def stubs: Seq[IMarketStub] = marketStubs
 
-    val name = getClass.getName
+    override def trades: Seq[Trade] = marketStubs.flatMap(_.trades)
 
-    def hasValidProps = true
+    override def hasValidProps() = true
 
 
-    protected def FlattenAll(reason: String = null) = stubs.foreach(_.FlattenAll(reason));
+    protected def FlattenAll(reason: String = null) = marketStubs.foreach(_.flattenAll(reason));
 
-    protected def CancelAllOrders = stubs.foreach(_.CancelOrders)
+    protected def CancelAllOrders = marketStubs.foreach(_.cancelOrders)
 
     def OnStep(dtGmt:Instant) = {
         DtGmt = dtGmt;
-        OnIntervalEnd(dtGmt);
+        onIntervalEnd(dtGmt);
     }
 }

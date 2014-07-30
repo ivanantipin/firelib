@@ -2,17 +2,17 @@ package firelib.common
 
 trait IModel extends IStepListener {
     
-    val properties: Map[String, String]
+    def properties: Map[String, String]
 
-    val name: String
+    def name: String
 
-    def initModel(modelProps: Map[String, String], marketStubs: Seq[IMarketStub], distributor: IMarketDataDistributor)
+    def stubs: Seq[IMarketStub]
 
     def trades: Seq[Trade]
 
-    def hasValidProps: Boolean
+    def initModel(modelProps: Map[String, String], marketStubs: Seq[IMarketStub], distributor: IMarketDataDistributor)
 
-    def stubs: Array[IMarketStub]
+    def hasValidProps(): Boolean
 
-    def onBacktestEnd
+    def onBacktestEnd()
 }

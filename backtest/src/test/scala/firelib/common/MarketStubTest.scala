@@ -15,10 +15,10 @@ class MarketStubTest {
 
         var bid = 1.5;
         var ask = 2.5;
-        stub.UpdateBidAskAndTime(bid, ask, dtNow);
+        stub.updateBidAskAndTime(bid, ask, dtNow);
 
         var qty = 2;
-        stub.SubmitOrders(List(new Order(OrderType.Market, 0, qty, Side.Buy)));
+        stub.submitOrders(List(new Order(OrderType.Market, 0, qty, Side.Buy)));
 
         Assert.assertEquals(1, trades.length);
         Assert.assertEquals(qty, trades(0).Qty);
@@ -27,7 +27,7 @@ class MarketStubTest {
         Assert.assertEquals(2, stub.Position);
 
         var sellQty = 2;
-        stub.SubmitOrders(List(new Order(OrderType.Market, 0, sellQty, Side.Sell)));
+        stub.submitOrders(List(new Order(OrderType.Market, 0, sellQty, Side.Sell)));
 
         Assert.assertEquals(2, trades.length);
         Assert.assertEquals(sellQty, trades(1).Qty);
@@ -42,17 +42,17 @@ class MarketStubTest {
 
         var bid = 1.5;
         var ask = 2.5;
-        stub.UpdateBidAskAndTime(bid, ask, dtNow);
+        stub.updateBidAskAndTime(bid, ask, dtNow);
 
         var qty = 2;
-        stub.SubmitOrders(List(new Order(OrderType.Limit, 3, qty, Side.Buy)));
+        stub.submitOrders(List(new Order(OrderType.Limit, 3, qty, Side.Buy)));
 
         Assert.assertEquals(1, trades.length);
         Assert.assertEquals(qty, trades(0).Qty);
         Assert.assertEquals(3, trades(0).Price, 0.001);
 
         var sellQty = 2;
-        stub.SubmitOrders(List(new Order(OrderType.Limit, 1, sellQty, Side.Sell)));
+        stub.submitOrders(List(new Order(OrderType.Limit, 1, sellQty, Side.Sell)));
 
         Assert.assertEquals(2, trades.length);
         Assert.assertEquals(sellQty, trades(1).Qty);
@@ -63,23 +63,23 @@ class MarketStubTest {
     def TestLimitOrder() = {
         var (stub, dtNow, trades) = createStub();
 
-        stub.UpdateBidAskAndTime(1, 3, dtNow);
+        stub.updateBidAskAndTime(1, 3, dtNow);
 
         var qty = 2;
         var sellQty = 2;
-        stub.SubmitOrders(List(new Order(OrderType.Limit, 1.5, qty, Side.Buy)));
-        stub.SubmitOrders(List(new Order(OrderType.Limit, 2.5, sellQty, Side.Sell)));
+        stub.submitOrders(List(new Order(OrderType.Limit, 1.5, qty, Side.Buy)));
+        stub.submitOrders(List(new Order(OrderType.Limit, 2.5, sellQty, Side.Sell)));
         Assert.assertEquals(0, trades.length);
 
-        stub.UpdateBidAskAndTime(2.6, 3.6, dtNow);
+        stub.updateBidAskAndTime(2.6, 3.6, dtNow);
         Assert.assertEquals(1, trades.length);
         Assert.assertEquals(sellQty, trades(0).Qty);
         Assert.assertEquals(2.5, trades(0).Price, 0.001);
 
-        stub.UpdateBidAskAndTime(1, 1.5, dtNow);
+        stub.updateBidAskAndTime(1, 1.5, dtNow);
         Assert.assertEquals(1, trades.length);
 
-        stub.UpdateBidAskAndTime(1, 1.4, dtNow);
+        stub.updateBidAskAndTime(1, 1.4, dtNow);
 
         Assert.assertEquals(2, trades.length);
         Assert.assertEquals(qty, trades(1).Qty);
@@ -91,21 +91,21 @@ class MarketStubTest {
     def TestStopOrder() = {
         var (stub, dtNow, trades) = createStub();
 
-        stub.UpdateBidAskAndTime(1.5, 2.5, dtNow);
+        stub.updateBidAskAndTime(1.5, 2.5, dtNow);
 
         var qty = 2;
-        stub.SubmitOrders(List(new Order(OrderType.Stop, 2.5, qty, Side.Buy)));
-        stub.SubmitOrders(List(new Order(OrderType.Stop, 1.5, qty, Side.Sell)));
+        stub.submitOrders(List(new Order(OrderType.Stop, 2.5, qty, Side.Buy)));
+        stub.submitOrders(List(new Order(OrderType.Stop, 1.5, qty, Side.Sell)));
 
         Assert.assertEquals(0, trades.length);
 
-        stub.UpdateBidAskAndTime(2.4, 3, dtNow);
+        stub.updateBidAskAndTime(2.4, 3, dtNow);
 
         Assert.assertEquals(1, trades.length);
         Assert.assertEquals(3, trades(0).Price, 0.001);
         Assert.assertEquals(Side.Buy, trades(0).TradeSide);
 
-        stub.UpdateBidAskAndTime(1.4, 1.5, dtNow);
+        stub.updateBidAskAndTime(1.4, 1.5, dtNow);
 
         Assert.assertEquals(2, trades.length);
         Assert.assertEquals(1.4, trades(1).Price, 0.001);
@@ -120,7 +120,7 @@ class MarketStubTest {
 
         val trades = new ArrayBuffer[Trade]()
 
-        stub.AddCallback(new TradeGateCallbackAdapter(trades += _));
+        stub.addCallback(new TradeGateCallbackAdapter(trades += _));
         return (stub, Instant.now(), trades);
     }
 
@@ -128,18 +128,18 @@ class MarketStubTest {
     def TestCloseAll() = {
         var (stub, dtNow, trades) = createStub();
 
-        stub.UpdateBidAskAndTime(1, 3, dtNow);
+        stub.updateBidAskAndTime(1, 3, dtNow);
 
         var qty = 2;
         var sellQty = 1;
-        stub.SubmitOrders(List(new Order(OrderType.Limit, 1.5, qty, Side.Buy)));
-        stub.SubmitOrders(List(new Order(OrderType.Market, 2.5, sellQty, Side.Sell)));
+        stub.submitOrders(List(new Order(OrderType.Limit, 1.5, qty, Side.Buy)));
+        stub.submitOrders(List(new Order(OrderType.Market, 2.5, sellQty, Side.Sell)));
         Assert.assertEquals(1, trades.length);
         Assert.assertEquals(-1, stub.Position);
 
         Assert.assertEquals(1, stub.orders.length);
 
-        stub.FlattenAll();
+        stub.flattenAll();
 
         Assert.assertEquals(0, stub.Position);
 

@@ -21,6 +21,6 @@ object StrategyMetric {
 };
 
 
-sealed class StrategyMetric(val Name: String) {
+sealed class StrategyMetric private (val Name: String) {
     override def toString: String = Name
 }

@@ -20,7 +20,7 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
     val tradesPath = Paths.get(modelRuntimeConfig.tradeLogDirectory.getOrElse("trades_live.csv")).toFile.getName
 
 
-    val executor = new ThreadExecutor(threadName = modelRuntimeConfig.modelConfig.ClassName).Start();
+    val executor = new ThreadExecutor(threadName = modelRuntimeConfig.modelConfig.className).Start();
 
 
     val (tradeGate, marketDataProvider) = new ProvidersFactory().Create(modelRuntimeConfig, executor);
@@ -30,7 +30,7 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
     val starter = new BacktesterSimple(marketStubFactory);
 
     //out
-    val (model, marketDataPlayer, distributor) = starter.RunSimple(modelRuntimeConfig.modelConfig, modelRuntimeConfig.RunBacktest)
+    val (model, marketDataPlayer, distributor) = starter.RunSimple(modelRuntimeConfig.modelConfig, modelRuntimeConfig.runBacktest)
 
     private val stepListeners = marketDataPlayer.getStepListeners();
 
@@ -41,9 +41,9 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
     var stubSwitchers = model.stubs.map(ms => ms.asInstanceOf[MarketStubSwitcher])
 
     for (switcher <- stubSwitchers) {
-        switcher.SwitchStubs();
+        switcher.switchStubs();
         //to write trades to csv file
-        switcher.AddCallback(new TradeGateCallbackAdapter((t) => RuntimeTradeWriter.write(tradesPath, modelRuntimeConfig.modelConfig.ClassName, t)));
+        switcher.addCallback(new TradeGateCallbackAdapter((t) => RuntimeTradeWriter.write(tradesPath, modelRuntimeConfig.modelConfig.className, t)));
     }
 
     log.info("Started ");
@@ -52,17 +52,17 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
     def Start() = {
         var interval = modelRuntimeConfig.modelConfig.interval;
 
-        frequencer.AddListener((dt) => {
+        frequencer.addListener((dt) => {
             val now = Instant.ofEpochMilli(interval.roundEpochMs(System.currentTimeMillis()))
             val act = () => stepListeners.foreach(_.OnStep(now))
             executor.Execute(()=>act())
         });
 
 
-        for (k <- 0 until modelRuntimeConfig.modelConfig.TickerIds.length) {
+        for (k <- 0 until modelRuntimeConfig.modelConfig.tickerIds.length) {
             val k1 = k;
             //!!!! assumed that market data provider works in the same thread
-            marketDataProvider.SubscribeForTick(modelRuntimeConfig.modelConfig.TickerIds(k).TickerId, (q: Tick) => distributor.onTick(k1, q, null));
+            marketDataProvider.subscribeForTick(modelRuntimeConfig.modelConfig.tickerIds(k).TickerId, (q: Tick) => distributor.onTick(k1, q, null));
         }
 
         frequencer.Start();

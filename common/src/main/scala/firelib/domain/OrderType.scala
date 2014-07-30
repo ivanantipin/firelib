@@ -6,7 +6,7 @@ object OrderType {
     val Stop = new OrderType("Stop")
 }
 
-sealed class OrderType(val Name: String) {
+sealed class OrderType private (val Name: String) {
     override def toString: String = Name
 }
 

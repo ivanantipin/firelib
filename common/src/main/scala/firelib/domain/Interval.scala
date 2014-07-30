@@ -5,11 +5,11 @@ import java.time.Instant
 import scala.collection.mutable.ArrayBuffer
 
 
-sealed class Interval(val Name: String, val durationMs: Int) {
+sealed class Interval private (val Name: String, val durationMs: Int) {
 
     Interval.intervals += this
 
-    def RoundTime(dt:Instant): Instant  = Instant.ofEpochMilli(  roundEpochMs((dt.toEpochMilli)))
+    def roundTime(dt:Instant): Instant  = Instant.ofEpochMilli(  roundEpochMs((dt.toEpochMilli)))
 
     def roundEpochMs(epochMs : Long): Long  =  (epochMs/ durationMs) * durationMs
 
@@ -29,9 +29,9 @@ object Interval {
     val Min240 = new Interval("Min240", 240 * 60 * 1000);
     val Day = new Interval("Min60", 1440 * 60 * 1000);
 
-    def ResolveFromMs(ms: Long) = intervals.find(_.durationMs == ms).get
+    def resolveFromMs(ms: Long) = intervals.find(_.durationMs == ms).get
 
-    def ResolveFromName(name: String) = intervals.find(_.Name == name).get
+    def resolveFromName(name: String) = intervals.find(_.Name == name).get
 
 }
 

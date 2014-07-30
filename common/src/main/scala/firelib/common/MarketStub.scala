@@ -24,7 +24,7 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
     var orderIdCnt = 0
     var lastPositionTrade: Trade = _
 
-    val HasPendingState = false
+    val hasPendingState = false
 
 
     private def Middle: Double = {
@@ -32,26 +32,26 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
     }
 
 
-    def AddCallback(callback: ITradeGateCallback) = tradeGateCallbacks += callback
+    def addCallback(callback: ITradeGateCallback) = tradeGateCallbacks += callback
 
 
-    def RemoveCallbacksTo(marketStub: IMarketStub) = {
-        tradeGateCallbacks.foreach(marketStub.AddCallback);
+    def removeCallbacksTo(marketStub: IMarketStub) = {
+        tradeGateCallbacks.foreach(marketStub.addCallback);
         tradeGateCallbacks.clear()
     }
 
-    def FlattenAll(reason: String = null) = {
-        CancelOrders();
+    def flattenAll(reason: String = null) = {
+        cancelOrders();
         ClosePosition(reason);
     }
 
-    def CancelOrders() = {
+    def cancelOrders() = {
         val ords = orders_.clone()
         orders_.clear();
         FireOrderState(ords.values, OrderStatus.Cancelled);
     }
 
-    def CancelOrderByIds(orderIds: Seq[String]) = {
+    def cancelOrderByIds(orderIds: Seq[String]) = {
 
         orderIds.foreach(orderId => {
             var ord = orders_.remove(orderId)
@@ -65,10 +65,10 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
     }
 
     def FireTradeEvent(trade: Trade) = {
-        tradeGateCallbacks.foreach(tgc => tgc.OnTrade(trade));
+        tradeGateCallbacks.foreach(tgc => tgc.onTrade(trade));
     }
 
-    def SubmitOrders(orders: Seq[Order]) : Unit = {
+    def submitOrders(orders: Seq[Order]) : Unit = {
 
         assert(this.orders_.size + orders.length <= maxOrderCount, "max order count exceeded")
 
@@ -107,7 +107,7 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
         assert(position == 0,"position must be 0 after flatten all!!!")
     }
 
-    def UpdateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant) = {
+    def updateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant) = {
         bidAsk(0) = bid;
         bidAsk(1) = ask;
         if (position != 0) {
@@ -139,7 +139,7 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
 
     def FireOrderState(orders: Iterable[Order], orderStatus: OrderStatus) = {
         tradeGateCallbacks.foreach(tgc=>{
-            orders.foreach(tgc.OnOrderStatus(_,orderStatus))
+            orders.foreach(tgc.onOrderStatus(_,orderStatus))
         })
 
     }

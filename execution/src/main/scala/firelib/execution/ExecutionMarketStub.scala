@@ -11,7 +11,7 @@ import scala.collection.mutable.ArrayBuffer
 class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val maxOrderCount: Int = 20) extends IMarketStub with ITradeGateCallback {
 
 
-    tradeGate.RegisterCallback(this);
+    tradeGate.registerCallback(this);
 
     private val bidAsk = Array(Double.NaN, Double.NaN);
 
@@ -27,7 +27,7 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val m
 
     private var orderIdCnt = 0;
 
-    val log = LoggerFactory.getLogger(getClass)
+    private val log = LoggerFactory.getLogger(getClass)
 
 
     def trades: Seq[Trade] = trades_
@@ -42,37 +42,37 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val m
         }
     }*/
 
-    def HasPendingState: Boolean = {
+    override def hasPendingState: Boolean = {
         orders_.exists(o => (o.Status.IsPending || (o.OrdType == OrderType.Market)))
     }
 
 
-    def AddCallback(callback: ITradeGateCallback) = {
+    def addCallback(callback: ITradeGateCallback) = {
         tradeGateCallbacks += callback
     }
 
-    def RemoveCallbacksTo(marketStub: IMarketStub) = {
-        tradeGateCallbacks.foreach(marketStub.AddCallback);
+    def removeCallbacksTo(marketStub: IMarketStub) = {
+        tradeGateCallbacks.foreach(marketStub.addCallback);
         tradeGateCallbacks.clear();
     }
 
-    def FlattenAll(reason: String = null) = {
-        CancelOrders();
-        ClosePosition(reason);
+    def flattenAll(reason: String = null) = {
+        cancelOrders();
+        closePosition(reason);
     }
 
 
-    def CancelOrders() : Unit = CancelOrderByIds(orders_.map(_.Id))
+    def cancelOrders() : Unit = cancelOrderByIds(orders_.map(_.Id))
 
 
-    def CancelOrderByIds(orderIds: Seq[String]) : Unit = {
+    def cancelOrderByIds(orderIds: Seq[String]) : Unit = {
 
         for (orderId <- orderIds) {
             orders_.find(_.Id == orderId) match {
                 case Some(ord) => {
-                    tradeGate.CancelOrder(orderId);
+                    tradeGate.cancelOrder(orderId);
                     ord.Status = OrderStatus.PendingCancel;
-                    tradeGateCallbacks.foreach(_.OnOrderStatus(ord, OrderStatus.PendingCancel))
+                    tradeGateCallbacks.foreach(_.onOrderStatus(ord, OrderStatus.PendingCancel))
 
                 }
                 case None => log.error("cancelling non existing order " + orderId);
@@ -81,7 +81,7 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val m
     }
 
 
-    def SubmitOrders(orders: Seq[Order]) = {
+    def submitOrders(orders: Seq[Order]) = {
 
         assert(this.orders_.length <= maxOrderCount,"max order count exceeded")
 
@@ -89,42 +89,42 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val m
             order.Id = Security + "" + (orderIdCnt += 1);
             order.PlacementTime = dtGmt;
             order.Security = Security;
-            FireOrderState(List(order), OrderStatus.New);
+            fireOrderState(List(order), OrderStatus.New);
             if (order.MinutesToHold != -1) {
                 order.ValidUntil = dtGmt.plusSeconds(order.MinutesToHold*60);
             }
             this.orders_ += order;
             log.info("submitting order " + order);
-            tradeGate.SendOrder(order);
+            tradeGate.sendOrder(order);
         })
     }
 
-    def FireOrderState(list: Traversable[Order], orderStatus: OrderStatus) = {
-        list.foreach(order => tradeGateCallbacks.foreach(tgc => tgc.OnOrderStatus(order, orderStatus)))
+    def fireOrderState(list: Traversable[Order], orderStatus: OrderStatus) = {
+        list.foreach(order => tradeGateCallbacks.foreach(tgc => tgc.onOrderStatus(order, orderStatus)))
     }
 
 
-    def ClosePosition(reason: String = null): Unit = {
+    def closePosition(reason: String = null): Unit = {
         if (position == 0)
             return;
 
-        if (HasPendingState) {
+        if (hasPendingState) {
             return;
         }
         val order: Order = new Order(OrderType.Market, 0, math.abs(position), Side.SideForAmt(-position)) {
             Security = security
         }
-        SubmitOrders(List(order));
+        submitOrders(List(order));
     }
 
-    def UpdateBidAskAndTime(bid: Double, ask: Double, dtGmt: Instant) {
+    def updateBidAskAndTime(bid: Double, ask: Double, dtGmt: Instant) {
         bidAsk(0) = bid;
         bidAsk(1) = ask;
         this.dtGmt = dtGmt;
     }
 
 
-    def OnOrderStatus(order: Order, status: OrderStatus): Unit = {
+    def onOrderStatus(order: Order, status: OrderStatus): Unit = {
         if (!orders_.exists(o => o.Id == order.Id)) {
             return;
         }
@@ -133,10 +133,10 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val m
         if (status.IsFinal) {
             orders_.remove(orders_.indexWhere(o => o.Id == order.Id))
         }
-        tradeGateCallbacks.foreach(tg => tg.OnOrderStatus(order, status))
+        tradeGateCallbacks.foreach(tg => tg.onOrderStatus(order, status))
     }
 
-    def OnTrade(trd: Trade): Unit = {
+    def onTrade(trd: Trade): Unit = {
         if (!orders_.exists(_.Id == trd.SrcOrder.Id)) {
             return;
         }
@@ -145,7 +145,7 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security: String, val m
         position = trd.AdjustPositionByThisTrade(position);
         trd.PositionAfter = Position;
         log.info("position after %d ".format(Position));
-        tradeGateCallbacks.foreach(tgc => tgc.OnTrade(trd));
+        tradeGateCallbacks.foreach(tgc => tgc.onTrade(trd));
     }
 
     override val Position: Int = position

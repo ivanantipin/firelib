@@ -8,24 +8,42 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by ivan on 7/27/14.
- */
-class TokenGenerator{
 
+public class TokenGenerator{
+
+
+
+    private CommonIniSettings commonIniSettings;
 
     boolean isOhlc(CommonIniSettings commonIniSettings){
         return false;
     }
 
-    ZoneId getZone(CommonIniSettings commonIniSettings){
-        return null;
+    private ZoneId getZone(){
+        if(commonIniSettings.TIMEZONE.equals("NY")){
+            return ZoneId.of("America/New_York");
+        }
+        return ZoneId.systemDefault();
+    }
 
+    public final ZoneId zoneId;
+    public final IHandler[] handlers;
+
+    private final String dateformat;
+
+
+    public TokenGenerator(CommonIniSettings commonIniSettings){
+        this.commonIniSettings = commonIniSettings;
+        zoneId = getZone();
+        dateformat = "dd.MM.yyyy,HHmmss.SSS"; //FIXME
+        handlers = parsePattern();
     }
 
 
 
-    public IHandler[] parsePattern(CommonIniSettings commonIniSettings)
+
+
+    private IHandler[] parsePattern()
     {
         List<IHandler> microcode = new ArrayList<>();
 
@@ -45,9 +63,9 @@ FIXME
             {
                 case "D":
                     if(isOhlc(commonIniSettings)){
-                        microcode.add(new DateTimeHandler<Ohlc>((oh,dt)->oh.setDtGmtEnd(dt), getZone(commonIniSettings)));
+                        microcode.add(new DateTimeHandler<Ohlc>((oh,dt)->oh.setDtGmtEnd(dt), zoneId, dateformat));
                     }else{
-                        microcode.add(new DateTimeHandler<Tick>((oh,dt)->oh.setDtGmt(dt), getZone(commonIniSettings)));
+                        microcode.add(new DateTimeHandler<Tick>((oh,dt)->oh.setDtGmt(dt), zoneId, dateformat));
                     }
                     break;
 
@@ -82,7 +100,12 @@ FIXME
                     break;
 
                 case "V":
-                    microcode.add(new StdHandler<Ohlc,Integer>((oh,v)->oh.setVolume(v), (chs)->TypeFormat.parseInt(chs)));
+                    if(isOhlc(commonIniSettings)){
+                        microcode.add(new StdHandler<Ohlc,Integer>((oh,v)->oh.setVolume(v), (chs)->TypeFormat.parseInt(chs)));
+                    }else{
+                        microcode.add(new StdHandler<Tick,Integer>((oh,v)->oh.setVol(v), (chs)->TypeFormat.parseInt(chs)));
+                    }
+
                     break;
                 case "I":
                     microcode.add(new SkipHandler());
@@ -103,9 +126,7 @@ FIXME
                     throw new RuntimeException("Error: unsupported COLUMNFORMAT token '" + token + "'.");
             }
         }
-
-        //FIXME microcode.Add(new SkipTillEndLine());
-        //FIXME microcode.Add(new SkipEndLine());
+        microcode.add(new EndHandler());
         return microcode.toArray(new IHandler[0]);
     }
 

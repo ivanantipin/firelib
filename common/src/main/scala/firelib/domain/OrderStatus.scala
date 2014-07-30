@@ -11,7 +11,7 @@ object OrderStatus {
 
 }
 
-sealed class OrderStatus(val Name: String) {
+sealed class OrderStatus private (val Name: String) {
 
     def IsFinal: Boolean = {
         this == OrderStatus.Rejected || this == OrderStatus.Done || this == OrderStatus.Cancelled;
