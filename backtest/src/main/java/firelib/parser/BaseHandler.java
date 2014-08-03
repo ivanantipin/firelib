@@ -5,20 +5,27 @@ import java.nio.CharBuffer;
 
 abstract class BaseHandler<T> implements IHandler<T> {
 
-    static final boolean sep(char c) {
-        return ((c == '\n') || (c == '\r') || (c == '\t') || (c == ' ') || (c == ','));
+    final static char sep = ',';
+
+    static final boolean eolOrEmpty(char c) {
+        return ((c == '\n') || (c == '\r') || (c == '\t') || (c == ' '));
+    }
+
+    static final boolean eolOrSep(char c) {
+        return ((c == '\n') || (c == '\r') || (c == sep) );
     }
 
     static final boolean eol(char c) {
         return ((c == '\n') || (c == '\r'));
     }
 
-    protected int skippTillSep(CharBuffer buffer, int i) {
-        while (i < buffer.limit() && !sep(buffer.get(i))) {
+    protected int skipTillEolOrSep(CharBuffer buffer, int i) {
+        while (i < buffer.limit() && !eolOrSep(buffer.get(i))) {
             i++;
         }
         return i;
     }
+
 
     protected int skippTillEol(CharBuffer buffer, int i) {
         while (i < buffer.limit() && !eol(buffer.get(i))) {
@@ -27,8 +34,8 @@ abstract class BaseHandler<T> implements IHandler<T> {
         return i;
     }
 
-    protected int skippEol(CharBuffer buffer, int i) {
-        while (i < buffer.limit() && eol(buffer.get(i))) {
+    protected int skippEolOrEmpty(CharBuffer buffer, int i) {
+        while (i < buffer.limit() && eolOrEmpty(buffer.get(i))) {
             i++;
         }
         return i;

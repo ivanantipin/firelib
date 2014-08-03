@@ -1,8 +1,11 @@
 package firelib.backtest
 
+import java.nio.file.{Path, Paths}
 import java.time.Instant
+import java.util.function.Supplier
 
 import firelib.common._
+import firelib.parser.{CommonIniSettings, IHandler, Parser, TokenGenerator}
 import firelib.utils.{DateTimeExt, ReportWriter}
 
 import scala.collection.mutable.ArrayBuffer
@@ -14,15 +17,14 @@ abstract class BacktesterBase(var marketStubFactory: String => IMarketStub = nul
 
 
     private def CreateMarketStubs(tickers: Seq[TickerConfig], player: MarketDataPlayer): Array[IMarketStub] = {
-        var ret = new Array[IMarketStub](tickers.length);
+        val ret = new Array[IMarketStub](tickers.length);
 
-
-        for (i <- 0 to tickers.length) {
-            var stub = marketStubFactory(tickers(i).TickerId)
+        for (i <- 0 until  tickers.length) {
+            val stub = marketStubFactory(tickers(i).TickerId)
             ret(i) = stub
         }
 
-        var updater = new BidAskUpdater(ret);
+        val updater = new BidAskUpdater(ret);
         player.AddListenerForAll(updater)
         player.AddStepListener(updater);
         return ret;
@@ -34,13 +36,11 @@ abstract class BacktesterBase(var marketStubFactory: String => IMarketStub = nul
 
 
 
-    class TickerMdPlayerImpl[T <: Timed](val reader : ISimpleReader[T], val idx : Int, val func : (IMarketDataListener,Int, T, T)=>Unit ) extends TickerMdPlayer{
+    class TickerMdPlayerImpl[T <: Timed](val reader : ISimpleReader[T], val idx : Int, val notifyListenerFunc : (IMarketDataListener,Int, T, T)=>Unit ) extends TickerMdPlayer{
 
-        val lsns = new ArrayBuffer[IMarketDataListener]()
+        private val listeners = new ArrayBuffer[IMarketDataListener]()
 
-        override def addListener(lsn: IMarketDataListener): Unit = {
-            lsns += lsn
-        }
+        override def addListener(lsn: IMarketDataListener): Unit = listeners += lsn
 
         override def ReadUntil(chunkEndGmt:Instant): Boolean = {
             while (reader.CurrentQuote.DtGmt.isBefore(chunkEndGmt)) {
@@ -48,7 +48,7 @@ abstract class BacktesterBase(var marketStubFactory: String => IMarketStub = nul
                 if (!reader.Read) {
                     return false;
                 }
-                lsns.foreach(ql=>func(ql,idx,recordQuote,reader.CurrentQuote));
+                listeners.foreach(notifyListenerFunc(_,idx,recordQuote,reader.CurrentQuote));
             }
             return true
         }
@@ -84,20 +84,28 @@ abstract class BacktesterBase(var marketStubFactory: String => IMarketStub = nul
         return (mdPlayer, distributor)
     }
 
-    private def createOhlcReader(cfg : TickerConfig) : ISimpleReader[Ohlc] ={
+    private def createOhlcReader(cfg : TickerConfig, dsRoot : String) : ISimpleReader[Ohlc] ={
         return null
     }
 
-    private def createTickReader(cfg : TickerConfig) : ISimpleReader[Tick] ={
-        return null
+
+    val supplier = new Supplier[Tick]{
+        override def get(): Tick = return new Tick()
+    }
+
+    private def createTickReader(cfg : TickerConfig, dsRoot : String) : ISimpleReader[Tick] ={
+
+        val path: Path = Paths.get(dsRoot, cfg.Path)
+        val iniFile: String = path.getParent.resolve("common.ini").toAbsolutePath.toString
+        val generator: TokenGenerator = new TokenGenerator(new CommonIniSettings().initFromFile(iniFile))
+        return new Parser[Tick](path.toAbsolutePath.toString, generator.handlers.asInstanceOf[Array[IHandler[Tick]]], supplier)
     }
 
 
     private def CreateReaders(tickerIds: Seq[TickerConfig], startDtGmt:Instant, dsRoot: String): Seq[ISimpleReader[Timed]] = {
         return tickerIds.map(t=>{
-            val parser = if (t.mdType == MarketDataType.Tick) createTickReader(t) else createOhlcReader(t) //new UltraFastParser.UltraFastParser(Path.Combine(dsRoot, t.Path));
+            val parser = if (t.mdType == MarketDataType.Tick) createTickReader(t, dsRoot) else createOhlcReader(t, dsRoot) //new UltraFastParser.UltraFastParser(Path.Combine(dsRoot, t.Path));
             assert(parser.Seek(startDtGmt), "failed to find start date " + startDtGmt)
-            parser.Read
             parser.asInstanceOf[ISimpleReader[Timed]]
         })
     }
@@ -109,16 +117,13 @@ abstract class BacktesterBase(var marketStubFactory: String => IMarketStub = nul
 
         startDtGmt = cfg.interval.roundTime(startDtGmt);
 
-        var readers = CreateReaders(cfg.tickerIds, startDtGmt, cfg.dataServerRoot);
+        val readers = CreateReaders(cfg.tickerIds, startDtGmt, cfg.dataServerRoot);
 
         val maxReadersStartDate = readers.maxBy(r =>r.CurrentQuote.DtGmt.getEpochSecond).CurrentQuote.DtGmt
 
-        if (maxReadersStartDate.isAfter(startDtGmt)) {
-            return maxReadersStartDate;
-        }
-
         readers.foreach(_.Dispose)
-        return startDtGmt;
+
+        return if (maxReadersStartDate.isAfter(startDtGmt)) maxReadersStartDate else startDtGmt;
     }
 
 
@@ -128,19 +133,19 @@ abstract class BacktesterBase(var marketStubFactory: String => IMarketStub = nul
         return (startDt, endDt);
     }
 
-    protected def WriteModelPnlStat(cfg: ModelConfig, model: IModel) = {
-        ReportWriter.Write(model, cfg, cfg.reportRoot);
+    protected def writeModelPnlStat(cfg: ModelConfig, model: IModel) = {
+        ReportWriter.write(model, cfg, cfg.reportRoot);
     }
 
-    protected def InitModel(cfg: ModelConfig, mdPlayer: MarketDataPlayer, distributor: MarketDataDistributor, opts: Map[String, Int] = Map[String,Int]()): IModel = {
-        return InitModelWithCustomProps(cfg, mdPlayer, distributor, cfg.customParams.toMap ++ opts.map(t => (t._1, "" + t._2)));
+    protected def initModel(cfg: ModelConfig, mdPlayer: MarketDataPlayer, distributor: MarketDataDistributor, opts: Map[String, Int] = Map[String,Int]()): IModel = {
+        return initModelWithCustomProps(cfg, mdPlayer, distributor, cfg.customParams.toMap ++ opts.map(t => (t._1, "" + t._2)));
     }
 
-    protected def InitModelWithCustomProps(cfg: ModelConfig, mdPlayer: MarketDataPlayer, ctx: MarketDataDistributor,
+    protected def initModelWithCustomProps(cfg: ModelConfig, mdPlayer: MarketDataPlayer, distr: MarketDataDistributor,
                                            modelProps: Map[String, String]): IModel = {
         val model = Class.forName(cfg.className).newInstance().asInstanceOf[IModel];
-        var marketStubs = CreateMarketStubs(cfg.tickerIds, mdPlayer);
-        model.initModel(modelProps, marketStubs, ctx);
+        val marketStubs = CreateMarketStubs(cfg.tickerIds, mdPlayer);
+        model.initModel(modelProps, marketStubs, distr);
         mdPlayer.AddStepListenerAtBeginning(model);
         return model;
     }

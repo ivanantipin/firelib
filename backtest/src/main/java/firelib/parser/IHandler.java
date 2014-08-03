@@ -3,6 +3,6 @@ package firelib.parser;
 import java.nio.CharBuffer;
 
 
-interface IHandler<T> {
+public interface IHandler<T> {
     boolean handle(CharBuffer buffer, T md);
 }

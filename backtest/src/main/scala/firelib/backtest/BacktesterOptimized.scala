@@ -59,11 +59,11 @@ class BacktesterOptimized extends BacktesterBase {
 
         var bm = reportProcessor.BestModels.last
         val (mdPlayer, distributor) = CreateModelBacktestEnvironment(cfg, startDtGmt);
-        var model = InitModelWithCustomProps(cfg, mdPlayer, distributor, bm.properties);
+        var model = initModelWithCustomProps(cfg, mdPlayer, distributor, bm.properties);
         RunBacktest(startDtGmt, endDtGmt, mdPlayer, cfg.interval.durationMs);
 
 
-        WriteModelPnlStat(cfg, model);
+        writeModelPnlStat(cfg, model);
         WriteOptimizedReport(cfg, reportProcessor, endOfOptimize);
 
         System.out.println("Finished")
@@ -94,7 +94,7 @@ class BacktesterOptimized extends BacktesterBase {
         var varr = variator.Next
 
         while (varr != null) {
-            var model = InitModel(cfg, mdPlayer, ctx, varr);
+            var model = initModel(cfg, mdPlayer, ctx, varr);
 
             if (model.hasValidProps) {
                 models += model

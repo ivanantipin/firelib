@@ -16,11 +16,11 @@ class BacktesterSimple(marketStubFactory: String => IMarketStub = null) extends 
 
         val (mdPlayer, ctx) = CreateModelBacktestEnvironment(cfg, startDtGmt, !runBacktest);
 
-        val model = InitModel(cfg, mdPlayer, ctx);
+        val model = initModel(cfg, mdPlayer, ctx);
         if (runBacktest) {
             RunBacktest(startDtGmt, endDtGmt, mdPlayer, cfg.interval.durationMs);
             model.onBacktestEnd
-            WriteModelPnlStat(cfg, model);
+            writeModelPnlStat(cfg, model);
         }
         return (model, mdPlayer, ctx)
     }

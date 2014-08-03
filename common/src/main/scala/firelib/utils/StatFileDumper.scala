@@ -11,6 +11,11 @@ object StatFileDumper
             Files.write(Paths.get(ff), List(row).toStream, StandardOpenOption.APPEND);
         }
 
+        def appendRows(ff : String, rows : Seq[String])
+        {
+            Files.write(Paths.get(ff), rows.toStream, StandardOpenOption.APPEND);
+        }
+
         def writeRows(ff : String, rows : Seq[String])
         {
             Files.write(Paths.get(ff), rows.toStream, StandardOpenOption.WRITE);

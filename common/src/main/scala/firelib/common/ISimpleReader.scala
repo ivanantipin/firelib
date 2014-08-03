@@ -14,7 +14,7 @@ trait ISimpleReader[T <: Timed] {
 
     def CurrentQuote: T
 
-    def Read: Boolean
+    def Read(): Boolean
 
     def StartTime() : Instant
     def EndTime() : Instant

@@ -19,48 +19,7 @@ public class ParserTests
 
 
 
-        @Test
-        public void TestUltraFastSingleCsvParser_2()
-        {
-            CommonIniSettings commonIniSettings = new CommonIniSettings();
-            commonIniSettings.DATEFORMAT = "DD.MM.YYYY";
-            commonIniSettings.TIMEFORMAT = "HHMMSS";
-            commonIniSettings.COLUMNFORMAT = new String[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
-            commonIniSettings.TIMEZONE = "NY";
 
-            var parser =
-                new UltraFastSingleCsvParser(Path.Combine(strTestsRootPath, @"UltraFastParser/TstData2/data2_0.csv"),
-                                             commonIniSettings);
-
-            Assert.assertEquals(parser.StartDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
-            Assert.assertEquals(parser.EndDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
-        }
-
-        @Test
-        public void TestUltraFastSingleCsvParser_3()
-        {
-            //
-            // Test that two parsers are able to open the same .csv file simultaneously.
-            //
-            CommonIniSettings commonIniSettings = new CommonIniSettings();
-            commonIniSettings.DATEFORMAT = "DD.MM.YYYY";
-            commonIniSettings.TIMEFORMAT = "HHMMSS";
-            commonIniSettings.COLUMNFORMAT = new String[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
-            commonIniSettings.TIMEZONE = "NY";
-
-            var parser1 =
-                new UltraFastSingleCsvParser(Path.Combine(strTestsRootPath, @"UltraFastParser/TstData2/data2_0.csv"),
-                                             commonIniSettings);
-            var parser2 =
-                new UltraFastSingleCsvParser(Path.Combine(strTestsRootPath, @"UltraFastParser/TstData2/data2_0.csv"),
-                                             commonIniSettings);
-
-            Assert.assertEquals(parser1.StartDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
-            Assert.assertEquals(parser1.EndDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
-
-            Assert.assertEquals(parser2.StartDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
-            Assert.assertEquals(parser2.EndDt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
-        }
 
         @Test
         public void TestUltraFastSingleCsvParser_4()
@@ -103,29 +62,6 @@ public class ParserTests
             Assert.assertEquals(parser.EndDt, new Instant( 2011, 11, 21, 2, 0, 0, 0));
         }
 
-        @Test
-        public void TestUltraFastSingleCsvParser_IQFEED_6()
-        {
-            //
-            // Check that IQFEED format parsing works.
-            //
-            CommonIniSettings commonIniSettings = new CommonIniSettings();
-            commonIniSettings.DATEFORMAT = "DD.MM.YYYY";
-            commonIniSettings.TIMEFORMAT = "HHMMSS";
-            commonIniSettings.COLUMNFORMAT = new String[] {"D", "T", "#", "P", "V", "U", "B", "A", "I"};
-            commonIniSettings.TIMEZONE = "NY";
-
-            var parser =
-                new UltraFastSingleCsvParser(Path.Combine(strTestsRootPath, @"UltraFastParser/TstData2/data1_0.csv"),
-                                             commonIniSettings);
-
-            parser.SeekLocal(parser.StartDt);
-
-            var isOk = parser.Read();
-
-            Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2011, 11, 21, 2, 0, 8, 700));
-        }
 
         @Test
         public void TestUltraFastSingleCsvParser_SKIP_SYMBOL()
@@ -301,48 +237,7 @@ public class ParserTests
             Assert.assertEquals(parser.PQuote->Volume, 1);
         }
 
-        @Test
-        public void TestUltraFastSingleCsvParser_FORTS_FUT()
-        {
-            //
-            // Check that FORTS FUT format parsing works.
-            //
-            CommonIniSettings commonIniSettings = new CommonIniSettings();
-            commonIniSettings.DATEFORMAT = "YYYY-MM-DD";
-            commonIniSettings.TIMEFORMAT = "HH:MM:SS";
-            commonIniSettings.COLUMNFORMAT = new[] {"D", "T", "#", "P", "V", "I"};
-            commonIniSettings.TIMEZONE = "MOSCOW";
 
-            var parser =
-                new UltraFastSingleCsvParser(
-                    Path.Combine(strTestsRootPath,
-                                 @"UltraFastParser\Seek2\RI#_0.csv"),
-                    commonIniSettings);
-
-            parser.SeekLocal(parser.StartDt);
-
-            var isOk = parser.Read();
-
-            Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2012, 1, 3, 10, 0, 0, 53));
-            Assert.assertEquals(parser.PQuote->TrdPrice, 137495);
-            Assert.assertEquals(parser.PQuote->Volume, 1);
-            Assert.assertEquals(parser.PQuote->AskPrice, 0);
-            Assert.assertEquals(parser.PQuote->BidPrice, 0);
-            Assert.assertEquals(parser.PQuote->CumVolume, 0);
-            Assert.assertEquals(parser.PQuote->Id, 483738513UL);
-
-            isOk = parser.Read();
-
-            Assert.IsTrue(isOk);
-            Assert.assertEquals(parser.PQuote->Dt, new Instant( 2012, 1, 3, 10, 0, 0, 53));
-            Assert.assertEquals(parser.PQuote->TrdPrice, 137500);
-            Assert.assertEquals(parser.PQuote->Volume, 1);
-            Assert.assertEquals(parser.PQuote->AskPrice, 0);
-            Assert.assertEquals(parser.PQuote->BidPrice, 0);
-            Assert.assertEquals(parser.PQuote->CumVolume, 0);
-            Assert.assertEquals(parser.PQuote->Id, 483738514UL);
-        }
 
         @Test
         public void TestUltraFastParser_ParseSymbolFileName()

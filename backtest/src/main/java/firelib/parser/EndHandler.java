@@ -7,7 +7,10 @@ public class EndHandler extends BaseHandler{
     public boolean handle(CharBuffer buffer, Object md) {
         int i = buffer.position();
         i = skippTillEol(buffer, i);
-        i = skippEol(buffer, i);
+        i = skippEolOrEmpty(buffer, i);
+
+        //System.out.println("end " + buffer.subSequence(0, i - buffer.position()));
+
         buffer.position(Math.min(i,buffer.limit()));
         return true;
     }

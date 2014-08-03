@@ -10,9 +10,9 @@ abstract class BasketModel extends IModel {
     var DtGmt: Instant  = _
     var marketStubs: Array[IMarketStub] = _
 
-    def InitModel(modelProps: Map[String, String], mktStubs: Array[IMarketStub], ctx: IMarketDataDistributor) = {
+    override def initModel(modelProps: Map[String, String], mktStubs: Seq[IMarketStub], ctx: IMarketDataDistributor) = {
         mdDistributor = ctx;
-        marketStubs = mktStubs;
+        marketStubs = mktStubs.toArray;
         modelProperties = modelProps;
         applyProperties(modelProps);
     }

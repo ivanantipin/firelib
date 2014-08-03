@@ -20,8 +20,11 @@ public class TokenGenerator{
     }
 
     private ZoneId getZone(){
-        if(commonIniSettings.TIMEZONE.equals("NY")){
-            return ZoneId.of("America/New_York");
+        switch (commonIniSettings.TIMEZONE){
+            case "NY":
+                return ZoneId.of("America/New_York");
+            case "MOSCOW":
+                return ZoneId.of("Europe/Moscow");
         }
         return ZoneId.systemDefault();
     }
@@ -35,12 +38,20 @@ public class TokenGenerator{
     public TokenGenerator(CommonIniSettings commonIniSettings){
         this.commonIniSettings = commonIniSettings;
         zoneId = getZone();
-        dateformat = "dd.MM.yyyy,HHmmss.SSS"; //FIXME
+        dateformat = getDateFormat(commonIniSettings);
         handlers = parsePattern();
     }
 
+    String getDateFormat(CommonIniSettings settings){
+        if(settings.DATEFORMAT.equals("DD.MM.YYYY") && settings.TIMEFORMAT.equals("HHMMSS")){
+            return "dd.MM.yyyy,HHmmss.SSS";
+        }
 
-
+        if(settings.DATEFORMAT.equals("YYYY-MM-DD") && settings.TIMEFORMAT.equals("HH:MM:SS")){
+            return "yyyy-MM-dd HH:mm:ss.SSS";
+        }
+        throw new RuntimeException("not supported");
+    }
 
 
     private IHandler[] parsePattern()
@@ -108,8 +119,7 @@ FIXME
 
                     break;
                 case "I":
-                    microcode.add(new SkipHandler());
-                    //trade id sequence
+                    microcode.add(new StdHandler<Tick,Integer>((oh,v)->oh.setTickNumber(v), (chs)->TypeFormat.parseInt(chs)));
                     break;
                 case "U":
                     microcode.add(new SkipHandler());
@@ -126,8 +136,15 @@ FIXME
                     throw new RuntimeException("Error: unsupported COLUMNFORMAT token '" + token + "'.");
             }
         }
-        microcode.add(new EndHandler());
-        return microcode.toArray(new IHandler[0]);
+        List<IHandler> withIncs = new ArrayList<>();
+        for(int i = 0; i < microcode.size(); i++){
+            withIncs.add(microcode.get(i));
+            if(i != microcode.size() -1){
+                withIncs.add(new IncHandler<>());
+            }
+        }
+        withIncs.add(new EndHandler());
+        return withIncs.toArray(new IHandler[0]);
     }
 
     private boolean isMillisSymbol(CommonIniSettings commonIniSettings, int i) {

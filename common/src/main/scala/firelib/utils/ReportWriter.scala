@@ -8,7 +8,7 @@ import scala.collection.immutable.HashMap
 
 
 object ReportWriter {
-    def Write(model: IModel, cfg: ModelConfig, targetDir: String) : Unit = {
+    def write(model: IModel, cfg: ModelConfig, targetDir: String) : Unit = {
 
         //FIXME JsonSerializerUtil.Save(cfg, Path.Combine(targetDir, "cfg.json"));
 

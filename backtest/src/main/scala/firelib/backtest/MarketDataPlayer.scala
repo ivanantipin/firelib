@@ -32,7 +32,7 @@ class MarketDataPlayer(val tickerPlayers: Seq[TickerMdPlayer]) {
     def Step(chunkEndGmt:Instant): Boolean = {
         intervalService.OnStep(chunkEndGmt);
         for (i <- 0 until tickerPlayers.length) {
-            if(tickerPlayers(i).ReadUntil(chunkEndGmt)){
+            if(!tickerPlayers(i).ReadUntil(chunkEndGmt)){
                 return false
             }
         }
