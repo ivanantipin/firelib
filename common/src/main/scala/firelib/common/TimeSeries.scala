@@ -4,21 +4,20 @@ import scala.collection.mutable.ArrayBuffer
 
 class TimeSeries[T](val history: HistoryCircular[T]) extends ITimeSeries[T] {
 
-    val lsns = new ArrayBuffer[(ITimeSeries[T]) => Unit]
+    private val listeners = new ArrayBuffer[(ITimeSeries[T]) => Unit]
 
-    def AdjustSizeIfNeeded(historySize: Int) = this.history.AdjustSizeIfNeeded(historySize)
+    def adjustSizeIfNeeded(historySize: Int) = this.history.adjustSizeIfNeeded(historySize)
 
-    def Count = history.Count
+    def count = history.count
 
     def apply(idx: Int): T = history(idx)
 
-
-    def ShiftAndGetLast: T = {
-        lsns.foreach(_(this))
-        history.ShiftAndGetLast
+    def shiftAndGetLast: T = {
+        listeners.foreach(_(this))
+        history.shiftAndGetLast
     }
 
     override def listen(listener: (ITimeSeries[T]) => Unit): Unit = {
-        lsns += listener
+        listeners += listener
     }
 }

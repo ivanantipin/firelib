@@ -7,7 +7,7 @@ class BidAskUpdater(val stub: Seq[IMarketStub]) extends IMarketDataListener with
 
     private val bid, ask = new Array[Double](stub.length)
 
-    def OnStep(dtGmt:Instant) = {
+    def onStep(dtGmt:Instant) = {
         for (i <- 0 until stub.length) {
             stub(i).updateBidAskAndTime(bid(i), ask(i), dtGmt)
         }

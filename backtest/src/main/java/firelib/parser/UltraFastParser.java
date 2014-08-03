@@ -34,7 +34,7 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
 
     private void OpenCurrentCsvFile() {
         csvParser = create(symbolCsvFileInfo[fileIdx].fullFileName, symbolCsvFileInfo[fileIdx].commonIniSettings);
-        csvParser.Seek(csvParser.StartTime());
+        csvParser.seek(csvParser.StartTime());
         CurrentTz = symbolCsvFileInfo[fileIdx].commonIniSettings.TIMEZONE;
     }
 
@@ -53,7 +53,7 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
         return csvParser.CurrentQuote();
     }
 
-    public boolean Seek(Instant utcDT) {
+    public boolean seek(Instant utcDT) {
         fileIdx = -1;
         csvParser = null;
 
@@ -85,8 +85,7 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
             utcDT = symbolCsvFileInfo[fileIdx].utcEndDT;
         }
 
-        boolean seekLocal = csvParser.Seek(utcDT);
-        UpdateTimeZoneOffset();
+        boolean seekLocal = csvParser.seek(utcDT);
         return seekLocal;
     }
 

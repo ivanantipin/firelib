@@ -17,7 +17,7 @@ class MarketDataPlayer(val tickerPlayers: Seq[TickerMdPlayer]) {
     private val intervalService = new IntervalService();
 
 
-    intervalService.AddListener(Interval.Min240, (dt) => tickerPlayers.foreach(_.UpdateTimeZoneOffset()))
+    intervalService.addListener(Interval.Min240, (dt) => tickerPlayers.foreach(_.UpdateTimeZoneOffset()))
 
 
     def AddListener(idx : Int, lsn : IMarketDataListener) = tickerPlayers(idx).addListener(lsn)
@@ -30,13 +30,13 @@ class MarketDataPlayer(val tickerPlayers: Seq[TickerMdPlayer]) {
     def AddStepListenerAtBeginning(lst: IStepListener) = stepListeners.insert(0, lst)
 
     def Step(chunkEndGmt:Instant): Boolean = {
-        intervalService.OnStep(chunkEndGmt);
+        intervalService.onStep(chunkEndGmt);
         for (i <- 0 until tickerPlayers.length) {
             if(!tickerPlayers(i).ReadUntil(chunkEndGmt)){
                 return false
             }
         }
-        stepListeners.foreach(_.OnStep(chunkEndGmt))
+        stepListeners.foreach(_.onStep(chunkEndGmt))
         return true;
     }
 

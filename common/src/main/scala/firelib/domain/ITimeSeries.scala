@@ -1,9 +1,9 @@
 package firelib.common
 
 trait ITimeSeries[T] {
-    def AdjustSizeIfNeeded(i: Int)
+    def adjustSizeIfNeeded(i: Int)
 
-    def Count: Int
+    def count: Int
 
     def apply(idx: Int): T
 

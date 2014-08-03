@@ -54,7 +54,7 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
         frequencer.addListener((dt) => {
             val now = Instant.ofEpochMilli(interval.roundEpochMs(System.currentTimeMillis()))
-            val act = () => stepListeners.foreach(_.OnStep(now))
+            val act = () => stepListeners.foreach(_.onStep(now))
             executor.Execute(()=>act())
         });
 

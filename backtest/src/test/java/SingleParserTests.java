@@ -109,7 +109,7 @@ public class SingleParserTests {
 
 
 
-        Assert.assertTrue(parser.Seek(parser.StartTime()));
+        Assert.assertTrue(parser.seek(parser.StartTime()));
 
         Instant dt0 = LocalDateTime.of(2011, 11, 21, 2, 0, 8, 700_000_000).atZone(tokenGenerator.zoneId).toInstant();
 
@@ -130,7 +130,7 @@ public class SingleParserTests {
 
         Parser<Tick> parser = new Parser<>(getfile("UltraFastParser/Seek2/RI#_0.csv"), tokenGenerator.handlers, () -> new Tick());
 
-        Assert.assertTrue(parser.Seek(parser.StartTime()));
+        Assert.assertTrue(parser.seek(parser.StartTime()));
 
 
         Assert.assertEquals(parser.CurrentQuote().DtGmt(), getTime(2012, 1, 3, 10, 0, 0, 53, tokenGenerator.zoneId));

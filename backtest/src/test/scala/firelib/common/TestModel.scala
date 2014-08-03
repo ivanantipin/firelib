@@ -34,6 +34,7 @@ class TestModel extends BasketModel with IMarketDataListener {
 
     private def On5Min(hh: ITimeSeries[Ohlc]): Unit = {
         bars += new Ohlc(hh(0))
+        //System.out.println(hh(0))
     }
 
 

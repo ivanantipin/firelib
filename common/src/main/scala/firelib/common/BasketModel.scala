@@ -7,7 +7,7 @@ import scala.collection.mutable.ArrayBuffer
 abstract class BasketModel extends IModel {
     private var modelProperties: Map[String, String] = _
     var mdDistributor: IMarketDataDistributor = _
-    var DtGmt: Instant  = _
+    var dtGmt: Instant  = _
     var marketStubs: Array[IMarketStub] = _
 
     override def initModel(modelProps: Map[String, String], mktStubs: Seq[IMarketStub], ctx: IMarketDataDistributor) = {
@@ -98,8 +98,8 @@ abstract class BasketModel extends IModel {
 
     protected def CancelAllOrders = marketStubs.foreach(_.cancelOrders)
 
-    def OnStep(dtGmt:Instant) = {
-        DtGmt = dtGmt;
+    def onStep(dtGmt:Instant) = {
+        this.dtGmt = dtGmt;
         onIntervalEnd(dtGmt);
     }
 }

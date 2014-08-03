@@ -1,6 +1,7 @@
 package firelib.parser;
 
 import firelib.common.ISimpleReader;
+import firelib.common.Tick;
 import firelib.common.Timed;
 
 import java.io.File;
@@ -10,6 +11,7 @@ import java.nio.CharBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
 import java.time.Instant;
 import java.util.function.Supplier;
@@ -28,9 +30,10 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
 
     private T currentQuote;
 
-    CharBuffer charBuffer = CharBuffer.allocate(20000000);
+    CharBuffer charBuffer = CharBuffer.allocate(2000000);
 
     long endReadPosition = 0;
+    private CharsetDecoder charsetDecoder;
 
 
     public Parser(String fileName, IHandler<T>[] handlers, Supplier<T> factory) {
@@ -45,6 +48,7 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
             File aFile = new File(fileName);
             fileChannel = new RandomAccessFile(aFile, "r").getChannel();
             charSet = Charset.forName("US-ASCII");
+            charsetDecoder = charSet.newDecoder();
             initFirstAndLast();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -62,7 +66,7 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
                 return len;
             }
             mem = fileChannel.map(FileChannel.MapMode.READ_ONLY, pos, len);
-            CoderResult result = charSet.newDecoder().decode(mem, charBuffer, false);
+            CoderResult result = charsetDecoder.decode(mem, charBuffer, false);
             //System.out.println("len " + result.toString());
             charBuffer.flip();
             return len;
@@ -108,18 +112,19 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
 
 
     public static void main(String[] args) throws Exception {
-        for (int i = 0; i < 10; i++) {
-/*
-            Parser parser = new Parser("C:\\usr\\temp\\1_#.csv");
-            Ohlc oh = null;
+        TokenGenerator tokenGenerator = new TokenGenerator(new CommonIniSettings().initFromFile("/home/ivan/tmp/testDsRoot/TICKS/common.ini"));
+        for (int i = 0; i < 100; i++) {
+
+
+            Parser parser = new Parser<Tick>("/home/ivan/tmp/testDsRoot/TICKS/XG_#.csv",
+                    tokenGenerator.handlers ,()->new Tick());
+
             long start = System.currentTimeMillis();
             int cnt = 0;
-            while ((oh = parser.next()) != null) {
+            while (parser.Read()) {
                 cnt++;
             }
-            ;
             System.out.println(cnt / (System.currentTimeMillis() - start));
-*/
 
         }
 
@@ -127,7 +132,7 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
     }
 
     @Override
-    public boolean Seek(Instant time) {
+    public boolean seek(Instant time) {
         while (Read()){
             if(time.compareTo(CurrentQuote().DtGmt()) <= 0){
                 return true;
@@ -143,11 +148,6 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
         } catch (IOException e) {
 
         }
-    }
-
-    @Override
-    public void UpdateTimeZoneOffset() {
-
     }
 
     @Override

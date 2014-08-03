@@ -45,27 +45,27 @@ class MarketDataDistributor(length : Int, val intervalService: IIntervalService)
 
     def activateOhlcTimeSeries(idx: Int, interval: Interval, len: Int): ITimeSeries[Ohlc] = {
         if (!tsContainers(idx).hasTsForInterval(interval)) {
-            CreateTimeSerie(idx, interval, len)
+            createTimeSeries(idx, interval, len)
         }
         var hist = tsContainers(idx).getTsForInterval(interval)
-        hist.AdjustSizeIfNeeded(len);
+        hist.adjustSizeIfNeeded(len);
         return hist;
     }
 
-    private def CreateTimeSerie(tickerId: Int, interval: Interval, len: Int): TimeSeries[Ohlc] = {
+    private def createTimeSeries(tickerId: Int, interval: Interval, len: Int): TimeSeries[Ohlc] = {
         val lenn = if (len == -1) DEFAULT_TIME_SERIES_HISTORY_LENGTH else len
 
 
-        var ret = new TimeSeries[Ohlc](new HistoryCircular[Ohlc](len, () => new Ohlc()));
+        val ret = new TimeSeries[Ohlc](new HistoryCircular[Ohlc](len, () => new Ohlc()));
 
         val series = (interval, ret)
 
         tsContainers(tickerId).timeSeries += series;
 
-        intervalService.AddListener(interval, (dt) => {
-            var prev = ret(0)
+        intervalService.addListener(interval, (dt) => {
+            val prev = ret(0)
             prev.DtGmtEnd = dt;
-            var last = ret.ShiftAndGetLast
+            val last = ret.shiftAndGetLast
             last.Interpolate(prev);
             last.DtGmtEnd = dt.plusMillis(interval.durationMs)
         });

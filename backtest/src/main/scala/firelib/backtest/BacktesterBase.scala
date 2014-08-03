@@ -43,7 +43,7 @@ abstract class BacktesterBase(var marketStubFactory: String => IMarketStub = nul
         override def addListener(lsn: IMarketDataListener): Unit = listeners += lsn
 
         override def ReadUntil(chunkEndGmt:Instant): Boolean = {
-            while (reader.CurrentQuote.DtGmt.isBefore(chunkEndGmt)) {
+            while (!reader.CurrentQuote.DtGmt.isAfter(chunkEndGmt)) {
                 val recordQuote = reader.CurrentQuote
                 if (!reader.Read) {
                     return false;
@@ -52,7 +52,6 @@ abstract class BacktesterBase(var marketStubFactory: String => IMarketStub = nul
             }
             return true
         }
-        override def UpdateTimeZoneOffset(): Unit = reader.UpdateTimeZoneOffset()
 
         override def Dispose() = reader.Dispose()
     }
@@ -105,7 +104,7 @@ abstract class BacktesterBase(var marketStubFactory: String => IMarketStub = nul
     private def CreateReaders(tickerIds: Seq[TickerConfig], startDtGmt:Instant, dsRoot: String): Seq[ISimpleReader[Timed]] = {
         return tickerIds.map(t=>{
             val parser = if (t.mdType == MarketDataType.Tick) createTickReader(t, dsRoot) else createOhlcReader(t, dsRoot) //new UltraFastParser.UltraFastParser(Path.Combine(dsRoot, t.Path));
-            assert(parser.Seek(startDtGmt), "failed to find start date " + startDtGmt)
+            assert(parser.seek(startDtGmt), "failed to find start date " + startDtGmt)
             parser.asInstanceOf[ISimpleReader[Timed]]
         })
     }
