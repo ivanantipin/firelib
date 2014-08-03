@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="75d53c99-3fb3-4f21-af3e-c472c9d70c24" name="Default" comment="scala initial commit">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/nohup.out" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/out.txt" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes.timestamp" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/HelloWorld$.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/HelloWorld.class" afterPath="" />
@@ -47,27 +45,6 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/firelib/indicator/IIndicator.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/target/domain-1.0-SNAPSHOT.jar" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/BacktesterBase.scala" afterPath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/BacktesterBase.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/BasketModel.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/BasketModel.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/BidAskUpdater.scala" afterPath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/BidAskUpdater.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/DateTimeHandler.java" afterPath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/DateTimeHandler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backtest/src/test/scala/firelib/common/HistoryCicrcularTest.scala" afterPath="$PROJECT_DIR$/backtest/src/test/scala/firelib/common/HistoryCicrcularTest.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/HistoryCircular.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/HistoryCircular.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IIntervalService.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IIntervalService.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/ISimpleReader.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/ISimpleReader.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IStepListener.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IStepListener.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/ITimeSeries.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/ITimeSeries.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ibadapter/src/main/scala/firelib/ibadapter/IbTradeGate.scala" afterPath="$PROJECT_DIR$/ibadapter/src/main/scala/firelib/ibadapter/IbTradeGate.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IntervalService.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IntervalService.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/MarketDataDistributor.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/MarketDataDistributor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/MarketDataPlayer.scala" afterPath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/MarketDataPlayer.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/MarketStub.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/MarketStub.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ModelRuntimeContainer.scala" afterPath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ModelRuntimeContainer.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/Parser.java" afterPath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/Parser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backtest/src/test/java/SingleParserTests.java" afterPath="$PROJECT_DIR$/backtest/src/test/java/SingleParserTests.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backtest/src/test/scala/firelib/common/TestModel.scala" afterPath="$PROJECT_DIR$/backtest/src/test/scala/firelib/common/TestModel.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/TimeSeries.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/TimeSeries.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/UltraFastParser.java" afterPath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/UltraFastParser.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ScalaTest.iws" />
@@ -1857,7 +1834,7 @@
       <workItem from="1406829367293" duration="10644000" />
       <workItem from="1406955801406" duration="30558000" />
       <workItem from="1407047889878" duration="13356000" />
-      <workItem from="1407077792377" duration="3746000" />
+      <workItem from="1407077792377" duration="3840000" />
     </task>
     <task id="LOCAL-00001" summary="scala initial commit">
       <created>1405602903339</created>
@@ -1887,11 +1864,15 @@
       <created>1407068425238</created>
       <updated>1407068425238</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="scala initial commit">
+      <created>1407082063022</created>
+      <updated>1407082063023</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="401862000" />
+    <option name="totallyTimeSpent" value="401956000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-2" y="-3" width="1924" height="1087" extended-state="6" />
