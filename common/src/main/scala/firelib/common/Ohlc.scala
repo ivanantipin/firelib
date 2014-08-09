@@ -30,9 +30,7 @@ class Ohlc() extends Timed {
         Oi = 0
     }
 
-    def Interpolated: Boolean = {
-        return Volume == 0
-    }
+    def Interpolated: Boolean = Volume == 0
 
     private def AddPrice(last: Double) {
         if (O.isNaN) O = last
@@ -68,54 +66,32 @@ class Ohlc() extends Timed {
         Oi = ohlc.Oi
     }
 
-    def nprice: Double = {
-        return (C + H + L) / 3
-    }
+    def nprice: Double = (C + H + L) / 3
 
-    def medium: Double = {
-        return (H + L) / 2
-    }
+    def medium: Double = (H + L) / 2
 
-    def IsUpBar: Boolean = {
-        return C > O
-    }
+    def IsUpBar: Boolean = C > O
 
-    def Range: Double = {
-        return H - L
-    }
+    def Range: Double = H - L
 
-    def UpShadow: Double = {
-        return H - C
-    }
+    def UpShadow: Double = H - C
 
-    def DownShadow: Double = {
-        return C - L
-    }
+    def DownShadow: Double = C - L
 
-    def BodyLength: Double = {
-        return Math.abs(C - O)
-    }
+    def BodyLength: Double = Math.abs(C - O)
 
-    def Return: Double = {
-        return C - O
-    }
+    def Return: Double = C - O
 
-    def InRange(`val`: Double): Boolean = {
-        return H > `val` && `val` > L
-    }
+    def InRange(vv: Double): Boolean = H > vv && vv > L
 
-    override def toString: String = {
-        return "OHLC(%s/%s/%s/%s@/%s/%s)".format(O, H, L, C, DtGmtEnd.toString, Interpolated)
-    }
+    override def toString: String = "OHLC(%s/%s/%s/%s@/%s/%s)".format(O, H, L, C, DtGmtEnd.toString, Interpolated)
 
     def Interpolate(prev: Ohlc) {
         InitFrom(prev)
         Volume = 0
     }
 
-    def DtGmt: Instant = {
-        return DtGmtEnd
-    }
+    def DtGmt: Instant = DtGmtEnd
 
     @BeanProperty
     var C: Double = .0

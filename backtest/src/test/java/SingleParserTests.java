@@ -57,8 +57,8 @@ public class SingleParserTests {
         Instant dt0 = LocalDateTime.of(2011, 11, 21, 2, 0, 8, 700_000_000).atZone(tokenGenerator.zoneId).toInstant();
         Instant dt1 = LocalDateTime.of(2012, 9, 26, 3, 55, 21, 222_000_000).atZone(tokenGenerator.zoneId).toInstant();
 
-        Assert.assertEquals(parser.StartTime(), dt0);
-        Assert.assertEquals(parser.EndTime(), dt1);
+        Assert.assertEquals(parser.startTime(), dt0);
+        Assert.assertEquals(parser.endTime(), dt1);
     }
 
 
@@ -70,8 +70,8 @@ public class SingleParserTests {
 
         Instant dt0 = LocalDateTime.of(2011, 11, 21, 2, 0, 8, 700_000_000).atZone(tokenGenerator.zoneId).toInstant();
 
-        Assert.assertEquals(parser.StartTime(), dt0);
-        Assert.assertEquals(parser.EndTime(), dt0);
+        Assert.assertEquals(parser.startTime(), dt0);
+        Assert.assertEquals(parser.endTime(), dt0);
     }
 
     @Test
@@ -88,11 +88,11 @@ public class SingleParserTests {
 
         Instant dt0 = LocalDateTime.of(2011, 11, 21, 2, 0, 8, 700_000_000).atZone(tokenGenerator.zoneId).toInstant();
 
-        Assert.assertEquals(parser.StartTime(), dt0);
-        Assert.assertEquals(parser.EndTime(), dt0);
+        Assert.assertEquals(parser.startTime(), dt0);
+        Assert.assertEquals(parser.endTime(), dt0);
 
-        Assert.assertEquals(parser1.StartTime(), dt0);
-        Assert.assertEquals(parser1.EndTime(), dt0);
+        Assert.assertEquals(parser1.startTime(), dt0);
+        Assert.assertEquals(parser1.endTime(), dt0);
 
 
     }
@@ -109,7 +109,7 @@ public class SingleParserTests {
 
 
 
-        Assert.assertTrue(parser.seek(parser.StartTime()));
+        Assert.assertTrue(parser.seek(parser.startTime()));
 
         Instant dt0 = LocalDateTime.of(2011, 11, 21, 2, 0, 8, 700_000_000).atZone(tokenGenerator.zoneId).toInstant();
 
@@ -130,7 +130,7 @@ public class SingleParserTests {
 
         Parser<Tick> parser = new Parser<>(getfile("UltraFastParser/Seek2/RI#_0.csv"), tokenGenerator.handlers, () -> new Tick());
 
-        Assert.assertTrue(parser.seek(parser.StartTime()));
+        Assert.assertTrue(parser.seek(parser.startTime()));
 
 
         Assert.assertEquals(parser.CurrentQuote().DtGmt(), getTime(2012, 1, 3, 10, 0, 0, 53, tokenGenerator.zoneId));

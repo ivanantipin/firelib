@@ -7,7 +7,6 @@ import firelib.common._
 trait TickerMdPlayer {
 
     def addListener(lsn : IMarketDataListener)
-    def UpdateTimeZoneOffset()
-    def ReadUntil(dtGmt :Instant): Boolean
+    def readUntil(dtGmt :Instant): Boolean
     def Dispose()
  }

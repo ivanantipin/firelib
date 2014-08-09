@@ -13,7 +13,6 @@ public class SkipHandler extends BaseHandler{
         if (i == buffer.limit()) {
             return false;
         }
-        i++;
         buffer.position(i);
         return true;
     }

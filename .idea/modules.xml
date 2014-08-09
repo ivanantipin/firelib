@@ -8,6 +8,8 @@
       <module fileurl="file://$PROJECT_DIR$/firelib.iml" filepath="$PROJECT_DIR$/firelib.iml" />
       <module fileurl="file://$PROJECT_DIR$/ibadapter/ibadapter.iml" filepath="$PROJECT_DIR$/ibadapter/ibadapter.iml" />
       <module fileurl="file://$PROJECT_DIR$/ibgate/ibgate.iml" filepath="$PROJECT_DIR$/ibgate/ibgate.iml" />
+      <module fileurl="file://$PROJECT_DIR$/python/python.iml" filepath="$PROJECT_DIR$/python/python.iml" />
+      <module fileurl="file://$PROJECT_DIR$/strats/strats.iml" filepath="$PROJECT_DIR$/strats/strats.iml" />
     </modules>
   </component>
 </project>

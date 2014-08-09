@@ -11,8 +11,6 @@ class ModelConfig {
 
     var dataServerRoot: String = _
 
-    var binaryStorageRoot: String = _
-
     var reportRoot: String = _
 
     var className: String = _
@@ -23,7 +21,6 @@ class ModelConfig {
 
     val optParams = new ArrayBuffer[OptimizedParameter]
 
-
     var optBatchSize = 500
 
     var optThreadNumber = 1
@@ -32,14 +29,12 @@ class ModelConfig {
 
     var optimizedPeriodDays = -1
 
-    var mode = ResearchMode.SimpleRun;
+    var mode = ResearchMode.SimpleRun
 
     def addTickerId(tickerId: TickerConfig): ModelConfig = {
-        if (tickerIds.contains(tickerId)) {
-            throw new Exception("ticker id already present " + tickerId);
-        }
-        tickerIds += tickerId;
-        return this;
+        assert(!tickerIds.contains(tickerId),"ticker id already present " + tickerId)
+        tickerIds += tickerId
+        this
     }
 
     def interval = Interval.resolveFromName(intervalName)
@@ -55,8 +50,8 @@ class ModelConfig {
 
 
     def addCustomParam(param: String, value: String): ModelConfig = {
-        customParams(param) = value;
-        return this;
+        customParams(param) = value
+        this
     }
 
 }

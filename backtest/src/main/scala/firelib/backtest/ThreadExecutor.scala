@@ -12,9 +12,9 @@ class ThreadExecutor(val threadsNumber: Int = 1, val maxLengthOfQueue: Int = -1,
 
     val log = LoggerFactory.getLogger(threadName)
 
-    var threadcounter = 0;
+    var threadcounter = 0
 
-    def Execute(act: => Unit) = {
+    def execute(act: => Unit) = {
         executor.execute(new Runnable {
             override def run = {
                 try {
@@ -26,11 +26,11 @@ class ThreadExecutor(val threadsNumber: Int = 1, val maxLengthOfQueue: Int = -1,
         })
     }
 
-    def Start() : IThreadExecutor ={
+    def start() : IThreadExecutor ={
         return this
     }
 
-    def Stop() = {
+    def stop() = {
         executor.shutdown()
         executor.awaitTermination(1, TimeUnit.MINUTES)
     }

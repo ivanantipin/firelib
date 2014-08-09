@@ -11,5 +11,5 @@ trait ITradeGate {
 
     def configure(config: Map[String, String], symbolMapping: Map[String, String], callbackExecutor: IThreadExecutor)
 
-    def start();
+    def start()
 }

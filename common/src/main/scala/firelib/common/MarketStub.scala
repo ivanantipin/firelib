@@ -5,7 +5,7 @@ import java.time.Instant
 import scala.collection.mutable
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
-class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMarketStub {
+class MarketStub(val security: String, val maxOrderCount: Int = 20) extends IMarketStub {
 
     var bidAsk = Array(Double.NaN, Double.NaN)
 
@@ -18,7 +18,7 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
 
     val tradeGateCallbacks = ArrayBuffer[ITradeGateCallback]()
 
-    var position = 0;
+    var position_ = 0
     val trades = new ListBuffer[Trade]()
 
     var orderIdCnt = 0
@@ -28,27 +28,27 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
 
 
     private def middlePrice: Double = {
-        bidAsk.sum / 2;
+        bidAsk.sum / 2
     }
 
 
     def addCallback(callback: ITradeGateCallback) = tradeGateCallbacks += callback
 
 
-    def removeCallbacksTo(marketStub: IMarketStub) = {
-        tradeGateCallbacks.foreach(marketStub.addCallback);
+    def moveCallbacksTo(marketStub: IMarketStub) = {
+        tradeGateCallbacks.foreach(marketStub.addCallback)
         tradeGateCallbacks.clear()
     }
 
     def flattenAll(reason: String = null) = {
-        cancelOrders();
-        closePosition(reason);
+        cancelAllOrders()
+        closePosition(reason)
     }
 
-    def cancelOrders() = {
+    def cancelAllOrders() = {
         val ords = orders_.clone()
-        orders_.clear();
-        fireOrderState(ords.values, OrderStatus.Cancelled);
+        orders_.clear()
+        fireOrderState(ords.values, OrderStatus.Cancelled)
     }
 
     def cancelOrderByIds(orderIds: Seq[String]) = {
@@ -57,8 +57,8 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
             assert(ord.isDefined,"no order with id " + orderId)
             fireOrderState(List[Order] {
                 ord.get
-            }, OrderStatus.Cancelled);
-        });
+            }, OrderStatus.Cancelled)
+        })
     }
 
     private def fireTradeEvent(trade: Trade) = tradeGateCallbacks.foreach(tgc => tgc.onTrade(trade))
@@ -68,61 +68,60 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
         assert(this.orders_.size + orders.length <= maxOrderCount, "max order count exceeded")
 
         orders.foreach(order => {
-            order.Id = nextOrderId
-            order.PlacementTime = dtGmt;
-            order.Security = Security;
-            fireOrderState(List(order), OrderStatus.New);
-            if (order.MinutesToHold != -1) {
-                order.ValidUntil = dtGmt.plusSeconds(order.MinutesToHold*60);
+            order.id = nextOrderId
+            order.placementTime = dtGmt
+            order.security = security
+            fireOrderState(List(order), OrderStatus.New)
+            if (order.minutesToHold != -1) {
+                order.validUntil = dtGmt.plusSeconds(order.minutesToHold*60)
             }
-            this.orders_(order.Id) = order
+            this.orders_(order.id) = order
         })
         checkOrders()
     }
 
     private def nextOrderId : String = {
         orderIdCnt+= 1
-        Security + orderIdCnt
+        security + orderIdCnt
     }
 
 
     def closePosition(reason: String): Unit = {
-        if (position == 0)
-            return;
+        if (position_ == 0)
+            return
 
-        val ord = new Order(OrderType.Market, 0, math.abs(position), Side.SideForAmt(-position)) {
-            Security = Security
-        };
-        val trd = new Trade(math.abs(position), checkOrderAndGetTradePrice(ord), ord.OrderSide, ord, dtGmt,
-            Security) {
+        val ord = new Order(OrderType.Market, 0, math.abs(position_), Side.SideForAmt(-position_)) {
+            security = security
+        }
+        val trd = new Trade(math.abs(position_), checkOrderAndGetTradePrice(ord), ord.side, ord, dtGmt,
+            security) {
             reason = reason
-        };
-        onTrade(trd);
+        }
+        onTrade(trd)
 
-        assert(position == 0,"position must be 0 after flatten all!!!")
+        assert(position_ == 0,"position must be 0 after flatten all!!!")
     }
 
     def updateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant) = {
         bidAsk(0) = bid
         bidAsk(1) = ask
-        if (position != 0) {
-            lastPositionTrade.OnPrice(if (lastPositionTrade.TradeSide == Side.Buy) bid else ask);
+        if (position_ != 0) {
+            lastPositionTrade.onPrice(if (lastPositionTrade.side == Side.Buy) bid else ask)
         }
         this.dtGmt = dtGmt
         checkOrders()
     }
 
     def checkOrders() = {
-
         orders_ retain { (id, ord) => {
             if (chkOrderExecution(ord) != null) {
-                fireOrderState(List(ord), OrderStatus.Done);
+                fireOrderState(List(ord), OrderStatus.Done)
                 false
             }
             else {
-                assert(ord.OrdType != OrderType.Market, "market order should cause position change!!")
-                if (ord.ValidUntil != null && ord.ValidUntil.isBefore(dtGmt)) {
-                    fireOrderState(List(ord), OrderStatus.Cancelled);
+                assert(ord.orderType != OrderType.Market, "market order should cause position change!!")
+                if (ord.validUntil != null && ord.validUntil.isBefore(dtGmt)) {
+                    fireOrderState(List(ord), OrderStatus.Cancelled)
                     false
                 }
                 true
@@ -140,10 +139,10 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
     }
 
     def chkOrderExecution(ord: Order): Trade = {
-        var price = checkOrderAndGetTradePrice(ord)
+        val price = checkOrderAndGetTradePrice(ord)
         if (price.isNaN)
             return null
-        val trd = new Trade(ord.Qty, price, ord.OrderSide, ord, dtGmt, Security)
+        val trd = new Trade(ord.qty, price, ord.side, ord, dtGmt, security)
         onTrade(trd)
         return trd
     }
@@ -151,12 +150,12 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
 
     def onTrade(trd: Trade) = {
         trades += trd
-        val posBefore = position
-        position = trd.AdjustPositionByThisTrade(position)
-        trd.PositionAfter = Position
+        val posBefore = position_
+        position_ = trd.adjustPositionByThisTrade(position_)
+        trd.positionAfter = position
 
-        if (math.signum(posBefore) != math.signum(Position)) {
-            if (Position == 0) {
+        if (math.signum(posBefore) != math.signum(position)) {
+            if (position == 0) {
                 lastPositionTrade = null
             }
             else {
@@ -168,19 +167,19 @@ class MarketStub(val Security: String, val maxOrderCount: Int = 20) extends IMar
 
     def checkOrderAndGetTradePrice(ord: Order): Double = {
 
-        (ord.OrdType, ord.OrderSide) match {
+        (ord.orderType, ord.side) match {
             case (OrderType.Market,Side.Buy) => return bidAsk(1)
             case (OrderType.Market,Side.Sell) => return bidAsk(0)
 
-            case (OrderType.Stop,Side.Buy) if middlePrice > ord.Price => return bidAsk(1)
-            case (OrderType.Stop,Side.Sell) if middlePrice < ord.Price=> return bidAsk(0)
+            case (OrderType.Stop,Side.Buy) if middlePrice > ord.price => return bidAsk(1)
+            case (OrderType.Stop,Side.Sell) if middlePrice < ord.price=> return bidAsk(0)
 
-            case (OrderType.Limit,Side.Buy) if bidAsk(1) < ord.Price => return ord.Price
-            case (OrderType.Limit,Side.Sell) if bidAsk(0) > ord.Price=> return ord.Price
+            case (OrderType.Limit,Side.Buy) if bidAsk(1) < ord.price => return ord.price
+            case (OrderType.Limit,Side.Sell) if bidAsk(0) > ord.price=> return ord.price
             case _ => return Double.NaN
         }
 
     }
 
-    override def Position: Int = position
+    override def position: Int = position_
 }

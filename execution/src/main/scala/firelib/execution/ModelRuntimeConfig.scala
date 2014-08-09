@@ -9,18 +9,18 @@ class ModelRuntimeConfig {
 
     var GatewayType: String = _
 
-    var runBacktest: Boolean = false;
+    var runBacktest: Boolean = false
 
     var gatewayConfig: Map[String, String]=_
 
     var tradeLogDirectory: Option[String]=_
 
     val IbContractMapping = Map[String, String](
-        "EURUSD" -> "Symbol=EUR;SecType=CASH;Currency=USD;Exchange=IDEALPRO",
-        "SPY" -> "Symbol=SPY;SecType=STK;Currency=USD;Exchange=ARCA",
-        "DXJ" -> "Symbol=DXJ;SecType=STK;Currency=USD;Exchange=ARCA",
-        "AMLP" -> "Symbol=AMLP;SecType=STK;Currency=USD;Exchange=ARCA",
-        "QQQ" -> "Symbol=QQQ;SecType=STK;Currency=USD;Exchange=ARCA",
-        "EEM" -> "Symbol=EEM;SecType=STK;Currency=USD;Exchange=ARCA"
+        "EURUSD" -> "Symbol=EURSecType=CASHCurrency=USDExchange=IDEALPRO",
+        "SPY" -> "Symbol=SPYSecType=STKCurrency=USDExchange=ARCA",
+        "DXJ" -> "Symbol=DXJSecType=STKCurrency=USDExchange=ARCA",
+        "AMLP" -> "Symbol=AMLPSecType=STKCurrency=USDExchange=ARCA",
+        "QQQ" -> "Symbol=QQQSecType=STKCurrency=USDExchange=ARCA",
+        "EEM" -> "Symbol=EEMSecType=STKCurrency=USDExchange=ARCA"
     )
 }

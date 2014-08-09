@@ -6,6 +6,7 @@ import javolution.text.TypeFormat;
 
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -16,7 +17,7 @@ public class TokenGenerator{
     private CommonIniSettings commonIniSettings;
 
     boolean isOhlc(CommonIniSettings commonIniSettings){
-        return false;
+        return new ArrayList<String>(Arrays.asList(commonIniSettings.COLUMNFORMAT)).contains("O");
     }
 
     private ZoneId getZone(){
@@ -44,11 +45,19 @@ public class TokenGenerator{
 
     String getDateFormat(CommonIniSettings settings){
         if(settings.DATEFORMAT.equals("DD.MM.YYYY") && settings.TIMEFORMAT.equals("HHMMSS")){
-            return "dd.MM.yyyy,HHmmss.SSS";
+
+            if(isMillisSymbol(settings,2)){
+                return "dd.MM.yyyy,HHmmss.SSS";
+            }
+            return "dd.MM.yyyy,HHmmss";
+
         }
 
         if(settings.DATEFORMAT.equals("YYYY-MM-DD") && settings.TIMEFORMAT.equals("HH:MM:SS")){
-            return "yyyy-MM-dd HH:mm:ss.SSS";
+            if(isMillisSymbol(settings,2)){
+                return "yyyy-MM-dd HH:mm:ss.SSS";
+            }
+            return "yyyy-MM-dd HH:mm:ss";
         }
         throw new RuntimeException("not supported");
     }
@@ -61,14 +70,6 @@ public class TokenGenerator{
         for (int i = 0; i < commonIniSettings.COLUMNFORMAT.length; i++)
         {
             String token = commonIniSettings.COLUMNFORMAT[i];
-
-/*
-FIXME
-            if (microcode.Count > 0 &&  !IsMillisSymbol(commonIniSettings,i))
-            {
-                microcode.Add(new Inc());
-            }
-*/
 
             switch (token)
             {
@@ -148,6 +149,6 @@ FIXME
     }
 
     private boolean isMillisSymbol(CommonIniSettings commonIniSettings, int i) {
-        return commonIniSettings.COLUMNFORMAT[i - 1].equals("T") && commonIniSettings.COLUMNFORMAT[i - 2].equals("D");
+        return commonIniSettings.COLUMNFORMAT[i].equals("#") && commonIniSettings.COLUMNFORMAT[i - 1].equals("T") && commonIniSettings.COLUMNFORMAT[i - 2].equals("D");
     }
 }

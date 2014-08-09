@@ -5,7 +5,7 @@ import java.time.Instant
 trait IMarketStub {
 
 
-    def Position: Int
+    def position: Int
 
     /*
      * this is confirmed position + position for pending market orders
@@ -20,7 +20,7 @@ trait IMarketStub {
     /**
      * name of security as configured in model config tickers list
      */
-    val Security: String
+    val security: String
 
     def submitOrders(orders: Seq[Order])
 
@@ -28,15 +28,15 @@ trait IMarketStub {
 
     def trades: Seq[Trade]
 
-    def cancelOrders()
+    def cancelAllOrders()
 
     def orders: Seq[Order]
 
-    def cancelOrderByIds(orderIds: Seq[String]);
+    def cancelOrderByIds(orderIds: Seq[String])
 
-    def addCallback(callback: ITradeGateCallback);
+    def addCallback(callback: ITradeGateCallback)
 
-    def removeCallbacksTo(marketStub: IMarketStub);
+    def moveCallbacksTo(marketStub: IMarketStub)
 
-    def updateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant);
+    def updateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant)
 }

@@ -12,24 +12,20 @@ class HistoryCircular[T:ClassTag](val length: Int, func: () => T) {
     var data = Array.fill[T](length) {
         func()
     }
-    var count = 0;
+    var count = 0
     var head = 0
 
-    def apply(idx: Int): T = {
-        val cidx: Int = (head + idx + length) % length
-        data(cidx)
-    }
+    def apply(idx: Int): T = data((head + idx + length) % length)
 
     def shiftAndGetLast: T = {
         count+=1
         head = (head + 1) % length
-        return data(head);
+        data(head)
     }
 
     def adjustSizeIfNeeded(historySize: Int): Unit = {
-        if (historySize < data.length) {
-            return;
+        if (historySize > data.length) {
+            data = Array.fill[T](length) {func()}
         }
-        data = Array.fill[T](length) {func()}
     }
 }

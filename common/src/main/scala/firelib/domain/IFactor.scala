@@ -5,32 +5,32 @@ package firelib.common
 import firelib.indicator.IIndicator
 
 trait IFactor {
-    def Name: String;
+    def name: String
 
-    def Value: String;
+    def value: String
 }
 
-class SimpleFactor(val Name: String, func: () => Double) extends IFactor {
+class SimpleFactor(val name: String, func: () => Double) extends IFactor {
 
-    def Value: String = {
+    def value: String = {
         try {
-            return Utils.Dbl2Str(func(), 10);
+            return Utils.dbl2Str(func(), 10)
         }
         catch {
-            case e: Exception => return "" + Double.NaN;
+            case e: Exception => return "" + Double.NaN
         }
     }
 }
 
 
-class IndicatorFactor(indicator: IIndicator[Double], val Name: String, decimalPlaces: Int = 10) extends IFactor {
+class IndicatorFactor(indicator: IIndicator[Double], val name: String, decimalPlaces: Int = 10) extends IFactor {
 
-    def Value: String = {
+    def value: String = {
         try {
-            return Utils.Dbl2Str(indicator.Value, decimalPlaces);
+            return Utils.dbl2Str(indicator.Value, decimalPlaces)
         }
         catch {
-            case e: Exception => return "" + Double.NaN;
+            case e: Exception => return "" + Double.NaN
         }
     }
 

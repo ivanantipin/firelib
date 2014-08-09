@@ -33,12 +33,12 @@ class MarketDataDistributor(length : Int, val intervalService: IIntervalService)
     }
 
     override def onOhlc(idx: Int, ohlc: Ohlc, next: Ohlc): Unit = {
-        tsContainers(idx).AddOhlc(ohlc);
+        tsContainers(idx).AddOhlc(ohlc)
         listeners.foreach(_.onOhlc(idx,ohlc,next))
     }
 
     override def onTick(idx: Int, tick: Tick, next: Tick): Unit = {
-        tsContainers(idx).AddTick(tick);
+        tsContainers(idx).AddTick(tick)
         listeners.foreach(_.onTick(idx,tick,next))
     }
 
@@ -48,28 +48,28 @@ class MarketDataDistributor(length : Int, val intervalService: IIntervalService)
             createTimeSeries(idx, interval, len)
         }
         var hist = tsContainers(idx).getTsForInterval(interval)
-        hist.adjustSizeIfNeeded(len);
-        return hist;
+        hist.adjustSizeIfNeeded(len)
+        return hist
     }
 
     private def createTimeSeries(tickerId: Int, interval: Interval, len: Int): TimeSeries[Ohlc] = {
         val lenn = if (len == -1) DEFAULT_TIME_SERIES_HISTORY_LENGTH else len
 
 
-        val ret = new TimeSeries[Ohlc](new HistoryCircular[Ohlc](len, () => new Ohlc()));
+        val ret = new TimeSeries[Ohlc](new HistoryCircular[Ohlc](lenn, () => new Ohlc()))
 
         val series = (interval, ret)
 
-        tsContainers(tickerId).timeSeries += series;
+        tsContainers(tickerId).timeSeries += series
 
         intervalService.addListener(interval, (dt) => {
             val prev = ret(0)
-            prev.DtGmtEnd = dt;
+            prev.DtGmtEnd = dt
             val last = ret.shiftAndGetLast
-            last.Interpolate(prev);
+            last.Interpolate(prev)
             last.DtGmtEnd = dt.plusMillis(interval.durationMs)
-        });
-        return ret;
+        })
+        return ret
     }
 
 

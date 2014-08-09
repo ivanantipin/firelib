@@ -34,7 +34,7 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
 
     private void OpenCurrentCsvFile() {
         csvParser = create(symbolCsvFileInfo[fileIdx].fullFileName, symbolCsvFileInfo[fileIdx].commonIniSettings);
-        csvParser.seek(csvParser.StartTime());
+        csvParser.seek(csvParser.startTime());
         CurrentTz = symbolCsvFileInfo[fileIdx].commonIniSettings.TIMEZONE;
     }
 
@@ -43,10 +43,6 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
     }
 
     public String CurrentTz;
-
-    public void UpdateTimeZoneOffset() {
-        //FIXME csvParser.UpdateGmtOffset(CurrentTz);
-    }
 
     @Override
     public T CurrentQuote() {
@@ -112,19 +108,15 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
     }
 
     @Override
-    public Instant StartTime() {
-        return csvParser.StartTime();
+    public Instant startTime() {
+        return csvParser.startTime();
     }
 
     @Override
-    public Instant EndTime() {
-        return csvParser.EndTime();
+    public Instant endTime() {
+        return csvParser.endTime();
     }
 
-    public long CurrentTimeZoneOffset() {
-        //FIXME return csvParser.GmtOffset;
-        return 0;
-    }
 
     public void Dispose() {
         csvParser.Dispose();
@@ -297,8 +289,8 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
 
             ISimpleReader<T> reader = create(filename, entry.commonIniSettings);
 
-            entry.utcStartDT = reader.StartTime();
-            entry.utcEndDT = reader.EndTime();
+            entry.utcStartDT = reader.startTime();
+            entry.utcEndDT = reader.endTime();
 
             reader.Dispose();
 

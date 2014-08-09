@@ -10,31 +10,26 @@ import scala.collection.immutable.HashMap
 object ReportWriter {
     def write(model: IModel, cfg: ModelConfig, targetDir: String) : Unit = {
 
-        //FIXME JsonSerializerUtil.Save(cfg, Path.Combine(targetDir, "cfg.json"));
+        JacksonWrapper.serialize(cfg,Paths.get(targetDir, "cfg.json").toString)
 
-        var trades = model.trades;
+        var trades = model.trades
 
-        if (trades.length == 0) {
-            return;
-        }
+        if (trades.length == 0) return
 
-        val targetFile = Paths.get(targetDir, "modelProps.properties")
+        StatFileDumper.writeRows(Paths.get(targetDir, "modelProps.properties").toAbsolutePath.toString,model.properties.map(a=>a._1 + "=" + a._2))
 
-        for (kvp <- model.properties) {
-            StatFileDumper.AppendRow(targetFile.toFile.getName, kvp._1 + "=" + kvp._2)
-        }
 
-        var factors = if (trades(0).Factors == null) new HashMap[String, String] else trades(0).Factors
+        var factors = if (trades(0).factors == null) new HashMap[String, String] else trades(0).factors
 
-        TradesCsvWriter.write(model, Paths.get(targetDir, "trades.csv").toFile.getAbsolutePath, factors.map(_._1));
+        TradesCsvWriter.write(model, Paths.get(targetDir, "trades.csv").toAbsolutePath.toString, factors.map(_._1))
+        var baseDir = "."
 
-        var baseDir = "./tmp/reportDir";
-
-        val ipypath = Paths.get(baseDir, "Python/IPythonReport/StdReport.ipynb").getFileName;
+        val ipypath = Paths.get(baseDir, "python/report/ipython/StdReport.ipynb")
 
         Files.copy(ipypath, Paths.get(targetDir, "StdReport.ipynb"), StandardCopyOption.REPLACE_EXISTING)
 
-        StatFileDumper.AppendRow(Paths.get(targetDir, "reportenv.properties").toFile.getAbsolutePath, "report.lib.path=" + Paths.get(baseDir, "Python/ReportLib").getFileName)
+        val envProps  = List("report.lib.path=" + Paths.get(baseDir, "python/report/").toAbsolutePath.toString)
+        StatFileDumper.writeRows(Paths.get(targetDir, "reportenv.properties").toAbsolutePath.toString,  envProps)
 
     }
 

@@ -4,84 +4,70 @@ import java.time.Instant
 
 import scala.collection.mutable
 
-class Trade(var Qty: Int, var Price: Double, val TradeSide: Side, val SrcOrder: Order, val DtGmt:Instant, val Security: String) {
+class Trade(val qty: Int, val price: Double, val side: Side, val order: Order, val dtGmt:Instant, val security: String) {
 
-    assert(Qty > 0,"amount can't be negative")
+    assert(qty >= 0,"amount can't be negative")
 
-    var Factors: collection.mutable.Map[String, String] = _
+    var factors: collection.mutable.Map[String, String] = _
 
-    var placementTime: Instant  = _;
+    var placementTime: Instant  = _
 
-    var PositionAfter: Int = _
+    var positionAfter: Int = _
 
-    var maxHoldingPrice: Double = Price
-    var minHoldingPrice: Double = Price
+    var maxHoldingPrice: Double = price
+    var minHoldingPrice: Double = price
 
     var reason: String = _
 
 
     def MAE: Double = {
-        return if (TradeSide == Side.Sell) Price - maxHoldingPrice else minHoldingPrice - Price
+        if (side == Side.Sell) price - maxHoldingPrice else minHoldingPrice - price
     }
 
     def MFE: Double = {
-        return if (TradeSide == Side.Sell) Price - minHoldingPrice else maxHoldingPrice - Price
+        if (side == Side.Sell) price - minHoldingPrice else maxHoldingPrice - price
     }
 
 
-    def OnPrice(pr: Double) = {
-        minHoldingPrice = math.min(pr, minHoldingPrice);
-        maxHoldingPrice = math.max(pr, maxHoldingPrice);
+    def onPrice(pr: Double) = {
+        minHoldingPrice = math.min(pr, minHoldingPrice)
+        maxHoldingPrice = math.max(pr, maxHoldingPrice)
     }
 
-    def AddFactor(name: String, value: String) {
-        if (Factors == null) {
-            Factors = new mutable.HashMap[String, String]()
+    def addFactor(name: String, value: String) {
+        if (factors == null) {
+            factors = new mutable.HashMap[String, String]()
         }
-        Factors(name) = value
+        factors(name) = value
     }
 
-    def AdjustPositionByThisTrade(position: Int): Int = {
-        return position + TradeSide.sign * Qty
+    def adjustPositionByThisTrade(position: Int): Int = position + side.sign * qty
+
+    def moneyFlow = - qty * price * side.sign
+
+
+    def split(amt: Int): (Trade, Trade) = {
+        val reminder = qty - amt
+        assert(reminder >= 0,"negative amount")
+        return (sameTradeForAmount(amt), sameTradeForAmount(reminder))
     }
 
-    def moneyFlow = - Qty * Price * TradeSide.sign
-
-
-    def Split(amt: Int): (Trade, Trade) = {
-        var amtini = Qty - amt;
-
-        assert(amtini >= 0,"negative amount")
-
-        val item1 = new Trade(amt, Price, TradeSide, SrcOrder, DtGmt, Security) {
-            placementTime = placementTime
+    def sameTradeForAmount(qty : Int) : Trade = {
+        val ret = new Trade(qty, price, side, order, dtGmt, security) {
+            placementTime = placementTime;
             reason = reason
         }
-        val item2 = if (amtini > 0)
-            new Trade(amtini, Price, TradeSide, SrcOrder, DtGmt, Security) {
-                placementTime = placementTime
-                reason = reason
-            }
-        else null
-
-        item1.minHoldingPrice = minHoldingPrice;
-        item1.maxHoldingPrice = maxHoldingPrice;
-
-        if (item2 != null) {
-            item2.minHoldingPrice = minHoldingPrice;
-            item2.maxHoldingPrice = maxHoldingPrice;
+        ret.minHoldingPrice = minHoldingPrice
+        ret.maxHoldingPrice = maxHoldingPrice
+        if (factors != null) {
+            ret.factors = collection.mutable.Map() ++ factors
         }
-        if (Factors != null) {
-            item1.Factors = collection.mutable.Map() ++ Factors
-            if (item2 != null) {
-                item2.Factors = collection.mutable.Map() ++ Factors
-            }
-        }
-        return (item1, item2)
+        return ret
+
     }
 
     override def toString: String = {
-        return "T(%s@%s/%s/%s/Id:%s/%s/%s)" format(Utils.Dbl2Str(Price, 2), Qty, TradeSide, DtGmt, reason, if (SrcOrder != null) SrcOrder.Id else "NA", Security);
+        "T(%s@%s/%s/%s/Id:%s/%s/%s)" format(Utils.dbl2Str(price, 2), qty, side, dtGmt, reason, if (order != null) order.id else "NA", security)
     }
 
 }

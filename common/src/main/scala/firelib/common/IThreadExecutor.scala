@@ -2,9 +2,9 @@ package firelib.common
 
 trait IThreadExecutor {
 
-    def Execute(task: => Unit)
+    def execute(task: => Unit)
 
-    def Start(): IThreadExecutor
+    def start(): IThreadExecutor
 
-    def Stop()
+    def stop()
 }

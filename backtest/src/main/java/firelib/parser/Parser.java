@@ -29,15 +29,15 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
     private Instant endDt;
 
     private T currentQuote;
-
-    CharBuffer charBuffer = CharBuffer.allocate(2000000);
+//21.05.2007,094800,90.05,90.05,90.05,90.05,900,1100
+    CharBuffer charBuffer = CharBuffer.allocate(40000000);
 
     long endReadPosition = 0;
     private CharsetDecoder charsetDecoder;
 
 
     public Parser(String fileName, IHandler<T>[] handlers, Supplier<T> factory) {
-        this(fileName, handlers, factory, 20000000);
+        this(fileName, handlers, factory, 80000000);
     }
 
     public Parser(String fileName, IHandler<T>[] handlers, Supplier<T> factory, int capacity) {
@@ -185,12 +185,12 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
 
 
     @Override
-    public Instant StartTime() {
+    public Instant startTime() {
         return startDt;
     }
 
     @Override
-    public Instant EndTime() {
+    public Instant endTime() {
         return endDt;
     }
 }

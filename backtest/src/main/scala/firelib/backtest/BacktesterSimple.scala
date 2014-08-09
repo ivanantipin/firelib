@@ -6,21 +6,21 @@ import firelib.common._
 
 class BacktesterSimple(marketStubFactory: String => IMarketStub = null) extends BacktesterBase(marketStubFactory) {
 
-    override def Run(cfg: ModelConfig) {
-        RunSimple(cfg);
+    override def run(cfg: ModelConfig) {
+        RunSimple(cfg)
     }
 
-    def RunSimple(cfg: ModelConfig, runBacktest: Boolean = true): (IModel, MarketDataPlayer, MarketDataDistributor) = {
+    def RunSimple(cfg: ModelConfig, backtest: Boolean = true): (IModel, MarketDataPlayer, MarketDataDistributor) = {
 
-        val (startDtGmt,endDtGmt) = if(runBacktest) CalcTimeBounds(cfg) else (Instant.MAX,Instant.MAX)
+        val (startDtGmt,endDtGmt) = if(backtest) CalcTimeBounds(cfg) else (Instant.MAX,Instant.MAX)
 
-        val (mdPlayer, ctx) = CreateModelBacktestEnvironment(cfg, startDtGmt, !runBacktest);
+        val (mdPlayer, ctx) = createModelBacktestEnv(cfg, startDtGmt, !backtest)
 
-        val model = initModel(cfg, mdPlayer, ctx);
-        if (runBacktest) {
-            RunBacktest(startDtGmt, endDtGmt, mdPlayer, cfg.interval.durationMs);
+        val model = initModel(cfg, mdPlayer, ctx)
+        if (backtest) {
+            runBacktest(startDtGmt, endDtGmt, mdPlayer, cfg.interval.durationMs)
             model.onBacktestEnd
-            writeModelPnlStat(cfg, model);
+            writeModelPnlStat(cfg, model)
         }
         return (model, mdPlayer, ctx)
     }

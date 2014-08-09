@@ -14,8 +14,8 @@ trait ISimpleReader[T <: Timed] {
 
     def Read(): Boolean
 
-    def StartTime() : Instant
-    def EndTime() : Instant
+    def startTime() : Instant
+    def endTime() : Instant
 
 
 }

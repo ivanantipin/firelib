@@ -18,7 +18,7 @@ object StrategyMetric {
     val MedianHoldingPeriodMin = new StrategyMetric("MedianHoldingPeriodMin")
     val AvgHoldingPeriodSec = new StrategyMetric("AvgHoldingPeriodSec")
 
-};
+}
 
 
 sealed class StrategyMetric private (val Name: String) {

@@ -10,7 +10,7 @@ class ReportProcessor(val estimatedMetrics: (Seq[(Trade, Trade)]) => Map[Strateg
                       val optParams: Seq[String], val topModelsToKeep: Int = 3, val minNumberOfTrades: Int = 1, val removeOutlierTrades: Int = 2) extends IReportProcessor {
 
 
-    private val bestModels = new ArrayBuffer[(Double, IModel, Map[StrategyMetric, Double])]();
+    private val bestModels = new ArrayBuffer[(Double, IModel, Map[StrategyMetric, Double])]()
     var Estimates = new ArrayBuffer[ExecutionEstimates]()
 
     def BestModels: Seq[IModel] = bestModels.map(_._2)
@@ -20,20 +20,20 @@ class ReportProcessor(val estimatedMetrics: (Seq[(Trade, Trade)]) => Map[Strateg
     }
 
 
-    def Process(models: Seq[IModel]) = {
+    def process(models: Seq[IModel]) = {
 
         models.foreach(model => {
 
-            var tradingCases = Utils.GetTradingCases(model.trades);
+            val tradingCases = Utils.toTradingCases(model.trades)
 
-            var metrics = estimatedMetrics(tradingCases);
+            val metrics = estimatedMetrics(tradingCases)
 
-            var est = metrics(optimizedFunctionName);
+            val est = metrics(optimizedFunctionName)
             if ((bestModels.length == 0 || est > bestModels(0)._1) && model.trades.length > minNumberOfTrades) {
                 bestModels += ((est, model, metrics))
             }
 
-            Estimates += new ExecutionEstimates(ExtractOptParams(model), metrics)
+            Estimates += new ExecutionEstimates(extractOptParams(model), metrics)
 
         })
 
@@ -43,11 +43,11 @@ class ReportProcessor(val estimatedMetrics: (Seq[(Trade, Trade)]) => Map[Strateg
 
 
         while (bestModels.length > topModelsToKeep) {
-            bestModels.remove(0);
+            bestModels.remove(0)
         }
     }
 
-    private def ExtractOptParams(model: IModel): Map[String, Int] = {
-        return optParams map (s => (s, model.properties(s).toInt)) toMap;
+    private def extractOptParams(model: IModel): Map[String, Int] = {
+        return optParams map (s => (s, model.properties(s).toInt)) toMap
     }
 }

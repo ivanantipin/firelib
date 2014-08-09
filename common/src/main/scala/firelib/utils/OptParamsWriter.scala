@@ -14,14 +14,14 @@ object OptParamsWriter {
         rows += (optParams.map(_.Name) ++ ";" ++ metrics.map(_.Name)).mkString(";")
         for (est <- Estimates) {
             val opts: Seq[String] = optParams.map(nm => est.OptParams(nm.Name).toString)
-            val calcMetrics: Seq[String] = metrics.map(m => Utils.Dbl2Str(est.MetricName2Value(m),5))
+            val calcMetrics: Seq[String] = metrics.map(m => Utils.dbl2Str(est.MetricName2Value(m),5))
             rows += (opts ++ calcMetrics).mkString(";")
         }
-        StatFileDumper.writeRows(Paths.get(targetDir, "Opt.csv").toString, rows);
+        StatFileDumper.writeRows(Paths.get(targetDir, "Opt.csv").toString, rows)
 
-        val ipypath = Paths.get("/home/ivan/tmp/report", "Python/IPythonReport/OptStdReport.ipynb");
+        val ipypath = Paths.get("/home/ivan/tmp/report", "Python/IPythonReport/OptStdReport.ipynb")
 
-        Files.copy(ipypath, Paths.get(targetDir, "OptStdReport.ipynb"), StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(ipypath, Paths.get(targetDir, "OptStdReport.ipynb"), StandardCopyOption.REPLACE_EXISTING)
 
     }
 }

@@ -11,46 +11,46 @@ abstract class BasketModel extends IModel {
     var marketStubs: Array[IMarketStub] = _
 
     override def initModel(modelProps: Map[String, String], mktStubs: Seq[IMarketStub], ctx: IMarketDataDistributor) = {
-        mdDistributor = ctx;
-        marketStubs = mktStubs.toArray;
-        modelProperties = modelProps;
-        applyProperties(modelProps);
+        mdDistributor = ctx
+        marketStubs = mktStubs.toArray
+        modelProperties = modelProps
+        applyProperties(modelProps)
     }
 
     def buyAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
-        marketStubs(idx).submitOrders(List(new Order(OrderType.Limit, price, vol, Side.Buy)));
+        marketStubs(idx).submitOrders(List(new Order(OrderType.Limit, price, vol, Side.Buy)))
     }
 
     def sellAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
-        marketStubs(idx).submitOrders(List(new Order(OrderType.Limit, price, vol, Side.Sell)));
+        marketStubs(idx).submitOrders(List(new Order(OrderType.Limit, price, vol, Side.Sell)))
     }
 
     def buyAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
-        marketStubs(idx).submitOrders(List(new Order(OrderType.Stop, price, vol, Side.Buy)));
+        marketStubs(idx).submitOrders(List(new Order(OrderType.Stop, price, vol, Side.Buy)))
     }
 
     def sellAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
-        marketStubs(idx).submitOrders(List(new Order(OrderType.Stop, price, vol, Side.Sell)));
+        marketStubs(idx).submitOrders(List(new Order(OrderType.Stop, price, vol, Side.Sell)))
     }
 
     def enableOhlcHistory(intr: Interval, lengthToMaintain: Int = -1): ArrayBuffer[ITimeSeries[Ohlc]] = {
-        var rt = new ArrayBuffer[ITimeSeries[Ohlc]]();
+        var rt = new ArrayBuffer[ITimeSeries[Ohlc]]()
         for (i <- 0 until marketStubs.length) {
-            rt += mdDistributor.activateOhlcTimeSeries(i, intr, lengthToMaintain);
+            rt += mdDistributor.activateOhlcTimeSeries(i, intr, lengthToMaintain)
         }
-        return rt;
+        return rt
     }
 
 
     def getTs(mdt: Interval, idx: Int = 0): ITimeSeries[Ohlc] = {
-        return mdDistributor.activateOhlcTimeSeries(idx, mdt, -1);
+        return mdDistributor.activateOhlcTimeSeries(idx, mdt, -1)
     }
 
 
     def getOrderForDiff(currentPosition: Int, targetPos: Int): Order = {
-        val vol = targetPos - currentPosition;
+        val vol = targetPos - currentPosition
         if (vol != 0) {
-            return new Order(OrderType.Market, 0, math.abs(vol), if (vol > 0) Side.Buy else Side.Sell);
+            return new Order(OrderType.Market, 0, math.abs(vol), if (vol > 0) Side.Buy else Side.Sell)
         }
         return null
     }
@@ -66,12 +66,12 @@ abstract class BasketModel extends IModel {
 
     protected def managePosTo(pos: Int, idx: Int = 0): Unit = {
         //if (stubs(idx).Position != stubs(idx).UnconfirmedPosition) {
-        //    Log(String.format("Unconfirmed position %s not equals to position %s ignoring managing position to " + pos, stubs(idx).Position, stubs(idx).UnconfirmedPosition));
-        //    return;
+        //    Log(String.format("Unconfirmed position %s not equals to position %s ignoring managing position to " + pos, stubs(idx).Position, stubs(idx).UnconfirmedPosition))
+        //    return
         //}
-        var ord = getOrderForDiff(marketStubs(idx).Position, pos);
+        var ord = getOrderForDiff(marketStubs(idx).position, pos)
         if (ord != null) {
-            marketStubs(idx).submitOrders(List(ord));
+            marketStubs(idx).submitOrders(List(ord))
         }
     }
 
@@ -79,7 +79,7 @@ abstract class BasketModel extends IModel {
 
     protected def onIntervalEnd(dtGmt:Instant) = {}
 
-    protected def position(idx: Int = 0) = marketStubs(idx).Position
+    protected def position(idx: Int = 0) = marketStubs(idx).position
 
     def onBacktestEnd()
 
@@ -94,12 +94,12 @@ abstract class BasketModel extends IModel {
     override def hasValidProps() = true
 
 
-    protected def FlattenAll(reason: String = null) = marketStubs.foreach(_.flattenAll(reason));
+    protected def FlattenAll(reason: String = null) = marketStubs.foreach(_.flattenAll(reason))
 
-    protected def CancelAllOrders = marketStubs.foreach(_.cancelOrders)
+    protected def CancelAllOrders = marketStubs.foreach(_.cancelAllOrders)
 
     def onStep(dtGmt:Instant) = {
-        this.dtGmt = dtGmt;
-        onIntervalEnd(dtGmt);
+        this.dtGmt = dtGmt
+        onIntervalEnd(dtGmt)
     }
 }

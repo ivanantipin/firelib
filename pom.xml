@@ -11,6 +11,7 @@
         <module>backtest</module>
         <module>execution</module>
         <module>ibadapter</module>
+        <module>strats</module>
     </modules>
 
     <packaging>pom</packaging>

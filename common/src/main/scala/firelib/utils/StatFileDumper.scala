@@ -6,40 +6,23 @@ import scala.collection.JavaConversions._
 
 object StatFileDumper
     {
-        def AppendRow(ff : String, row : String)
+        def appendRow(ff : String, row : String)
         {
-            Files.write(Paths.get(ff), List(row).toStream, StandardOpenOption.APPEND);
+            if(Files.exists(Paths.get(ff))){
+                Files.write(Paths.get(ff), List(row).toStream, StandardOpenOption.APPEND)
+            }else{
+                Files.write(Paths.get(ff), List(row).toStream, StandardOpenOption.CREATE)
+            }
         }
 
         def appendRows(ff : String, rows : Seq[String])
         {
-            Files.write(Paths.get(ff), rows.toStream, StandardOpenOption.APPEND);
+            Files.write(Paths.get(ff), rows.toStream, StandardOpenOption.APPEND)
         }
 
-        def writeRows(ff : String, rows : Seq[String])
+        def writeRows(ff : String, rows : Iterable[String])
         {
-            Files.write(Paths.get(ff), rows.toStream, StandardOpenOption.WRITE);
+            Files.write(Paths.get(ff), rows.toStream, StandardOpenOption.CREATE)
         }
-
-
-/*
-        public static void DumpSeries(string fileName, List<FactorsPoint> series, List<string> header = null)
-        {
-            using (var fs = GetStandardStreamWriter(fileName))
-            {
-                if (header != null)
-                {
-                    fs.WriteLine(string.Join(",", header.ToArray()));
-                }
-
-                int cnt = series.Count;
-                for (int i = 0; i < cnt; i++)
-                {
-                    series[i].Write(fs);
-                }
-                fs.Flush();
-            }
-        }
-*/
 
     }

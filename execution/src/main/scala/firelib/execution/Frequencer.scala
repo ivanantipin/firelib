@@ -26,11 +26,11 @@ class Frequencer(val interval: Interval, val precisionMs: Long = 100) extends Ru
     private def notifyListeners(ctime: Instant) = timeListeners.foreach(_(ctime))
 
     override def run(): Unit = {
-        val epochTick = System.currentTimeMillis();
-        val rounded = (epochTick / interval.durationMs) * interval.durationMs;
+        val epochTick = System.currentTimeMillis()
+        val rounded = (epochTick / interval.durationMs) * interval.durationMs
         if (lastTimeTrigger != rounded) {
-            lastTimeTrigger = rounded;
-            notifyListeners(Instant.ofEpochMilli(rounded));
+            lastTimeTrigger = rounded
+            notifyListeners(Instant.ofEpochMilli(rounded))
         }
     }
 }

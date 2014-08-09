@@ -9,35 +9,25 @@ import scala.collection.mutable.ArrayBuffer
 
 class MarketDataPlayer(val tickerPlayers: Seq[TickerMdPlayer]) {
 
-
-
     private val stepListeners = new ArrayBuffer[IStepListener]()
 
-    //keep it local to do not mess with runtime interval service
-    private val intervalService = new IntervalService();
+    def addListener(idx: Int, lsn: IMarketDataListener) = tickerPlayers(idx).addListener(lsn)
+
+    def addListenerForAll(lsn: IMarketDataListener) = tickerPlayers.foreach(_.addListener(lsn))
 
 
-    intervalService.addListener(Interval.Min240, (dt) => tickerPlayers.foreach(_.UpdateTimeZoneOffset()))
+    def addStepListener(lst: IStepListener) = stepListeners += lst
 
+    def addStepListenerAtBeginning(lst: IStepListener) = stepListeners.insert(0, lst)
 
-    def AddListener(idx : Int, lsn : IMarketDataListener) = tickerPlayers(idx).addListener(lsn)
-
-    def AddListenerForAll(lsn : IMarketDataListener) = tickerPlayers.foreach(_.addListener(lsn))
-
-
-    def AddStepListener(lst: IStepListener) = stepListeners += lst
-
-    def AddStepListenerAtBeginning(lst: IStepListener) = stepListeners.insert(0, lst)
-
-    def Step(chunkEndGmt:Instant): Boolean = {
-        intervalService.onStep(chunkEndGmt);
+    def step(chunkEndGmt: Instant): Boolean = {
         for (i <- 0 until tickerPlayers.length) {
-            if(!tickerPlayers(i).ReadUntil(chunkEndGmt)){
+            if (!tickerPlayers(i).readUntil(chunkEndGmt)) {
                 return false
             }
         }
         stepListeners.foreach(_.onStep(chunkEndGmt))
-        return true;
+        return true
     }
 
     def getStepListeners(): Seq[IStepListener] = stepListeners

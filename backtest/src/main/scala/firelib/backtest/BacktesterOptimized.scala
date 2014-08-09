@@ -12,59 +12,59 @@ import scala.util.control._
 class BacktesterOptimized extends BacktesterBase {
 
 
-    override def Run(cfg: ModelConfig) = {
+    override def run(cfg: ModelConfig) = {
         System.out.println("Starting")
 
-        var startTime = System.currentTimeMillis();
+        val startTime = System.currentTimeMillis()
 
         val reportProcessor = new ReportProcessor(BacktestStatisticsCalculator.CalculateStatisticsForCases,
             cfg.optimizedMetric,
             cfg.optParams.map(op => op.Name),
-            minNumberOfTrades = cfg.optMinNumberOfTrades);
+            minNumberOfTrades = cfg.optMinNumberOfTrades)
 
-        val executor = new ThreadExecutor(cfg.optThreadNumber, maxLengthOfQueue = 1).Start()
-        val reportExecutor = new ThreadExecutor(1).Start();
-        val variator = new ParamsVariator(cfg.optParams);
+        val executor = new ThreadExecutor(cfg.optThreadNumber, maxLengthOfQueue = 1).start()
+        val reportExecutor = new ThreadExecutor(1).start()
+        val variator = new ParamsVariator(cfg.optParams)
 
 
-        val (startDtGmt, endDtGmt) = CalcTimeBounds(cfg);
+        val (startDtGmt, endDtGmt) = CalcTimeBounds(cfg)
 
         assert(cfg.optimizedPeriodDays > 0 , "optimized days count not set!!")
 
-        val endOfOptimize = startDtGmt.plus(cfg.optimizedPeriodDays, ChronoUnit.DAYS);
+        val endOfOptimize = startDtGmt.plus(cfg.optimizedPeriodDays, ChronoUnit.DAYS)
 
         System.out.println("number of models " + variator.Combinations)
 
         while (true) {
-            val (mdPlayer, distributor) = CreateModelBacktestEnvironment(cfg, startDtGmt)
-            val models = NextModelVariationsChunk(cfg, variator, mdPlayer, distributor)
+            val (mdPlayer, distributor) = createModelBacktestEnv(cfg, startDtGmt)
+            val models = nextModelVariationsChunk(cfg, variator, mdPlayer, distributor)
             if (models.length == 0) {
                 Breaks.break
             }
-            val task = new BacktestTask(startDtGmt, endOfOptimize, mdPlayer, cfg.interval.durationMs, models, (mod) => reportExecutor.Execute(reportProcessor.Process(mod)));
+            val task = new BacktestTask(startDtGmt, endOfOptimize, mdPlayer, cfg.interval.durationMs, models, (mod) => reportExecutor.execute(reportProcessor.process(mod)))
 
-            executor.Execute(task.run)
+            executor.execute(task.run)
 
             System.out.println("models scheduled " + models.length)
 
         }
 
-        executor.Stop();
-        reportExecutor.Stop();
+        executor.stop()
+        reportExecutor.stop()
 
         System.out.println("Model optimized in " + (System.currentTimeMillis() - startTime) / 1000 + " sec. ")
 
 
         assert(reportProcessor.BestModels.length > 0, "no models get produced!!")
 
-        var bm = reportProcessor.BestModels.last
-        val (mdPlayer, distributor) = CreateModelBacktestEnvironment(cfg, startDtGmt);
-        var model = initModelWithCustomProps(cfg, mdPlayer, distributor, bm.properties);
-        RunBacktest(startDtGmt, endDtGmt, mdPlayer, cfg.interval.durationMs);
+        val bm = reportProcessor.BestModels.last
+        val (mdPlayer, distributor) = createModelBacktestEnv(cfg, startDtGmt)
+        val model = initModelWithCustomProps(cfg, mdPlayer, distributor, bm.properties)
+        runBacktest(startDtGmt, endDtGmt, mdPlayer, cfg.interval.durationMs)
 
 
-        writeModelPnlStat(cfg, model);
-        WriteOptimizedReport(cfg, reportProcessor, endOfOptimize);
+        writeModelPnlStat(cfg, model)
+        writeOptimizedReport(cfg, reportProcessor, endOfOptimize)
 
         System.out.println("Finished")
     }
@@ -72,39 +72,39 @@ class BacktesterOptimized extends BacktesterBase {
     private class BacktestTask(val StartDtGmt:Instant, val EndDtGmt:Instant, val MdPlayer: MarketDataPlayer, stepMs: Int, Models: Seq[IModel], callback: Seq[IModel] => Unit) {
 
         def run() = {
-            RunBacktest(StartDtGmt, EndDtGmt, MdPlayer, stepMs);
-            callback(Models);
+            runBacktest(StartDtGmt, EndDtGmt, MdPlayer, stepMs)
+            callback(Models)
         }
     }
 
-    private def WriteOptimizedReport(cfg: ModelConfig, reportProcessor: ReportProcessor, endOfOptimize:Instant) = {
+    private def writeOptimizedReport(cfg: ModelConfig, reportProcessor: ReportProcessor, endOfOptimize:Instant) = {
         OptParamsWriter.write(
             cfg.reportRoot,
             OptEnd = endOfOptimize,
             Estimates = reportProcessor.Estimates,
             optParams = cfg.optParams,
-            metrics = cfg.calculatedMetrics);
+            metrics = cfg.calculatedMetrics)
     }
 
 
-    private def NextModelVariationsChunk(cfg: ModelConfig, variator: ParamsVariator, mdPlayer: MarketDataPlayer, ctx: MarketDataDistributor): Seq[IModel] = {
+    private def nextModelVariationsChunk(cfg: ModelConfig, variator: ParamsVariator, mdPlayer: MarketDataPlayer, ctx: MarketDataDistributor): Seq[IModel] = {
 
-        var models = new ArrayBuffer[IModel]();
+        var models = new ArrayBuffer[IModel]()
 
         var varr = variator.Next
 
         while (varr != null) {
-            var model = initModel(cfg, mdPlayer, ctx, varr);
+            var model = initModel(cfg, mdPlayer, ctx, varr)
 
             if (model.hasValidProps) {
                 models += model
                 if (models.length >= cfg.optBatchSize) {
-                    return models;
+                    return models
                 }
             }
             varr = variator.Next
         }
-        return models;
+        return models
 
     }
 }
