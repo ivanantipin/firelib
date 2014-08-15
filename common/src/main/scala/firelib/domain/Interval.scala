@@ -21,6 +21,7 @@ object Interval {
     val intervals = new ArrayBuffer[Interval]()
 
     val Sec1 = new Interval("Sec1", 1000)
+    val Sec10 = new Interval("Sec10", 10 * 1000)
     val Sec30 = new Interval("Sec30", 30 * 1000)
     val Min1 = new Interval("Min1", 1 * 60 * 1000)
     val Min5 = new Interval("Min5", 5 * 60 * 1000)

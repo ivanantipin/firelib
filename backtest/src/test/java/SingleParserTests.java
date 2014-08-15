@@ -42,10 +42,6 @@ public class SingleParserTests {
         return new TokenGenerator(commonIniSettings);
     }
 
-
-
-
-
     @Test
     public void TestUltraFastSingleCsvParserStartEndTimes() {
 
@@ -113,7 +109,7 @@ public class SingleParserTests {
 
         Instant dt0 = LocalDateTime.of(2011, 11, 21, 2, 0, 8, 700_000_000).atZone(tokenGenerator.zoneId).toInstant();
 
-        Assert.assertEquals(parser.CurrentQuote().DtGmt(), dt0);
+        Assert.assertEquals(parser.current().DtGmt(), dt0);
     }
 
 
@@ -133,33 +129,33 @@ public class SingleParserTests {
         Assert.assertTrue(parser.seek(parser.startTime()));
 
 
-        Assert.assertEquals(parser.CurrentQuote().DtGmt(), getTime(2012, 1, 3, 10, 0, 0, 53, tokenGenerator.zoneId));
-        Assert.assertEquals(parser.CurrentQuote().Last(), 137495,0.00001);
-        Assert.assertEquals(parser.CurrentQuote().Vol(), 1);
+        Assert.assertEquals(parser.current().DtGmt(), getTime(2012, 1, 3, 10, 0, 0, 53, tokenGenerator.zoneId));
+        Assert.assertEquals(parser.current().last(), 137495,0.00001);
+        Assert.assertEquals(parser.current().vol(), 1);
 //        Assert.assertEquals(parser.CurrentQuote().Ask(), 0,0.00001);
   //      Assert.assertEquals(parser.CurrentQuote().Bid(), 0,0.00001);
         //FIXME Assert.assertEquals(parser.CurrentQuote().CumVol, 0);
-        Assert.assertEquals(parser.CurrentQuote().getTickNumber(), 483738513l);
+        Assert.assertEquals(parser.current().getTickNumber(), 483738513l);
 
-        Assert.assertTrue(parser.Read());
+        Assert.assertTrue(parser.read());
 
 
-        Assert.assertEquals(parser.CurrentQuote().DtGmt(), getTime(2012, 1, 3, 10, 0, 0, 53, tokenGenerator.zoneId));
-        Assert.assertEquals(parser.CurrentQuote().Last(), 137500,0.00001);
-        Assert.assertEquals(parser.CurrentQuote().Vol(), 1);
+        Assert.assertEquals(parser.current().DtGmt(), getTime(2012, 1, 3, 10, 0, 0, 53, tokenGenerator.zoneId));
+        Assert.assertEquals(parser.current().last(), 137500,0.00001);
+        Assert.assertEquals(parser.current().vol(), 1);
     //    Assert.assertEquals(parser.CurrentQuote().Ask(), 0,0.00001);
      //   Assert.assertEquals(parser.CurrentQuote().Bid(), 0,0.00001);
         //FIXME Assert.assertEquals(parser.CurrentQuote().CumVolume, 0);
-        Assert.assertEquals(parser.CurrentQuote().TickNumber(), 483738514l);
+        Assert.assertEquals(parser.current().tickNumber(), 483738514l);
     }
 
 
     @Test
     public void testLongFile() {
         TokenGenerator tokenGenerator = new TokenGenerator(new CommonIniSettings().initFromFile(getfile("LongFile/common.ini")));
-        Parser<Tick> parser = new Parser<>(getfile("LongFile/XG_#.csv"), tokenGenerator.handlers, () -> new Tick(), 100);
-        while (parser.Read()){
-            System.out.println(parser.CurrentQuote().DtGmt());
+        Parser<Tick> parser = new Parser<>(getfile("LongFile/XG_#.csv"), tokenGenerator.handlers, () -> new Tick());
+        while (parser.read()){
+            //System.out.println(parser.CurrentQuote().DtGmt());
         }
     }
 

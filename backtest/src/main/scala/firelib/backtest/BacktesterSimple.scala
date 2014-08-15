@@ -1,28 +1,30 @@
 package firelib.backtest
 
-import java.time.Instant
-
 import firelib.common._
+import firelib.utils.ReportWriter
 
-class BacktesterSimple(marketStubFactory: String => IMarketStub = null) extends BacktesterBase(marketStubFactory) {
+import scala.collection.mutable.ArrayBuffer
 
-    override def run(cfg: ModelConfig) {
-        RunSimple(cfg)
-    }
 
-    def RunSimple(cfg: ModelConfig, backtest: Boolean = true): (IModel, MarketDataPlayer, MarketDataDistributor) = {
+class BacktesterSimple (envFactory : BacktestEnvironmentFactory, stubFactory : MarketStubFactory) {
 
-        val (startDtGmt,endDtGmt) = if(backtest) CalcTimeBounds(cfg) else (Instant.MAX,Instant.MAX)
+    def run(cfg: ModelConfig) : BacktestEnvironment = {
 
-        val (mdPlayer, ctx) = createModelBacktestEnv(cfg, startDtGmt, !backtest)
+        val env : BacktestEnvironment = envFactory(cfg)
 
-        val model = initModel(cfg, mdPlayer, ctx)
-        if (backtest) {
-            runBacktest(startDtGmt, endDtGmt, mdPlayer, cfg.interval.durationMs)
-            model.onBacktestEnd
-            writeModelPnlStat(cfg, model)
-        }
-        return (model, mdPlayer, ctx)
+        val model = cfg.newInstance()
+
+        val stubs: ArrayBuffer[IMarketStub] = cfg.tickerIds.map(stubFactory)
+
+        env.bindModelIntoEnv(model,stubs,cfg.customParams.toMap)
+
+        env.backtest()
+
+        ReportWriter.write(model, cfg, cfg.reportRoot)
+
+        return env
     }
 
 }
+
+

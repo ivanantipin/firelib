@@ -18,7 +18,7 @@ class VariatorTest {
             new OptimizedParameter("p1", 0, 3)
         ))
 
-        Assert.assertEquals(6, variator.Combinations)
+        Assert.assertEquals(6, variator.combinations)
 
         var set = new mutable.HashSet[(Int, Int)]() ++ List(
             (0, 0),
@@ -28,12 +28,12 @@ class VariatorTest {
             (0, 2),
             (1, 2))
 
-        var dd = variator.Next
-        while (dd != null) {
+
+        while (variator.hasNext()) {
+            val dd = variator.next
             var key = (dd("p0"), dd("p1"))
             Assert.assertTrue(set.contains(key))
             set -= key
-            dd = variator.Next
         }
         Assert.assertEquals(0, set.size)
     }

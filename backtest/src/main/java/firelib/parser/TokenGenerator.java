@@ -12,8 +12,6 @@ import java.util.List;
 
 public class TokenGenerator{
 
-
-
     private CommonIniSettings commonIniSettings;
 
     boolean isOhlc(CommonIniSettings commonIniSettings){
@@ -41,6 +39,10 @@ public class TokenGenerator{
         zoneId = getZone();
         dateformat = getDateFormat(commonIniSettings);
         handlers = parsePattern();
+    }
+
+    public static TokenGenerator loadFromFile(String file){
+        return new TokenGenerator(new CommonIniSettings().initFromFile(file));
     }
 
     String getDateFormat(CommonIniSettings settings){

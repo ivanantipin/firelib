@@ -7,14 +7,11 @@ import firelib.common._
 import scala.collection.mutable.ArrayBuffer
 
 
-class MarketDataPlayer(val tickerPlayers: Seq[TickerMdPlayer]) {
+class MarketDataPlayer(val tickerPlayers: Seq[ReaderToListenerAdapter], val bounds : (Instant,Instant), stepMs : Int) {
 
     private val stepListeners = new ArrayBuffer[IStepListener]()
 
-    def addListener(idx: Int, lsn: IMarketDataListener) = tickerPlayers(idx).addListener(lsn)
-
-    def addListenerForAll(lsn: IMarketDataListener) = tickerPlayers.foreach(_.addListener(lsn))
-
+    def addListener(lsn: IMarketDataListener) = tickerPlayers.foreach(_.addListener(lsn))
 
     def addStepListener(lst: IStepListener) = stepListeners += lst
 
@@ -32,7 +29,13 @@ class MarketDataPlayer(val tickerPlayers: Seq[TickerMdPlayer]) {
 
     def getStepListeners(): Seq[IStepListener] = stepListeners
 
-    def Dispose() = tickerPlayers.foreach(_.Dispose())
+    def close() = tickerPlayers.foreach(_.close())
 
+    def play() {
+        var dtGmtcur = bounds._1
+        while (dtGmtcur.isBefore(bounds._2) && step(dtGmtcur)) {
+            dtGmtcur = dtGmtcur.plusMillis(stepMs)
+        }
+    }
 
 }

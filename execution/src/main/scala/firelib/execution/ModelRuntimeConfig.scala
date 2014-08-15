@@ -5,9 +5,9 @@ import firelib.common._
 
 class ModelRuntimeConfig {
 
-    var modelConfig: ModelConfig =_
+    var modelConfig: ModelConfig = new ModelConfig()
 
-    var GatewayType: String = _
+    var gatewayType: String = _
 
     var runBacktest: Boolean = false
 
@@ -15,12 +15,13 @@ class ModelRuntimeConfig {
 
     var tradeLogDirectory: Option[String]=_
 
-    val IbContractMapping = Map[String, String](
-        "EURUSD" -> "Symbol=EURSecType=CASHCurrency=USDExchange=IDEALPRO",
-        "SPY" -> "Symbol=SPYSecType=STKCurrency=USDExchange=ARCA",
-        "DXJ" -> "Symbol=DXJSecType=STKCurrency=USDExchange=ARCA",
-        "AMLP" -> "Symbol=AMLPSecType=STKCurrency=USDExchange=ARCA",
-        "QQQ" -> "Symbol=QQQSecType=STKCurrency=USDExchange=ARCA",
-        "EEM" -> "Symbol=EEMSecType=STKCurrency=USDExchange=ARCA"
+    val ibContractMapping = Map[String, String](
+        "EURUSD" -> "m_symbol=EUR;m_secType=CASH;m_currency=USD;m_exchange=IDEALPRO",
+        "SPY" -> "m_symbol=SPY;m_secType=STK;m_currency=USD;m_exchange=ARCA",
+        "DXJ" -> "m_symbol=DXJ;m_secType=STK;m_currency=USD;m_exchange=ARCA",
+        "AMLP" -> "m_symbol=AMLP;m_secType=STK;m_currency=USD;m_exchange=ARCA",
+        "QQQ" -> "m_symbol=QQQ;m_secType=STK;m_currency=USD;m_exchange=ARCA",
+        "EEM" -> "m_symbol=EEM;m_secType=STK;m_currency=USD;m_exchange=ARCA"
     )
+
 }

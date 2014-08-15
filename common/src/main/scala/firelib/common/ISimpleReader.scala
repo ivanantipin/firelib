@@ -2,17 +2,12 @@ package firelib.common
 
 import java.time.Instant
 
-/**
- * Created by ivan on 7/21/14.
- */
-trait ISimpleReader[T <: Timed] {
+trait ISimpleReader[+T <: Timed] extends AutoCloseable{
     def seek(time:Instant) : Boolean
 
-    def Dispose()
+    def current: T
 
-    def CurrentQuote: T
-
-    def Read(): Boolean
+    def read(): Boolean
 
     def startTime() : Instant
     def endTime() : Instant

@@ -5,7 +5,7 @@ import java.util
 import java.util.concurrent.{Executors, LinkedBlockingQueue, TimeUnit}
 
 import com.ib.client
-import com.ib.client.{Contract, Execution, TagValue, TickType}
+import com.ib.client.{Contract, Execution, TagValue}
 import firelib.common._
 import firelib.robot.{IMarketDataProvider, ITradeGate}
 
@@ -16,20 +16,20 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
     val tradeGateCallbacks = new ArrayBuffer[ITradeGateCallback]()
     val orders = new ArrayBuffer[OrderEntry]()
 
-    var port: Int=_
+    var port: Int = _
 
     private var subscriptionTickerCounter = 0
-    private var symbolMapping: Map[String, String] =_
+    private var symbolMapping: Map[String, String] = _
 
     private val ticker2contract = new mutable.HashMap[String, Contract]()
-    private var callbackExecutor: IThreadExecutor =_
+    private var callbackExecutor: IThreadExecutor = _
 
     private val orderIdQueue = new LinkedBlockingQueue[Integer]()
 
 
     case class OrderEntry(ClientOrder: Order, IbOrder: com.ib.client.Order, IbId: Int)
 
-    private def GetNextOrderId: Int = {
+    private def getNextOrderId: Int = {
         log.info("requesting order for client id " + clientId)
         orderIdQueue.clear()
         clientSocket.reqIds(1)
@@ -43,7 +43,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
 
 
     //this is called in reader thread!!!
-    override def nextValidId(orderId: Int) {
+    override def nextValidId(orderId: Int): Unit = {
         log.info("received order id " + orderId + " for client id " + clientId)
         orderIdQueue.add(orderId)
     }
@@ -51,8 +51,8 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
 
     def sendOrder(order: Order): Unit = {
         log.info("sending order " + order)
-        val ibOrder = ConvertOrder(order)
-        val orderId = GetNextOrderId
+        val ibOrder = convertOrder(order)
+        val orderId = getNextOrderId
 
         if (orderId == -1) {
             log.error("failed to get next available order id, rejecting order " + order)
@@ -86,12 +86,12 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
         this.callbackExecutor = callbackExecutor
     }
 
-    private def HeartBeat() = {
+    private def heartBeat() = {
         callbackExecutor.execute(() => {
             try {
                 var orderId = -1
                 try {
-                    orderId = GetNextOrderId
+                    orderId = getNextOrderId
                 } catch {
                     case e: Throwable =>
                 }
@@ -114,7 +114,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
 
     def start() = {
         executor.scheduleAtFixedRate(new Runnable {
-            override def run(): Unit = HeartBeat()
+            override def run(): Unit = heartBeat()
         }, 8, 8, TimeUnit.HOURS)
         connect()
     }
@@ -131,7 +131,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
             orders.find(_.IbId == execution.m_orderId) match {
                 case None => log.error("execution, no order found for ib order id " + execution.m_orderId)
                 case Some(entr) => tradeGateCallbacks.foreach(_.onTrade(new Trade(execution.m_shares, execution.m_price, entr.ClientOrder.side, entr.ClientOrder,
-                   Instant.now() , entr.ClientOrder.security)))
+                    Instant.now(), entr.ClientOrder.security)))
 
             }
         })
@@ -140,8 +140,11 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
     override def orderStatus(orderId: Int, status: String, filled: Int, remaining: Int, avgFillPrice: Double, permId: Int, parentId: Int,
                              lastFillPrice: Double, clientId: Int, whyHeld: String): Unit = {
         callbackExecutor.execute(() => {
-            log.info("OrderStatus. Id: " + orderId + ", Status: " + status + ", Filled" + filled + ", Remaining: " + remaining
-              + ", AvgFillPrice: " + avgFillPrice + ", PermId: " + permId + ", ParentId: " + parentId + ", LastFillPrice: " + lastFillPrice + ", ClientId: " + clientId + ", WhyHeld: " + whyHeld + "\n")
+            log.info("OrderStatus. Id: " + orderId + ", Status: " +
+              status + ", Filled" + filled + ", Remaining: " + remaining
+              + ", AvgFillPrice: " + avgFillPrice + ", PermId: " + permId + ", ParentId: " +
+              parentId + ", LastFillPrice: " + lastFillPrice + ", ClientId: " + clientId + ", " +
+              "WhyHeld: " + whyHeld + "\n")
 
 
             val entrOpt = orders.find(_.IbId == orderId)
@@ -181,8 +184,9 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
     }
 
     override def error(id: Int, errorCode: Int, errorMsg: String) = {
+        log.error(s"error message $errorMsg code $errorCode id $id")
         callbackExecutor.execute(() => {
-            val find = subscriptions.find(_.requestId == id)
+            val find = subscriptionByRequestId(id)
             if (find.isDefined) {
                 log.error("failed to subscribe %s message is %s".format(find.get.TickerId, errorMsg))
             }
@@ -190,7 +194,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
     }
 
 
-    private def ConvertOrder(ord: Order): client.Order = {
+    private def convertOrder(ord: Order): client.Order = {
         val order = new com.ib.client.Order() {
             m_action = if (ord.side == Side.Buy) "BUY" else "SELL"
             m_orderType = if (ord.orderType == OrderType.Market) "MKT" else "LMT"
@@ -207,7 +211,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
             return ticker2contract(ticker)
         }
 
-        assert(symbolMapping.contains(ticker),"no mapping for " + ticker)
+        assert(symbolMapping.contains(ticker), "no mapping for " + ticker)
 
         var contractSpec = symbolMapping(ticker)
 
@@ -215,58 +219,60 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
 
         for (v <- contractSpec.split(';')) {
             var mm = v.split('=')
-            contract.getClass.getField(mm(0)).set(contract,mm(1))
+            contract.getClass.getField(mm(0)).set(contract, mm(1))
         }
         ticker2contract(ticker) = contract
         return contract
     }
 
     private val subscriptions = new ArrayBuffer[Subscriptions]()
-    private var clientId: Int =_
+    private var clientId: Int = _
 
 
     override def tickSize(tickerId: Int, field: Int, size: Int) = {
         callbackExecutor.execute(() => {
-            var pr = subscriptions(tickerId).lastTick
-            if (System.currentTimeMillis() - pr.DtGmt.toEpochMilli < 20) {
-                pr.Vol = size
-                if (field == TickType.LAST_SIZE) {
-                    subscriptions(tickerId).listeners.foreach(_.apply(pr))
-                    //log.info(string.Format("tick {0} sec {1} ", pr, subscriptions[tickerId].TickerId))
-                }
-            }
+            var pr = subscriptionByRequestId(tickerId).get.lastTick
+            //val dur: Long = System.currentTimeMillis() - pr.DtGmt.toEpochMilli
+            pr.vol = size
+            subscriptionByRequestId(tickerId).get.listeners.foreach(_.apply(pr))
         })
     }
 
     override def tickPrice(tickerId: Int, field: Int, price: Double, canAutoExecute: Int) = {
-
         callbackExecutor.execute(() => {
             if (price > 0) {
-                subscriptions(tickerId).lastTick = new Tick(){
-                    Last = price; dtGmt = Instant.now()
+                subscriptionByRequestId(tickerId).get.lastTick = new Tick() {
+                    last = price;
+                    dtGmt = Instant.now()
                 }
-            }else{
-                log.error("wrong price for " + subscriptions(tickerId) + " price " + price)
+            } else {
+                log.error("wrong price for " + subscriptionByRequestId(tickerId).get + " price " + price)
             }
 
 
         })
     }
 
-    private class Subscriptions (val TickerId: String, val contract: Contract) {
+
+    private class Subscriptions(val TickerId: String, val contract: Contract) {
         val listeners = new ArrayBuffer[Tick => Unit]()
         var lastTick: Tick = _
         var requestId: Int = -1
 
-        def resubscribe()={
-            if(requestId != -1) clientSocket.cancelMktData(requestId)
+        def resubscribe() = {
+            if (requestId != -1) clientSocket.cancelMktData(requestId)
             requestId = nextSubscriptionReqId()
+            log.info(s"subscribing contract $contract requestId $requestId")
             clientSocket.reqMktData(requestId, contract, "", false, new util.ArrayList[TagValue]())
         }
     }
 
-    def nextSubscriptionReqId() : Int= {
-        subscriptionTickerCounter += 1
+    private def subscriptionByRequestId(tickerId: Int): Option[Subscriptions] = {
+        subscriptions.find(_.requestId == tickerId)
+    }
+
+    def nextSubscriptionReqId(): Int = {
+        subscriptionTickerCounter += 2
         return subscriptionTickerCounter
     }
 
@@ -280,10 +286,10 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
             subscriptions.find(_.TickerId == tickerId) match {
                 case Some(ss) => ss.listeners += lsn
                 case None => {
-                    val ss: Subscriptions = new Subscriptions(tickerId, contract){
+                    val ss: Subscriptions = new Subscriptions(tickerId, contract) {
                         listeners += lsn
                     }
-                    subscriptions +=  ss
+                    subscriptions += ss
                     ss.resubscribe()
                 }
             }

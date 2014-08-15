@@ -15,10 +15,10 @@ object JacksonWrapper {
     mapper.enable(SerializationFeature.INDENT_OUTPUT)
     mapper.registerModule(DefaultScalaModule)
 
-    def ToStr(obj: Any ): String = {
+    def toJsonString(obj: Any ): String = {
         val writer = new StringWriter()
         mapper.writeValue(writer, obj)
-        return writer.toString
+        writer.toString
     }
 
 

@@ -4,9 +4,9 @@ import java.time.Instant
 
 import firelib.common._
 
-trait TickerMdPlayer {
+trait ReaderToListenerAdapter {
 
     def addListener(lsn : IMarketDataListener)
     def readUntil(dtGmt :Instant): Boolean
-    def Dispose()
+    def close()
  }

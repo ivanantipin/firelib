@@ -24,7 +24,7 @@ trait IMarketStub {
 
     def submitOrders(orders: Seq[Order])
 
-    def flattenAll(reason: String = null)
+    def flattenAll(reason: Option[String])
 
     def trades: Seq[Trade]
 

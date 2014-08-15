@@ -4,17 +4,42 @@ import java.time.Instant
 
 import scala.collection.mutable.ArrayBuffer
 
+
+
 abstract class BasketModel extends IModel {
     private var modelProperties: Map[String, String] = _
     var mdDistributor: IMarketDataDistributor = _
     var dtGmt: Instant  = _
-    var marketStubs: Array[IMarketStub] = _
+    var marketStubs: Array[IMarketStub] =_
+
+    override def properties: Map[String, String] = modelProperties
+
+    override def name: String = getClass.getName
+
+    override def stubs: Seq[IMarketStub] = marketStubs
+
+    override def trades: Seq[Trade] = marketStubs.flatMap(_.trades)
+
+    override def hasValidProps() = true
+
+    protected def flattenAll(reason: Option[String] = None) = marketStubs.foreach(_.flattenAll(reason))
+
+    protected def cancelAllOrders = marketStubs.foreach(_.cancelAllOrders)
+
 
     override def initModel(modelProps: Map[String, String], mktStubs: Seq[IMarketStub], ctx: IMarketDataDistributor) = {
         mdDistributor = ctx
         marketStubs = mktStubs.toArray
         modelProperties = modelProps
         applyProperties(modelProps)
+    }
+
+    def enableOhlcHistory(intr: Interval, lengthToMaintain: Int = -1): ArrayBuffer[ITimeSeries[Ohlc]] = {
+        var rt = new ArrayBuffer[ITimeSeries[Ohlc]]()
+        for (i <- 0 until marketStubs.length) {
+            rt += mdDistributor.activateOhlcTimeSeries(i, intr, lengthToMaintain)
+        }
+        return rt
     }
 
     def buyAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
@@ -33,13 +58,6 @@ abstract class BasketModel extends IModel {
         marketStubs(idx).submitOrders(List(new Order(OrderType.Stop, price, vol, Side.Sell)))
     }
 
-    def enableOhlcHistory(intr: Interval, lengthToMaintain: Int = -1): ArrayBuffer[ITimeSeries[Ohlc]] = {
-        var rt = new ArrayBuffer[ITimeSeries[Ohlc]]()
-        for (i <- 0 until marketStubs.length) {
-            rt += mdDistributor.activateOhlcTimeSeries(i, intr, lengthToMaintain)
-        }
-        return rt
-    }
 
 
     def getTs(mdt: Interval, idx: Int = 0): ITimeSeries[Ohlc] = {
@@ -47,12 +65,12 @@ abstract class BasketModel extends IModel {
     }
 
 
-    def getOrderForDiff(currentPosition: Int, targetPos: Int): Order = {
+    def getOrderForDiff(currentPosition: Int, targetPos: Int): Option[Order] = {
         val vol = targetPos - currentPosition
         if (vol != 0) {
-            return new Order(OrderType.Market, 0, math.abs(vol), if (vol > 0) Side.Buy else Side.Sell)
+            return Some(new Order(OrderType.Market, 0, math.abs(vol), if (vol > 0) Side.Buy else Side.Sell))
         }
-        return null
+        return None
     }
 
     /*
@@ -65,13 +83,9 @@ abstract class BasketModel extends IModel {
 
 
     protected def managePosTo(pos: Int, idx: Int = 0): Unit = {
-        //if (stubs(idx).Position != stubs(idx).UnconfirmedPosition) {
-        //    Log(String.format("Unconfirmed position %s not equals to position %s ignoring managing position to " + pos, stubs(idx).Position, stubs(idx).UnconfirmedPosition))
-        //    return
-        //}
-        var ord = getOrderForDiff(marketStubs(idx).position, pos)
-        if (ord != null) {
-            marketStubs(idx).submitOrders(List(ord))
+        getOrderForDiff(marketStubs(idx).position, pos) match {
+            case Some(ord) => marketStubs(idx).submitOrders(List(ord))
+            case _ =>
         }
     }
 
@@ -83,20 +97,6 @@ abstract class BasketModel extends IModel {
 
     def onBacktestEnd()
 
-    override def properties: Map[String, String] = modelProperties
-
-    override def name: String = getClass.getName
-
-    override def stubs: Seq[IMarketStub] = marketStubs
-
-    override def trades: Seq[Trade] = marketStubs.flatMap(_.trades)
-
-    override def hasValidProps() = true
-
-
-    protected def FlattenAll(reason: String = null) = marketStubs.foreach(_.flattenAll(reason))
-
-    protected def CancelAllOrders = marketStubs.foreach(_.cancelAllOrders)
 
     def onStep(dtGmt:Instant) = {
         this.dtGmt = dtGmt

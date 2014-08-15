@@ -15,7 +15,7 @@ class TradeFactorBinder(val stubs: IMarketStub*) extends ITradeGateCallback {
 
     override def onOrderStatus(order: Order, status: OrderStatus): Unit = ???
 
-    def +(that: IFactor): TradeFactorBinder = {
+    def addFactor(that: IFactor): TradeFactorBinder = {
         tradeFactors += that
         return this
     }

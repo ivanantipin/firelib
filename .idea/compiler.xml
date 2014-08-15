@@ -28,6 +28,7 @@
         <module name="execution" />
         <module name="ibadapter" />
         <module name="ibgate" />
+        <module name="runtime" />
         <module name="ScalaTest" />
         <module name="strats" />
       </profile>

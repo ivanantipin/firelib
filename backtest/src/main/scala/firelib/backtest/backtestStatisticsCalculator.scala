@@ -8,12 +8,14 @@ import firelib.common._
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
-object BacktestStatisticsCalculator  extends DescriptiveStatsTrait {
-    def CalculateStatisticsForTrades(trades: Seq[Trade]): Map[StrategyMetric, Double] = {
-        return CalculateStatisticsForCases(Utils.toTradingCases(trades))
+object backtestStatisticsCalculator  extends DescriptiveStatsTrait with MetricsCalculator{
+/*
+    def calculateStatisticsForTrades(trades: Seq[Trade]): Map[StrategyMetric, Double] = {
+        return calculateStatisticsForCases(Utils.toTradingCases(trades))
     }
+*/
 
-    def CalculateStatisticsForCases(tradingCases: Seq[(Trade, Trade)]): Map[StrategyMetric, Double] = {
+    override def apply(tradingCases: Seq[(Trade, Trade)]): Map[StrategyMetric, Double] = {
         val ret = mutable.HashMap[StrategyMetric, Double] {
             StrategyMetric.Trades -> tradingCases.length
         }
@@ -107,4 +109,6 @@ object BacktestStatisticsCalculator  extends DescriptiveStatsTrait {
             ret(StrategyMetric.AvgHoldingPeriodSec) = holdingPeriodSecs / tradingCases.length
         return ret.toMap
     }
+
+
 }

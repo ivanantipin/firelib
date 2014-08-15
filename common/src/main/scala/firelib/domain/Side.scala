@@ -6,8 +6,8 @@ object Side {
     val Buy = new Side("Buy", 1)
     val None = new Side("None", -1)
 
-    def SideForAmt(amt: Int): Side = {
-        if (amt == 0) return None
+    def sideForAmt(amt: Int): Side = {
+        assert(amt != 0, "no side for zero amount !!")
         if (amt > 0) Buy else Sell
     }
 
@@ -15,11 +15,12 @@ object Side {
 
 sealed class Side private(val Name: String, val sign: Int) {
 
-    def Opposite: Side = {
-        if (this == Side.None) {
-            return Side.None
+    def opposite: Side = {
+        this match {
+            case Side.None => Side.None
+            case Side.Buy => Side.Sell
+            case Side.Sell => Side.Buy
         }
-        if (this == Side.Buy) Side.Sell else Side.Buy
     }
 
     override def toString: String = Name

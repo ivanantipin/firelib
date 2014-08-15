@@ -9,20 +9,20 @@ class MarketDataDistributor(length : Int, val intervalService: IIntervalService)
 
     val DEFAULT_TIME_SERIES_HISTORY_LENGTH = 100
 
-    val tsContainers = Array.fill(length){new TsContainer()}
+    private val tsContainers = Array.fill(length){new TsContainer()}
 
-    val listeners = new ArrayBuffer[IMarketDataListener]()
+    private val listeners = new ArrayBuffer[IMarketDataListener]()
 
     class TsContainer {
 
         val timeSeries = new ArrayBuffer[(Interval,ITimeSeries[Ohlc])]()
 
         def AddOhlc(ohlc: Ohlc) = {
-            timeSeries.foreach(_._2(0).AddOhlc(ohlc))
+            timeSeries.foreach(_._2(0).addOhlc(ohlc))
         }
 
         def AddTick(tick: Tick) = {
-            timeSeries.foreach(_._2(0).AddTick(tick))
+            timeSeries.foreach(_._2(0).addTick(tick))
         }
 
 
@@ -64,10 +64,10 @@ class MarketDataDistributor(length : Int, val intervalService: IIntervalService)
 
         intervalService.addListener(interval, (dt) => {
             val prev = ret(0)
-            prev.DtGmtEnd = dt
+            prev.dtGmtEnd = dt
             val last = ret.shiftAndGetLast
-            last.Interpolate(prev)
-            last.DtGmtEnd = dt.plusMillis(interval.durationMs)
+            last.interpolateFrom(prev)
+            last.dtGmtEnd = dt.plusMillis(interval.durationMs)
         })
         return ret
     }

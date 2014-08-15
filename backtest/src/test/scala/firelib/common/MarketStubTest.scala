@@ -141,7 +141,7 @@ class MarketStubTest {
 
         Assert.assertEquals(1, stub.orders.length)
 
-        stub.flattenAll()
+        stub.flattenAll(None)
 
         Assert.assertEquals(0, stub.position)
 

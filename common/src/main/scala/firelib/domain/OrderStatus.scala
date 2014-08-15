@@ -13,17 +13,11 @@ object OrderStatus {
 
 sealed class OrderStatus private (val Name: String) {
 
-    def IsFinal: Boolean = {
-        this == OrderStatus.Rejected || this == OrderStatus.Done || this == OrderStatus.Cancelled
-    }
+    def isFinal: Boolean = this == OrderStatus.Rejected || this == OrderStatus.Done || this == OrderStatus.Cancelled
 
-    def IsPending: Boolean = {
-        this == OrderStatus.New || this == OrderStatus.PendingCancel
-    }
+    def isPending: Boolean = this == OrderStatus.New || this == OrderStatus.PendingCancel
 
-    def IsLiveAccepted: Boolean = {
-        this == OrderStatus.Accepted
-    }
+    def isLiveAccepted: Boolean = this == OrderStatus.Accepted
 
     override def toString: String = Name
 

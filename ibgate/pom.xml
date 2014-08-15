@@ -10,14 +10,9 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.firelib</groupId>
     <artifactId>ibgate</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
 
     <build>
-
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

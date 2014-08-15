@@ -28,7 +28,7 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
     private Instant startDt;
     private Instant endDt;
 
-    private T currentQuote;
+    private T currentRecord;
 //21.05.2007,094800,90.05,90.05,90.05,90.05,900,1100
     CharBuffer charBuffer = CharBuffer.allocate(40000000);
 
@@ -79,7 +79,7 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
 
     private void initFirstAndLast() throws IOException {
         buffer(0);
-        T first = read();
+        T first = readFromBuffer();
         startDt = first.DtGmt();
         charBuffer.clear();
         long lastPos = fileChannel.size() - 400;
@@ -92,10 +92,10 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
             }
         }
 
-        T last = read();
+        T last = readFromBuffer();
         while(last != null){
             endDt = last.DtGmt();
-            last = read();
+            last = readFromBuffer();
         }
         charBuffer.limit(0);
     }
@@ -121,7 +121,7 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
 
             long start = System.currentTimeMillis();
             int cnt = 0;
-            while (parser.Read()) {
+            while (parser.read()) {
                 cnt++;
             }
             System.out.println(cnt / (System.currentTimeMillis() - start));
@@ -133,8 +133,8 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
 
     @Override
     public boolean seek(Instant time) {
-        while (Read()){
-            if(time.compareTo(CurrentQuote().DtGmt()) <= 0){
+        while (read()){
+            if(time.compareTo(current().DtGmt()) <= 0){
                 return true;
             }
         }
@@ -142,35 +142,26 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
     }
 
     @Override
-    public void Dispose() {
-        try {
-            fileChannel.close();
-        } catch (IOException e) {
-
-        }
+    public T current() {
+        return currentRecord;
     }
 
     @Override
-    public T CurrentQuote() {
-        return currentQuote;
-    }
-
-    @Override
-    public boolean Read() {
-        currentQuote = read();
-        if(currentQuote == null){
+    public boolean read() {
+        currentRecord = readFromBuffer();
+        if(currentRecord == null){
             charBuffer.compact();
             long len = buffer(endReadPosition);
             endReadPosition += len;
             if(len == 0){
                 return false;
             }
-            currentQuote = read();
+            currentRecord = readFromBuffer();
         }
-        return currentQuote != null;
+        return currentRecord != null;
     }
 
-    private  T read() {
+    private  T readFromBuffer() {
         T q = factory.get();
         int oldPos = charBuffer.position();
         for (int i = 0; i < handlers.length; i++) {
@@ -192,5 +183,14 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
     @Override
     public Instant endTime() {
         return endDt;
+    }
+
+    @Override
+    public void close() throws Exception {
+        try {
+            fileChannel.close();
+        } catch (IOException e) {
+
+        }
     }
 }

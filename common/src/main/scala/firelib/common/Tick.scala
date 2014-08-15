@@ -8,17 +8,17 @@ class Tick() extends Comparable[Tick] with Timed {
 
     private def this(last: Double, vol: Int, ssi: Int, bid: Double, ask: Double, tickNumber: Int, dtGmt: Instant) {
         this()
-        this.Last = last
-        this.Vol = vol
-        this.SecurityStreamId = ssi
-        this.Bid = bid
-        this.Ask = ask
+        this.last = last
+        this.vol = vol
+        this.securityStreamId = ssi
+        this.bid = bid
+        this.ask = ask
         this.dtGmt = dtGmt
-        TickNumber = tickNumber
+        this.tickNumber = tickNumber
     }
 
     override def toString: String = {
-        return "Tick(B:%s:A:%s:L%sV%sT%s".format(Bid, Ask, Last, Vol, dtGmt.toString)
+        return s"Tick(B:$bid A:$ask L:$last V:$vol T$dtGmt"
     }
 
     def compareTo(o: Tick): Int = {
@@ -30,19 +30,19 @@ class Tick() extends Comparable[Tick] with Timed {
     }
 
     @BeanProperty
-    var Ask: Double = Double.NaN
+    var ask: Double = Double.NaN
     @BeanProperty
-    var Bid: Double = Double.NaN
+    var bid: Double = Double.NaN
     @BeanProperty
-    var Last: Double = Double.NaN
+    var last: Double = Double.NaN
     @BeanProperty
-    var SecurityStreamId: Int = 0
+    var securityStreamId: Int = 0
     @BeanProperty
-    var Vol: Int = 0
+    var vol: Int = 0
     @BeanProperty
     var side: Side = null
     @BeanProperty
-    var TickNumber: Int = 0
+    var tickNumber: Int = 0
     @BeanProperty
     var dtGmt: Instant = null
 }

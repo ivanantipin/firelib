@@ -24,7 +24,7 @@ class MarketStubSwitcher(val first: IMarketStub, val secondary: IMarketStub) ext
         }
     }
 
-    def flattenAll(reason: String) = activeStub.flattenAll(reason)
+    def flattenAll(reason: Option[String]) = activeStub.flattenAll(reason)
 
     def trades = activeStub.trades
 

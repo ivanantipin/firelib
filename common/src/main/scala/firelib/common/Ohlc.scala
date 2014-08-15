@@ -2,17 +2,19 @@ package firelib.common
 
 import java.time.Instant
 
+import firelib.utils.DateTimeExt._
+
 import scala.beans.BeanProperty
 
 class Ohlc() extends Timed {
 
     def this(other: Ohlc) {
         this()
-        InitFrom(other)
-        DtGmtEnd = other.DtGmtEnd
+        initFrom(other)
+        dtGmtEnd = other.dtGmtEnd
     }
 
-    private def InitFrom(other: Ohlc) {
+    private def initFrom(other: Ohlc) {
         O = other.O
         H = other.H
         L = other.L
@@ -21,18 +23,18 @@ class Ohlc() extends Timed {
         Oi = other.Oi
     }
 
-    private def InitFrom(other: Tick) {
-        O = other.Last
-        H = other.Last
-        L = other.Last
-        C = other.Last
-        Volume = other.Vol
+    private def initFrom(other: Tick) {
+        O = other.last
+        H = other.last
+        L = other.last
+        C = other.last
+        Volume = other.vol
         Oi = 0
     }
 
-    def Interpolated: Boolean = Volume == 0
+    def interpolated: Boolean = Volume == 0
 
-    private def AddPrice(last: Double) {
+    private def addPrice(last: Double) {
         if (O.isNaN) O = last
         if (H < last) {
             H = last
@@ -43,20 +45,20 @@ class Ohlc() extends Timed {
         C = last
     }
 
-    def AddTick(tick: Tick) {
-        if (Interpolated) {
-            InitFrom(tick)
+    def addTick(tick: Tick) {
+        if (interpolated) {
+            initFrom(tick)
         }
-        AddPrice(tick.Last)
-        Volume += tick.Vol
+        addPrice(tick.last)
+        Volume += tick.vol
     }
 
-    def AddOhlc(ohlc: Ohlc) {
-        if (ohlc.Interpolated) {
+    def addOhlc(ohlc: Ohlc) {
+        if (ohlc.interpolated) {
             return
         }
-        if (Interpolated) {
-            InitFrom(ohlc)
+        if (interpolated) {
+            initFrom(ohlc)
         }
         if (O.isNaN) O = ohlc.O
         if (H < ohlc.H) H = ohlc.H
@@ -70,33 +72,36 @@ class Ohlc() extends Timed {
 
     def medium: Double = (H + L) / 2
 
-    def IsUpBar: Boolean = C > O
+    def isUpBar: Boolean = C > O
 
-    def Range: Double = H - L
+    def range: Double = H - L
 
-    def UpShadow: Double = H - C
+    def upShadow: Double = H - C
 
-    def DownShadow: Double = C - L
+    def downShadow: Double = C - L
 
-    def BodyLength: Double = Math.abs(C - O)
+    def bodyLength: Double = Math.abs(C - O)
 
     def Return: Double = C - O
 
-    def InRange(vv: Double): Boolean = H > vv && vv > L
+    def isInRange(vv: Double): Boolean = H > vv && vv > L
 
-    override def toString: String = "OHLC(%s/%s/%s/%s@/%s/%s)".format(O, H, L, C, DtGmtEnd.toString, Interpolated)
+    override def toString: String = {
+        val dtStr: String = dtGmtEnd.toStandardString
+        return s"OHLC($O/$H/$L/$C/$dtStr/$interpolated)"
+    }
 
-    def Interpolate(prev: Ohlc) {
-        InitFrom(prev)
+    def interpolateFrom(prev: Ohlc) {
+        initFrom(prev)
         Volume = 0
     }
 
-    def DtGmt: Instant = DtGmtEnd
+    def DtGmt: Instant = dtGmtEnd
 
     @BeanProperty
     var C: Double = .0
     @BeanProperty
-    var DtGmtEnd: Instant = null
+    var dtGmtEnd: Instant = null
     @BeanProperty
     var H: Double = Integer.MIN_VALUE
     @BeanProperty

@@ -45,8 +45,8 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
     public String CurrentTz;
 
     @Override
-    public T CurrentQuote() {
-        return csvParser.CurrentQuote();
+    public T current() {
+        return csvParser.current();
     }
 
     public boolean seek(Instant utcDT) {
@@ -86,12 +86,12 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
     }
 
 
-    public boolean Read() {
+    public boolean read() {
         if (csvParser == null)
             return false;
 
 
-        if (csvParser.Read() && (csvParser.CurrentQuote().DtGmt().isBefore(symbolCsvFileInfo[fileIdx].utcEndDT.plusMillis(1)))) {
+        if (csvParser.read() && (csvParser.current().DtGmt().isBefore(symbolCsvFileInfo[fileIdx].utcEndDT.plusMillis(1)))) {
             return true;
         }
 
@@ -104,7 +104,7 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
 
         fileIdx--;
         OpenCurrentCsvFile();
-        return csvParser.Read();
+        return csvParser.read();
     }
 
     @Override
@@ -119,7 +119,11 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
 
 
     public void Dispose() {
-        csvParser.Dispose();
+        try {
+            csvParser.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         csvParser = null;
         symbolCsvFileInfo = null;
         fileIdx = -1;
@@ -180,6 +184,11 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
         if (settings.containsKey("TIMEZONE")) {
             commonIniSettings.TIMEZONE = settings.getProperty("TIMEZONE");
         }
+    }
+
+    @Override
+    public void close() throws Exception {
+
     }
 
 
@@ -292,7 +301,7 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
             entry.utcStartDT = reader.startTime();
             entry.utcEndDT = reader.endTime();
 
-            reader.Dispose();
+            reader.close();
 
 
         }

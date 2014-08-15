@@ -4,20 +4,19 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 import firelib.common._
-import firelib.utils.OptParamsWriter
+import firelib.utils.{OptParamsWriter, ReportWriter}
 
 import scala.collection.mutable.ArrayBuffer
-import scala.util.control._
 
-class BacktesterOptimized extends BacktesterBase {
+class BacktesterOptimized (backtestEnvFactory : BacktestEnvironmentFactory, marketStubFactory : MarketStubFactory ) {
 
 
-    override def run(cfg: ModelConfig) = {
+     def run(cfg: ModelConfig) : Unit = {
         System.out.println("Starting")
 
         val startTime = System.currentTimeMillis()
 
-        val reportProcessor = new ReportProcessor(BacktestStatisticsCalculator.CalculateStatisticsForCases,
+        val reportProcessor = new ReportProcessorImpl(backtestStatisticsCalculator,
             cfg.optimizedMetric,
             cfg.optParams.map(op => op.Name),
             minNumberOfTrades = cfg.optMinNumberOfTrades)
@@ -25,86 +24,71 @@ class BacktesterOptimized extends BacktesterBase {
         val executor = new ThreadExecutor(cfg.optThreadNumber, maxLengthOfQueue = 1).start()
         val reportExecutor = new ThreadExecutor(1).start()
         val variator = new ParamsVariator(cfg.optParams)
+        
 
-
-        val (startDtGmt, endDtGmt) = CalcTimeBounds(cfg)
+        val (startDtGmt, endDtGmt) = defaultTimeBoundsCalculator(cfg)
 
         assert(cfg.optimizedPeriodDays > 0 , "optimized days count not set!!")
 
         val endOfOptimize = startDtGmt.plus(cfg.optimizedPeriodDays, ChronoUnit.DAYS)
 
-        System.out.println("number of models " + variator.Combinations)
+        System.out.println("number of models " + variator.combinations)
 
-        while (true) {
-            val (mdPlayer, distributor) = createModelBacktestEnv(cfg, startDtGmt)
-            val models = nextModelVariationsChunk(cfg, variator, mdPlayer, distributor)
-            if (models.length == 0) {
-                Breaks.break
-            }
-            val task = new BacktestTask(startDtGmt, endOfOptimize, mdPlayer, cfg.interval.durationMs, models, (mod) => reportExecutor.execute(reportProcessor.process(mod)))
-
-            executor.execute(task.run)
-
-            System.out.println("models scheduled " + models.length)
+        while (variator.hasNext()) {
+            val env = nextModelVariationsChunk(cfg, variator)
+            executor.execute(()=>{
+                env.backtest()
+                reportExecutor.execute(()=>reportProcessor.process(env.models))
+            })
+            System.out.println("models scheduled " + env.models.length)
 
         }
 
-        executor.stop()
-        reportExecutor.stop()
+        executor.shutdown()
+        reportExecutor.shutdown()
 
         System.out.println("Model optimized in " + (System.currentTimeMillis() - startTime) / 1000 + " sec. ")
 
 
-        assert(reportProcessor.BestModels.length > 0, "no models get produced!!")
+        assert(reportProcessor.bestModels.length > 0, "no models get produced!!")
 
-        val bm = reportProcessor.BestModels.last
-        val (mdPlayer, distributor) = createModelBacktestEnv(cfg, startDtGmt)
-        val model = initModelWithCustomProps(cfg, mdPlayer, distributor, bm.properties)
-        runBacktest(startDtGmt, endDtGmt, mdPlayer, cfg.interval.durationMs)
+        val bm = reportProcessor.bestModels.last
+        val env = backtestEnvFactory(cfg)
+        val model = cfg.newInstance()
+        val stubs: ArrayBuffer[IMarketStub] = cfg.tickerIds.map(marketStubFactory)
+        env.bindModelIntoEnv(model,stubs,bm.properties)
+        env.backtest()
 
+        ReportWriter.write(model, cfg, cfg.reportRoot)
 
-        writeModelPnlStat(cfg, model)
         writeOptimizedReport(cfg, reportProcessor, endOfOptimize)
 
         System.out.println("Finished")
     }
 
-    private class BacktestTask(val StartDtGmt:Instant, val EndDtGmt:Instant, val MdPlayer: MarketDataPlayer, stepMs: Int, Models: Seq[IModel], callback: Seq[IModel] => Unit) {
 
-        def run() = {
-            runBacktest(StartDtGmt, EndDtGmt, MdPlayer, stepMs)
-            callback(Models)
-        }
-    }
-
-    private def writeOptimizedReport(cfg: ModelConfig, reportProcessor: ReportProcessor, endOfOptimize:Instant) = {
+    private def writeOptimizedReport(cfg: ModelConfig, reportProcessor: ReportProcessorImpl, endOfOptimize:Instant) = {
         OptParamsWriter.write(
             cfg.reportRoot,
-            OptEnd = endOfOptimize,
-            Estimates = reportProcessor.Estimates,
+            optEnd = endOfOptimize,
+            estimates = reportProcessor.estimates,
             optParams = cfg.optParams,
             metrics = cfg.calculatedMetrics)
     }
 
 
-    private def nextModelVariationsChunk(cfg: ModelConfig, variator: ParamsVariator, mdPlayer: MarketDataPlayer, ctx: MarketDataDistributor): Seq[IModel] = {
+    private def nextModelVariationsChunk(cfg: ModelConfig, variator: ParamsVariator): BacktestEnvironment = {
+        val env: BacktestEnvironment = backtestEnvFactory(cfg)
+        while (variator.hasNext()) {
+            var opts = variator.next
+            val model: IModel = cfg.newInstance()
+            val stubs: Seq[IMarketStub] = cfg.tickerIds.map(marketStubFactory)
+            env.bindModelIntoEnv(model,stubs,cfg.customParams.toMap ++ opts.map(t => (t._1, t._2.toString)))
 
-        var models = new ArrayBuffer[IModel]()
-
-        var varr = variator.Next
-
-        while (varr != null) {
-            var model = initModel(cfg, mdPlayer, ctx, varr)
-
-            if (model.hasValidProps) {
-                models += model
-                if (models.length >= cfg.optBatchSize) {
-                    return models
-                }
+            if (env.models.length >= cfg.optBatchSize) {
+                return env
             }
-            varr = variator.Next
         }
-        return models
-
+        return env
     }
 }

@@ -44,9 +44,7 @@ class TestModel extends BasketModel with IMarketDataListener {
 
     def onTick(idx: Int, pQuote: Tick, next: Tick) = {
         NumberOfTickes += 1
-        if (uniqTimes.contains(pQuote.DtGmt)) {
-            throw new Exception("dupe time " + pQuote.DtGmt)
-        }
+        assert(!uniqTimes.contains(pQuote.DtGmt),"dupe time " + pQuote.DtGmt)
         uniqTimes.add(pQuote.DtGmt)
 
         if (startTimesGmt.size == 0 || startTimesGmt.last.truncatedTo(ChronoUnit.DAYS) != pQuote.DtGmt.truncatedTo(ChronoUnit.DAYS)) {

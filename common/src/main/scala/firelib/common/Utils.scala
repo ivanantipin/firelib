@@ -24,20 +24,13 @@ object Utils extends DescriptiveStatsTrait {
 
 
     private def toTradingCasesInt(trades: Seq[Trade], positionTrades: ArrayBuffer[Trade]): Seq[(Trade, Trade)] = {
-        val posTrades = new mutable.Stack[Trade]().push(trades(0))
+        val posTrades = new mutable.Stack[Trade]()
         val tradingCases = new ArrayBuffer[(Trade, Trade)]()
 
-        trades.slice(1,trades.size).foreach(trade => {
-            if (posTrades.top.side != trade.side) {
-                makeCaseWithPositionTrades(posTrades, tradingCases, trade)
-            }
-            else {
-                posTrades.push(trade)
-            }
-            if (tradingCases.length > 0){
-                assert(tradingCases.last._1.side != tradingCases.last._2.side,"trading case must have different sides")
-            }
-        })
+        trades.foreach(trade => makeCaseWithPositionTrades(posTrades, tradingCases, trade))
+
+        tradingCases.foreach(tc=>assert(tc._1.side != tc._2.side,"trading case must have different sides"))
+
         if (positionTrades != null) {
             positionTrades ++= posTrades
         }
@@ -49,33 +42,31 @@ object Utils extends DescriptiveStatsTrait {
 
 
     def makeCaseWithPositionTrades(posTrades: mutable.Stack[Trade], tradingCases: ArrayBuffer[(Trade, Trade)], trade: Trade) {
+        if(posTrades.isEmpty || posTrades.top.side == trade.side){
+            posTrades.push(trade)
+            return
+        }
         var residualAmt = trade.qty
-        while (true) {
-            val lastPositionTrade = posTrades.pop()
-            if (lastPositionTrade.qty >= residualAmt) {
-                val tradeSplit = lastPositionTrade.split(residualAmt)
-                tradingCases += ((tradeSplit._1, trade.split(residualAmt)._1))
-                assert(tradingCases.last._1.side != tradingCases.last._2.side, "trading case must have different sides")
-                if (tradeSplit._2.qty != 0) {
-                    posTrades.push(tradeSplit._2)
-                }
-                return
-            }
+        val lastPositionTrade = posTrades.pop()
+        if (lastPositionTrade.qty >= residualAmt) {
+            val tradeSplit = lastPositionTrade.split(residualAmt)
+            tradingCases += ((tradeSplit._1, trade.split(residualAmt)._1))
+            if (tradeSplit._2.qty != 0) posTrades.push(tradeSplit._2)
+        }else{
             residualAmt -= lastPositionTrade.qty
-            tradingCases += ((lastPositionTrade, trade.split(lastPositionTrade.qty)._1))
-
-            if (posTrades.length == 0 && residualAmt > 0) {
-                posTrades.push(trade.split(residualAmt)._1)
-                return
-            }
+            val tradeSplit: (Trade, Trade) = trade.split(lastPositionTrade.qty)
+            tradingCases += ((lastPositionTrade, tradeSplit._1))
+            makeCaseWithPositionTrades(posTrades, tradingCases,tradeSplit._2)
         }
     }
 
     def pnlForCase(cas: (Trade, Trade)): Double = cas._1.moneyFlow + cas._2.moneyFlow
 
+    val filterThresholdInVariance: Int = 10
+
     private def filterTradingCases(tradingCases: Seq[(Trade, Trade)]): Seq[(Trade, Trade)] = {
-        var std = variance(tradingCases.map(pnlForCase))
-        return tradingCases.filter(tc => math.abs(pnlForCase(tc)) < 10 * std)
+        val std = variance(tradingCases.map(pnlForCase))
+        return tradingCases.filter(tc => math.abs(pnlForCase(tc)) < filterThresholdInVariance * std)
     }
 
     def toTradingCases(trades: Seq[Trade], positionTrades: ArrayBuffer[Trade] = null): ArrayBuffer[(Trade, Trade)] = {

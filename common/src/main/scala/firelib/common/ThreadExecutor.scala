@@ -1,11 +1,10 @@
-package firelib.backtest
+package firelib.common
 
 import java.util.concurrent._
 
-import firelib.common._
 import org.slf4j.LoggerFactory
 
-class ThreadExecutor(val threadsNumber: Int = 1, val maxLengthOfQueue: Int = -1, var threadName: String = "pipeline_") extends IThreadExecutor with ThreadFactory {
+class ThreadExecutor(val threadsNumber: Int = 1, val maxLengthOfQueue: Int = 10000, var threadName: String = "pipeline_") extends IThreadExecutor with ThreadFactory {
 
     val executor = new ThreadPoolExecutor(threadsNumber, threadsNumber, 1, TimeUnit.SECONDS, new ArrayBlockingQueue[Runnable](maxLengthOfQueue), this)
 
@@ -14,11 +13,11 @@ class ThreadExecutor(val threadsNumber: Int = 1, val maxLengthOfQueue: Int = -1,
 
     var threadcounter = 0
 
-    def execute(act: => Unit) = {
+    def execute(act: () => Unit) = {
         executor.execute(new Runnable {
             override def run = {
                 try {
-                    act
+                    act()
                 } catch {
                     case e : Throwable => log.error("exception in pipeline ",e)
                 }
@@ -30,9 +29,9 @@ class ThreadExecutor(val threadsNumber: Int = 1, val maxLengthOfQueue: Int = -1,
         return this
     }
 
-    def stop() = {
+    def shutdown() = {
         executor.shutdown()
-        executor.awaitTermination(1, TimeUnit.MINUTES)
+        executor.awaitTermination(100, TimeUnit.DAYS)
     }
 
 

@@ -15,7 +15,7 @@ class ModelConfig {
 
     var className: String = _
 
-    var intervalName: String = _
+    var frequencyIntervalId: String = _
 
     val customParams = HashMap[String, String]()
 
@@ -37,7 +37,7 @@ class ModelConfig {
         this
     }
 
-    def interval = Interval.resolveFromName(intervalName)
+    def interval = Interval.resolveFromName(frequencyIntervalId)
 
     var optimizedMetric = StrategyMetric.Sharpe
 
@@ -52,6 +52,10 @@ class ModelConfig {
     def addCustomParam(param: String, value: String): ModelConfig = {
         customParams(param) = value
         this
+    }
+
+    def newInstance() : IModel ={
+        return Class.forName(className).newInstance().asInstanceOf[IModel]
     }
 
 }

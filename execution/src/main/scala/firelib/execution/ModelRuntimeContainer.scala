@@ -1,7 +1,6 @@
 package firelib.robot
 
 import java.nio.file.Paths
-import java.time.Instant
 
 import firelib.backtest._
 import firelib.common._
@@ -9,62 +8,58 @@ import firelib.utils.{JacksonWrapper, RuntimeTradeWriter}
 import org.slf4j.LoggerFactory
 class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
-    private var frequencer: Frequencer=_
-
     val log = LoggerFactory.getLogger(getClass)
 
-
-    log.info("Starting config " + JacksonWrapper.ToStr(modelRuntimeConfig))
-
+    log.info("Starting config " + JacksonWrapper.toJsonString(modelRuntimeConfig))
 
     val tradesPath = Paths.get(modelRuntimeConfig.tradeLogDirectory.getOrElse("trades_live.csv")).toFile.getName
 
+    val modelConfig: ModelConfig = modelRuntimeConfig.modelConfig
 
     val executor = new ThreadExecutor(threadName = modelRuntimeConfig.modelConfig.className).start()
 
+    val (tradeGate, marketDataProvider) = new ProvidersFactory().create(modelRuntimeConfig, executor)
 
-    val (tradeGate, marketDataProvider) = new ProvidersFactory().Create(modelRuntimeConfig, executor)
+    val marketStubFactory = (cfg: TickerConfig) => new MarketStubSwitcher(new MarketStub(cfg.ticker), new ExecutionMarketStub(tradeGate, cfg.ticker))
 
-    val marketStubFactory = (ti: String) => new MarketStubSwitcher(new MarketStub(ti), new ExecutionMarketStub(tradeGate, ti))
 
-    val starter = new BacktesterSimple(marketStubFactory)
+    private var model : IModel =_
 
-    //out
-    val (model, marketDataPlayer, distributor) = starter.RunSimple(modelRuntimeConfig.modelConfig, modelRuntimeConfig.runBacktest)
+    private var environment : BacktestEnvironment =_
 
-    private val stepListeners = marketDataPlayer.getStepListeners()
 
-    marketDataPlayer.Dispose()
+    val readerFactory: DefaultReaderFactory = new DefaultReaderFactory(modelConfig.dataServerRoot)
+    var backtestEnvFactory: DefaultBacktestEnvFactory =_
 
-    frequencer = new Frequencer(modelRuntimeConfig.modelConfig.interval)
+    if(modelRuntimeConfig.runBacktest)
+        backtestEnvFactory = new DefaultBacktestEnvFactory(readerFactory, defaultTimeBoundsCalculator)
+    else
+        backtestEnvFactory = new DefaultBacktestEnvFactory(dummyReaderFactory, dummyTimeBoundsCalculator)
 
-    var stubSwitchers = model.stubs.map(ms => ms.asInstanceOf[MarketStubSwitcher])
+    val starter = new BacktesterSimple(backtestEnvFactory,marketStubFactory)
+    environment = starter.run(modelConfig)
+    model = environment.models(0)
+    environment.player.close()
 
-    for (switcher <- stubSwitchers) {
+
+
+    private val frequencer = new Frequencer(modelConfig.interval, environment.player.getStepListeners(), executor)
+
+    for (switcher <- model.stubs.map(ms => ms.asInstanceOf[MarketStubSwitcher])) {
         switcher.switchStubs()
         //to write trades to csv file
-        switcher.addCallback(new TradeGateCallbackAdapter((t) => RuntimeTradeWriter.write(tradesPath, modelRuntimeConfig.modelConfig.className, t)))
+        switcher.addCallback(new TradeGateCallbackAdapter((t) => RuntimeTradeWriter.write(tradesPath, modelConfig.className, t)))
     }
 
     log.info("Started ")
 
 
-    def Start() = {
-        var interval = modelRuntimeConfig.modelConfig.interval
-
-        frequencer.addListener((dt) => {
-            val now = Instant.ofEpochMilli(interval.roundEpochMs(System.currentTimeMillis()))
-            val act = () => stepListeners.foreach(_.onStep(now))
-            executor.execute(()=>act())
-        })
-
-
-        for (k <- 0 until modelRuntimeConfig.modelConfig.tickerIds.length) {
+    def start() = {
+        for (k <- 0 until modelConfig.tickerIds.length) {
             val k1 = k
             //!!!! assumed that market data provider works in the same thread
-            marketDataProvider.subscribeForTick(modelRuntimeConfig.modelConfig.tickerIds(k).TickerId, (q: Tick) => distributor.onTick(k1, q, null))
+            marketDataProvider.subscribeForTick(modelConfig.tickerIds(k).ticker, (q: Tick) => environment.mdDistributor.onTick(k1, q, null))
         }
-
-        frequencer.Start()
+        frequencer.start()
     }
 }

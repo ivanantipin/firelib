@@ -22,6 +22,7 @@ object ReportWriter {
         var factors = if (trades(0).factors == null) new HashMap[String, String] else trades(0).factors
 
         TradesCsvWriter.write(model, Paths.get(targetDir, "trades.csv").toAbsolutePath.toString, factors.map(_._1))
+
         var baseDir = "."
 
         val ipypath = Paths.get(baseDir, "python/report/ipython/StdReport.ipynb")
