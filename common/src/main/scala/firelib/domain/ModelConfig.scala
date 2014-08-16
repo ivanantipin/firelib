@@ -3,7 +3,7 @@ package firelib.common
 import scala.collection.mutable._
 
 class ModelConfig {
-    val tickerIds = ArrayBuffer[TickerConfig]()
+    val tickerConfigs = ArrayBuffer[TickerConfig]()
 
     var startDateGmt: String = _
 
@@ -30,12 +30,6 @@ class ModelConfig {
     var optimizedPeriodDays = -1
 
     var mode = ResearchMode.SimpleRun
-
-    def addTickerId(tickerId: TickerConfig): ModelConfig = {
-        assert(!tickerIds.contains(tickerId),"ticker id already present " + tickerId)
-        tickerIds += tickerId
-        this
-    }
 
     def interval = Interval.resolveFromName(frequencyIntervalId)
 

@@ -1,6 +1,6 @@
-package firelib.robot
+package firelib.execution
 
-import firelib.common._
+import firelib.domain.{Ohlc, Tick}
 
 trait IMarketDataProvider {
 

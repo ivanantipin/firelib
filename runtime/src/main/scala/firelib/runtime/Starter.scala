@@ -5,7 +5,6 @@ import java.net.URL
 import java.nio.file.Paths
 
 import firelib.common._
-import firelib.robot.{ModelRuntimeConfig, ModelRuntimeContainer}
 import firelib.strats.dummy.DummyStrat
 import firelib.utils.JacksonWrapper
 
@@ -49,7 +48,7 @@ object Starter {
         cfg.modelConfig.reportRoot = "/home/ivan/tmp"
         cfg.modelConfig.frequencyIntervalId = Interval.Sec10.Name
         cfg.modelConfig.className = classOf[DummyStrat].getName
-        cfg.modelConfig.addTickerId(new TickerConfig("EURUSD","",MarketDataType.Ohlc))
+        cfg.modelConfig.tickerConfigs += new TickerConfig("EURUSD","",MarketDataType.Ohlc)
         JacksonWrapper.serialize(cfg, "/home/ivan/tmp/dummyModel.json")
 
     }

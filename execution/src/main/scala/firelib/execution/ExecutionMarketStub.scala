@@ -1,4 +1,4 @@
-package firelib.robot
+package firelib.execution
 
 import java.time.Instant
 
@@ -14,18 +14,19 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security_ : String, val
     tradeGate.registerCallback(this)
 
     private val bidAsk = Array(Double.NaN, Double.NaN)
-    private var dtGmt: Instant =_
+    private var dtGmt: Instant = _
 
     private val orders_ = new ArrayBuffer[Order]()
+
     private val tradeGateCallbacks = new ArrayBuffer[ITradeGateCallback]()
 
-   private var position_ = 0
+    private var position_ = 0
 
     private val trades_ = new ArrayBuffer[Trade]()
 
-   private var orderIdCnt = 0
+    private var orderIdCnt = 0
 
-   private val log = LoggerFactory.getLogger(getClass)
+    private val log = LoggerFactory.getLogger(getClass)
 
 
     def trades: Seq[Trade] = trades_
@@ -52,10 +53,10 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security_ : String, val
     }
 
 
-    def cancelAllOrders() : Unit = cancelOrderByIds(orders_.map(_.id))
+    def cancelAllOrders(): Unit = cancelOrderByIds(orders_.map(_.id))
 
 
-    def cancelOrderByIds(orderIds: Seq[String]) : Unit = {
+    def cancelOrderByIds(orderIds: Seq[String]): Unit = {
 
         for (orderId <- orderIds) {
             orders_.find(_.id == orderId) match {
@@ -73,7 +74,7 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security_ : String, val
 
     def submitOrders(orders: Seq[Order]) = {
 
-        assert(this.orders_.length <= maxOrderCount,"max order count exceeded")
+        assert(this.orders_.length <= maxOrderCount, "max order count exceeded")
 
         orders.foreach(order => {
             order.id = security_ + "" + (orderIdCnt += 1)
@@ -81,7 +82,7 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security_ : String, val
             order.security = security_
             fireOrderState(List(order), OrderStatus.New)
             if (order.minutesToHold != -1) {
-                order.validUntil = dtGmt.plusSeconds(order.minutesToHold*60)
+                order.validUntil = dtGmt.plusSeconds(order.minutesToHold * 60)
             }
             this.orders_ += order
             log.info(s"submitting order $order")

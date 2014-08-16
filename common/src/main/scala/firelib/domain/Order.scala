@@ -5,7 +5,7 @@ import java.time.Instant
 
 class Order(val orderType: OrderType, val price: Double, val qty: Int, val side: Side) {
     
-    assert(qty > 0)
+    assert(qty > 0, "order qty must be > 0!!")
     
     var minutesToHold = -1
     var id: String = _
@@ -16,7 +16,5 @@ class Order(val orderType: OrderType, val price: Double, val qty: Int, val side:
     var validUntil: Instant  = _
     var status: OrderStatus = _
 
-    override def toString: String = {
-        return "Order(%s@%s/%s/%s/Id:%s/%s)" format(price, qty, side, orderType, id, security)
-    }
+    override def toString: String = s"Order(%$price@$qty/$side/$orderType/Id:$id/$security)"
 }

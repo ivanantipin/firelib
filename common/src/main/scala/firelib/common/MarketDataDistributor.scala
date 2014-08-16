@@ -1,6 +1,8 @@
 package firelib.common
 
 
+import firelib.domain.{Ohlc, Tick}
+
 import scala.collection.mutable.ArrayBuffer
 
 
@@ -17,11 +19,11 @@ class MarketDataDistributor(length : Int, val intervalService: IIntervalService)
 
         val timeSeries = new ArrayBuffer[(Interval,ITimeSeries[Ohlc])]()
 
-        def AddOhlc(ohlc: Ohlc) = {
+        def addOhlc(ohlc: Ohlc) = {
             timeSeries.foreach(_._2(0).addOhlc(ohlc))
         }
 
-        def AddTick(tick: Tick) = {
+        def addTick(tick: Tick) = {
             timeSeries.foreach(_._2(0).addTick(tick))
         }
 
@@ -33,12 +35,12 @@ class MarketDataDistributor(length : Int, val intervalService: IIntervalService)
     }
 
     override def onOhlc(idx: Int, ohlc: Ohlc, next: Ohlc): Unit = {
-        tsContainers(idx).AddOhlc(ohlc)
+        tsContainers(idx).addOhlc(ohlc)
         listeners.foreach(_.onOhlc(idx,ohlc,next))
     }
 
     override def onTick(idx: Int, tick: Tick, next: Tick): Unit = {
-        tsContainers(idx).AddTick(tick)
+        tsContainers(idx).addTick(tick)
         listeners.foreach(_.onTick(idx,tick,next))
     }
 

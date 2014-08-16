@@ -3,8 +3,6 @@ package firelib.utils
 import scala.collection.mutable
 
 
-
-
 class HeapQuantile(val quantile: Double, val length: Int) {
 
     class Node(val value: Double, var isLeft: Boolean) {}

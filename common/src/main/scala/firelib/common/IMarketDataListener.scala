@@ -1,5 +1,7 @@
 package firelib.common
 
+import firelib.domain.{Ohlc, Tick}
+
 /**
  * Created by ivan on 7/21/14.
  */

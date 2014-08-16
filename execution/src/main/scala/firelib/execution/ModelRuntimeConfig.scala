@@ -1,4 +1,4 @@
-package firelib.robot
+package firelib.execution
 
 import firelib.common._
 

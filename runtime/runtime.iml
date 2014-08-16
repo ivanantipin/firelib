@@ -6,11 +6,11 @@
         <option name="compilerLibraryLevel" value="Project" />
         <option name="compilerLibraryName" value="Maven: org.scala-lang:scala-compiler-bundle:2.11.1" />
         <option name="maximumHeapSize" value="1024" />
-        <option name="vmOptions" value="-Xms64m" />
+        <option name="vmOptions" value="" />
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" inherit-compiler-output="false">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
     <content url="file://$MODULE_DIR$">
@@ -52,8 +52,8 @@
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.0.13" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.0.13" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.0" level="project" />
-    <orderEntry type="module" module-name="backtest" />
     <orderEntry type="module" module-name="strats" />
+    <orderEntry type="library" name="Maven: com.firelib:backtest:1.0-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="ibgate" />
     <orderEntry type="module" module-name="ibadapter" />
   </component>

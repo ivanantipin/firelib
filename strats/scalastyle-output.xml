@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<checkstyle version="5.0">
+ <file name="/home/ivan/IdeaProjects/firelib/strats/src/main/scala/firelib/strats/dummy/BacktestEntryPoint.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="warning" message="Header does not match expected text"></error>
+  <error column="0" line="4" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"></error>
+ </file>
+ <file name="/home/ivan/IdeaProjects/firelib/strats/src/main/scala/firelib/strats/dummy/DummyStrat.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="warning" message="Header does not match expected text"></error>
+  <error column="28" line="21" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="28" line="23" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="19" line="18" source="org.scalastyle.file.RegexChecker" severity="warning" message="Regular expression matched 'println'"></error>
+  <error column="8" line="17" source="org.scalastyle.scalariform.PublicMethodsHaveTypeChecker" severity="warning" message="Public method must have explicit type"></error>
+  <error column="0" line="3" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"></error>
+ </file>
+</checkstyle>

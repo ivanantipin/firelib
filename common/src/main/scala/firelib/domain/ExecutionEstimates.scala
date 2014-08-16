@@ -1,4 +1,4 @@
 package firelib.common
 import scala.collection.Map
 
-class ExecutionEstimates(val OptParams: Map[String, Int], val MetricName2Value: Map[StrategyMetric, Double])
+class ExecutionEstimates(val optParams: Map[String, Int], val metricToValue: Map[StrategyMetric, Double])

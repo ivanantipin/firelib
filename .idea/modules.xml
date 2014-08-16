@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/backtest/backtest.iml" filepath="$PROJECT_DIR$/backtest/backtest.iml" />
       <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
       <module fileurl="file://$PROJECT_DIR$/execution/execution.iml" filepath="$PROJECT_DIR$/execution/execution.iml" />
       <module fileurl="file://$PROJECT_DIR$/firelib.iml" filepath="$PROJECT_DIR$/firelib.iml" />

@@ -1,6 +1,7 @@
 package firelib.strats.dummy
 
 import firelib.common._
+import firelib.domain.Ohlc
 
 
 class DummyStrat extends BasketModel {

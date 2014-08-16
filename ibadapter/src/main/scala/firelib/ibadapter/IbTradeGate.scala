@@ -7,11 +7,17 @@ import java.util.concurrent.{Executors, LinkedBlockingQueue, TimeUnit}
 import com.ib.client
 import com.ib.client.{Contract, Execution, TagValue}
 import firelib.common._
-import firelib.robot.{IMarketDataProvider, ITradeGate}
+import firelib.domain.{Ohlc, Tick}
+import firelib.execution.{IMarketDataProvider, ITradeGate}
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
+/**
+ * adapter over ib api
+ * IMPORTANT!! - all code must run in thread executor provided on creation
+ *
+ */
 class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider {
     val tradeGateCallbacks = new ArrayBuffer[ITradeGateCallback]()
     val orders = new ArrayBuffer[OrderEntry]()
@@ -29,20 +35,27 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
 
     case class OrderEntry(ClientOrder: Order, IbOrder: com.ib.client.Order, IbId: Int)
 
-    private def getNextOrderId: Int = {
+    private def nextOrderId: Option[Int] = {
         log.info("requesting order for client id " + clientId)
         orderIdQueue.clear()
-        clientSocket.reqIds(1)
+        try{
+            clientSocket.reqIds(1)
+        }catch {
+            case Throwable => return None
+        }
         val ordId = orderIdQueue.poll(5, TimeUnit.SECONDS)
         if (ordId == null) {
             log.error("requested but did not receive orderId for" + clientId)
-            return -1
+            return None
         }
-        return ordId
+        return Some(ordId)
     }
 
 
-    //this is called in reader thread!!!
+    /**
+     * !!! this is called in ib thread
+     * @param orderId
+     */
     override def nextValidId(orderId: Int): Unit = {
         log.info("received order id " + orderId + " for client id " + clientId)
         orderIdQueue.add(orderId)
@@ -51,19 +64,18 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
 
     def sendOrder(order: Order): Unit = {
         log.info("sending order " + order)
-        val ibOrder = convertOrder(order)
-        val orderId = getNextOrderId
-
-        if (orderId == -1) {
-            log.error("failed to get next available order id, rejecting order " + order)
-            callbackExecutor.execute(() => tradeGateCallbacks.foreach(_.onOrderStatus(order, OrderStatus.Rejected)))
-            return
+        nextOrderId match{
+            case None =>{
+                log.error("failed to get next available order id, rejecting order " + order)
+                callbackExecutor.execute(() => tradeGateCallbacks.foreach(_.onOrderStatus(order, OrderStatus.Rejected)))
+            }
+            case Some(orderId) =>{
+                val ibOrder = convertOrder(order)
+                orders += new OrderEntry(order, ibOrder, orderId)
+                clientSocket.placeOrder(orderId, parse(order.security), ibOrder)
+                log.info("order placed to socket  " + order + " order id is " + orderId)
+            }
         }
-
-        orders += new OrderEntry(order, ibOrder, orderId)
-
-        clientSocket.placeOrder(orderId, parse(order.security), ibOrder)
-        log.info("order placed to socket  " + order + " order id is " + orderId)
     }
 
     def cancelOrder(orderId: String): Unit = {
@@ -89,19 +101,14 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
     private def heartBeat() = {
         callbackExecutor.execute(() => {
             try {
-                var orderId = -1
-                try {
-                    orderId = getNextOrderId
-                } catch {
-                    case e: Throwable =>
-                }
-
-
-                if (orderId == -1) {
-                    log.error("heartbeat failed , trying to reconnect")
-                    clientSocket.eDisconnect()
-                    connect()
-                    resubscribe()
+                nextOrderId match {
+                    case None =>{
+                        log.error("heartbeat failed , trying to reconnect")
+                        clientSocket.eDisconnect()
+                        connect()
+                        resubscribe()
+                    }
+                    case _ =>
                 }
             }
             catch {

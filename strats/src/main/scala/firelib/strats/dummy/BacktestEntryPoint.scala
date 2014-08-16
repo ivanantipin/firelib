@@ -12,7 +12,7 @@ object BacktestEntryPoint {
         cfg.className = classOf[DummyStrat].getName
         cfg.reportRoot = "/home/ivan/tmp/report"
         cfg.dataServerRoot = "/home/ivan/tmp/globaldatabase"
-        cfg.addTickerId(new TickerConfig("SPY","1MIN/STK/SPYV_1.csv",MarketDataType.Ohlc))
+        cfg.tickerConfigs += new TickerConfig("SPY","1MIN/STK/SPYV_1.csv",MarketDataType.Ohlc)
         cfg.mode = ResearchMode.SimpleRun
         backtestStarter.Start(cfg)
     }

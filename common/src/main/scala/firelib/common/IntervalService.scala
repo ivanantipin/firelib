@@ -7,23 +7,23 @@ import scala.collection.mutable.ArrayBuffer
 
 class IntervalService extends IIntervalService {
 
-    private val actions = new ArrayBuffer[(Interval, ArrayBuffer[Instant => Unit])]()
+    private val listeners = new ArrayBuffer[(Interval, ArrayBuffer[Instant => Unit])]()
 
     def addListener(interval: Interval, action: Instant  => Unit) = {
-        var tuple = actions.find(_._1 == interval)
+        var tuple = listeners.find(_._1 == interval)
         if (tuple.isEmpty) {
-            actions += ((interval, new ArrayBuffer[Instant => Unit]()))
-            tuple = actions.find(_._1 == interval)
+            listeners += ((interval, new ArrayBuffer[Instant => Unit]()))
+            tuple = listeners.find(_._1 == interval)
         }
         tuple.get._2 += action
     }
 
     def removeListener(interval: Interval, action: Instant  => Unit): Unit = {
-        actions.find(_._1 == interval).get._2 -= action
+        listeners.find(_._1 == interval).get._2 -= action
     }
 
     def onStep(dt:Instant) = {
-        actions.foreach(action => {
+        listeners.foreach(action => {
             if (dt.toEpochMilli  % action._1.durationMs == 0) {
                 action._2.foreach(_(dt))
             }

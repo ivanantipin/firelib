@@ -17,11 +17,6 @@
             <artifactId>common</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.firelib</groupId>
-            <artifactId>backtest</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 
 </project>

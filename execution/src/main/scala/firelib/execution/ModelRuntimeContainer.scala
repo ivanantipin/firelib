@@ -1,10 +1,12 @@
-package firelib.robot
+package firelib.execution
 
 import java.nio.file.Paths
 
 import firelib.backtest._
 import firelib.common._
-import firelib.utils.{JacksonWrapper, RuntimeTradeWriter}
+import firelib.domain.Tick
+import firelib.report.RuntimeTradeWriter
+import firelib.utils.JacksonWrapper
 import org.slf4j.LoggerFactory
 class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
@@ -18,18 +20,17 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
     val executor = new ThreadExecutor(threadName = modelRuntimeConfig.modelConfig.className).start()
 
-    val (tradeGate, marketDataProvider) = new ProvidersFactory().create(modelRuntimeConfig, executor)
+    val (tradeGate, marketDataProvider) = providersFactory.create(modelRuntimeConfig, executor)
 
     val marketStubFactory = (cfg: TickerConfig) => new MarketStubSwitcher(new MarketStub(cfg.ticker), new ExecutionMarketStub(tradeGate, cfg.ticker))
-
 
     private var model : IModel =_
 
     private var environment : BacktestEnvironment =_
 
 
-    val readerFactory: DefaultReaderFactory = new DefaultReaderFactory(modelConfig.dataServerRoot)
-    var backtestEnvFactory: DefaultBacktestEnvFactory =_
+    private val readerFactory: DefaultReaderFactory = new DefaultReaderFactory(modelConfig.dataServerRoot)
+    private var backtestEnvFactory: DefaultBacktestEnvFactory =_
 
     if(modelRuntimeConfig.runBacktest)
         backtestEnvFactory = new DefaultBacktestEnvFactory(readerFactory, defaultTimeBoundsCalculator)
@@ -55,10 +56,10 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
 
     def start() = {
-        for (k <- 0 until modelConfig.tickerIds.length) {
+        for (k <- 0 until modelConfig.tickerConfigs.length) {
             val k1 = k
             //!!!! assumed that market data provider works in the same thread
-            marketDataProvider.subscribeForTick(modelConfig.tickerIds(k).ticker, (q: Tick) => environment.mdDistributor.onTick(k1, q, null))
+            marketDataProvider.subscribeForTick(modelConfig.tickerConfigs(k).ticker, (q: Tick) => environment.mdDistributor.onTick(k1, q, null))
         }
         frequencer.start()
     }

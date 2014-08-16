@@ -2,6 +2,8 @@ package firelib.common
 
 import java.time.Instant
 
+import firelib.domain.Ohlc
+
 import scala.collection.mutable.ArrayBuffer
 
 

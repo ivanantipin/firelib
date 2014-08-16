@@ -22,7 +22,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="backtest" />
         <module name="common" />
         <module name="domain" />
         <module name="execution" />
@@ -36,8 +35,11 @@
     <bytecodeTargetLevel target="1.8">
       <module name="backtest" target="1.8" />
       <module name="common" target="1.8" />
+      <module name="execution" target="1.8" />
       <module name="ibadapter" target="1.8" />
       <module name="ibgate" target="1.8" />
+      <module name="runtime" target="1.8" />
+      <module name="strats" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
