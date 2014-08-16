@@ -2,20 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="75d53c99-3fb3-4f21-af3e-c472c9d70c24" name="Default" comment="scala initial commit">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/IIndicator.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/IndicatorFactor.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/SimpleFactor.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/Skipper.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/scalastyle-output.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/test/scala/firelib/common/testHelper.scala" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/backtest/backtest.iml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/backtest/pom.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/backtest/scalastyle-output.xml" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/ReportProcessor.scala" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/backtest/src/test/scala/firelib/common/TestHelper.scala" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/.directory" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/ITickProvider.scala" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/BaseIndicator.scala" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/nohup.out" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/out.txt" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes.timestamp" afterPath="" />
@@ -61,263 +47,6 @@
       <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/firelib/indicator/IIndicator.class" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/target/domain-1.0-SNAPSHOT.jar" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/target/maven-archiver/pom.properties" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/BaseHandler.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/BaseHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/CommonIniSettings.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/CommonIniSettings.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/DateTimeHandler.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/DateTimeHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/EndHandler.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/EndHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/IHandler.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/IHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/IModifier.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/IModifier.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/IncHandler.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/IncHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/Parser.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/Parser.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/SkipHandler.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/SkipHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/StdHandler.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/StdHandler.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/TokenGenerator.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/ParserHandlersProducer.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/java/firelib/parser/UltraFastParser.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/UltraFastParser.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/BacktestEnvironment.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/BacktestEnvironment.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/BacktesterOptimized.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/BacktesterOptimized.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/BacktesterSimple.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/BacktesterSimple.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/BidAskUpdater.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/BidAskUpdater.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/DefaultBacktestEnvFactory.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/DefaultBacktestEnvFactory.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/DefaultReaderFactory.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/DefaultReaderFactory.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/MarketDataPlayer.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/MarketDataPlayer.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/ParamsVariator.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/ParamsVariator.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/ReaderToListenerAdapter.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/ReaderToListenerAdapter.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/ReaderToListenerAdapterImpl.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/ReaderToListenerAdapterImpl.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/ReportProcessorImpl.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/ReportProcessor.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/TradeFactorBinder.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/TradeFactorBinder.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/TradeGateCallbackAdapter.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/TradeGateCallbackAdapter.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/backtestStarter.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/backtestStarter.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/backtestStatisticsCalculator.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/backtestStatisticsCalculator.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/defaultTimeBoundsCalculator.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/defaultTimeBoundsCalculator.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/main/scala/firelib/backtest/package.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/package.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/java/ParserTests.java" afterPath="$PROJECT_DIR$/common/src/test/scala/firelib/common/ParserTests.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/java/SingleParserTests.java" afterPath="$PROJECT_DIR$/common/src/test/scala/firelib/common/SingleParserTests.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Chain1/201212/@ES#_201010.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/Chain1/201212/@ES#_201010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Chain1/201212/@ES#_201102.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/Chain1/201212/@ES#_201102.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Chain1/201212/@ES#_201210.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/Chain1/201212/@ES#_201210.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Chain1/201212/@ES#_201212.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/Chain1/201212/@ES#_201212.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Chain1/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/Chain1/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Chain1/@ES#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/Chain1/@ES#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Chain1/@ES#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/Chain1/@ES#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Chain1/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/Chain1/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201005.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201005.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201005.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201005.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201007.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201007.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201010.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201102.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201102.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201104.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201104.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201106.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201106.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201108.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201108.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201110.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201110.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201202.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201202.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201204.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201204.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201206.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201206.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201208.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201208.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201210.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201210.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/@ES#_201212.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201212.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/ANFUTURES.COM/TICKS/FUT/ES_201006.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/ANFUTURES.COM/TICKS/FUT/ES_201006.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/ANFUTURES.COM/TICKS/FUT/ES_201006.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/ANFUTURES.COM/TICKS/FUT/ES_201006.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/ANFUTURES.COM/TICKS/FUT/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/ANFUTURES.COM/TICKS/FUT/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/@ES#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/@ES#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni1/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni2/@ES#_201005.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni2/@ES#_201005.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/CommonIni2/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/CommonIni2/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/IntegrationTestDsRoot/TICKS/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/IntegrationTestDsRoot/TICKS/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/IntegrationTestDsRoot/dummy.txt" afterPath="$PROJECT_DIR$/common/src/test/resources/IntegrationTestDsRoot/dummy.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/LongFile/XG_#.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/LongFile/XG_#.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/LongFile/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/LongFile/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/LoopChain1/201212/@ES#_201005.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/LoopChain1/201212/@ES#_201005.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/LoopChain1/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/LoopChain1/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/LoopChain1/@ES#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/LoopChain1/@ES#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/LoopChain1/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/LoopChain1/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Seek1/RI#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/Seek1/RI#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Seek1/RI#_200912.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/Seek1/RI#_200912.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Seek1/RI#_201012.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/Seek1/RI#_201012.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Seek1/RI#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/Seek1/RI#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/Seek1/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/Seek1/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TempData/1_#.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TempData/1_#.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TempData/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/TempData/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TempData/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/TempData/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_2009.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_2009.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_200908.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_200908.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_20090815.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_20090815.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_200912.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_200912.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_2010.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_2010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_2011.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_2011.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_201102.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_201102.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_2012.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_2012.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_20120920.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_20120920.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_20121020.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_20121020.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/RI#_201211.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_201211.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_1.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_1.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_2009.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_2009.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_200908.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_200908.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_20090815.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_20090815.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_200912.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_200912.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_2010.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_2010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_2011.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_2011.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_201102.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_201102.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_2012.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_2012.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_20120920.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_20120920.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_20121020.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_20121020.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/RI#_201211.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_201211.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TickersSorting2/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TstData/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/TstData/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TstData/data1_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TstData/data1_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TstData/data2_empty.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TstData/data2_empty.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TstData/data3_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TstData/data3_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/TstData/data4_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/TstData/data4_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/@ES#_1.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/@ES#_1.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/XAUUSD_1.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/XAUUSD_1.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/BarData_IQFEED/@ES#_1.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/BarData_IQFEED/@ES#_1.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/BarData_IQFEED/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/BarData_IQFEED/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201010.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201102.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201102.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201210.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201210.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201212.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201212.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/@ES#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/@ES#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/@ES#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/@ES#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200603.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200603.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200606.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200606.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200609.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200609.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200612.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200612.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200703.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200703.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200706.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200706.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200709.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200709.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200712.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200712.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200803.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200803.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200806.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200806.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200809.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200809.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200812.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200812.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200903.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200903.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200906.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200906.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200909.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200909.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200912.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200912.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201003.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201003.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201006.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201006.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201006.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201006.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201009.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201009.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201005.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201005.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201005.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201005.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201010.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201210.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201210.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201212.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201212.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/@ES#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/@ES#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201005.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201005.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/201212/XG#_201212.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/201212/XG#_201212.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/XG#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/XG#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain4_DSlike/TICKDATA.COM/TICKS/FUT/XG#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/TICKDATA.COM/TICKS/FUT/XG#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Chain4_DSlike/TICKDATA.COM/TICKS/FUT/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/TICKDATA.COM/TICKS/FUT/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/LabudaFile/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/LabudaFile/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/LabudaFile/labuda_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/LabudaFile/labuda_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201005.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201005.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201005.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201005.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201007.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201007.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201010.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201102.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201102.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201104.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201104.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201106.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201106.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201108.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201108.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201110.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201110.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201202.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201202.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201204.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201204.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201206.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201206.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201208.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201208.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201210.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201210.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201212.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201212.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/MergeCommonIni1/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Seek2/RI#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Seek2/RI#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Seek2/RI#_200912.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Seek2/RI#_200912.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Seek2/RI#_201012.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Seek2/RI#_201012.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Seek2/RI#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Seek2/RI#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/Seek2/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Seek2/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/TstData2/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/TstData2/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/TstData2/data1_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/TstData2/data1_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/TstData2/data2_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/TstData2/data2_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/WrongFileName/WrongFileName.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/WrongFileName/WrongFileName.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/WrongFileName/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/WrongFileName/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/ZerolenFile/common.ini" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/ZerolenFile/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/UltraFastParser/ZerolenFile/zerolen_0.csv" afterPath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/ZerolenFile/zerolen_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/resources/XG/TestIndicator ()_Sec1.h5" afterPath="$PROJECT_DIR$/common/src/test/resources/XG/TestIndicator ()_Sec1.h5" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/scala/firelib/common/BacktestIntegrationTest.scala" afterPath="$PROJECT_DIR$/common/src/test/scala/firelib/common/BacktestIntegrationTest.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/scala/firelib/common/HistoryCicrcularTest.scala" afterPath="$PROJECT_DIR$/common/src/test/scala/firelib/common/HistoryCircularTest.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/scala/firelib/common/MarketStubTest.scala" afterPath="$PROJECT_DIR$/common/src/test/scala/firelib/common/MarketStubTest.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/scala/firelib/common/SplitToTrdCasesTest.scala" afterPath="$PROJECT_DIR$/common/src/test/scala/firelib/common/SplitToTrdCasesTest.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/scala/firelib/common/TestModel.scala" afterPath="$PROJECT_DIR$/common/src/test/scala/firelib/common/TickTestModel.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/scala/firelib/common/TestModelOhlc.scala" afterPath="$PROJECT_DIR$/common/src/test/scala/firelib/common/OhlcTestModel.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/backtest/src/test/scala/firelib/common/VariatorTest.scala" afterPath="$PROJECT_DIR$/common/src/test/scala/firelib/common/VariatorTest.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/lib/scalastyle_config.xml" afterPath="$PROJECT_DIR$/scalastyle_config.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/MarketStub.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/MarketStub.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/MarketStubSwitcher.scala" afterPath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/MarketStubSwitcher.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/Ohlc.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/Ohlc.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/Tick.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/Tick.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/Timed.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/Timed.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/Utils.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/utils.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/utils/OptParamsWriter.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/report/OptParamsWriter.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/utils/ReportWriter.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/report/ReportWriter.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/utils/RuntimeTradeWriter.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/report/RuntimeTradeWriter.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/utils/TradesCsvWriter.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/report/TradesCsvWriter.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/PositionCloserByTimeOut.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/PositionCloserByTimeOut.scala" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ProvidersFactory.scala" afterPath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/providersFactory.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="$PROJECT_DIR$/.idea/.name" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/strats/src/main/scala/firelib/strats/dummy/BacktestEntryPoint.scala" afterPath="$PROJECT_DIR$/strats/src/main/scala/firelib/strats/dummy/BacktestEntryPoint.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/BasketModel.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/BasketModel.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/strats/src/main/scala/firelib/strats/dummy/DummyStrat.scala" afterPath="$PROJECT_DIR$/strats/src/main/scala/firelib/strats/dummy/DummyStrat.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/ExecutionEstimates.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/ExecutionEstimates.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ExecutionMarketStub.scala" afterPath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ExecutionMarketStub.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/Frequencer.scala" afterPath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/Frequencer.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/utils/HeapQuantile.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/utils/HeapQuantile.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/IFactor.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/IFactor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IMarketDataDistributor.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IMarketDataDistributor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IMarketDataListener.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IMarketDataListener.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/IMarketDataProvider.scala" afterPath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/IMarketDataProvider.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IModel.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IModel.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/ISimpleReader.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/ISimpleReader.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ITradeGate.scala" afterPath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ITradeGate.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ibadapter/src/main/scala/firelib/ibadapter/IbTradeGate.scala" afterPath="$PROJECT_DIR$/ibadapter/src/main/scala/firelib/ibadapter/IbTradeGate.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IntervalService.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/IntervalService.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/common/MarketDataDistributor.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/common/MarketDataDistributor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/ModelConfig.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/ModelConfig.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ModelRuntimeConfig.scala" afterPath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ModelRuntimeConfig.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ModelRuntimeContainer.scala" afterPath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ModelRuntimeContainer.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/OptimizedParameter.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/OptimizedParameter.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/Order.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/Order.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/src/main/scala/firelib/runtime/Starter.scala" afterPath="$PROJECT_DIR$/runtime/src/main/scala/firelib/runtime/Starter.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/TickerConfig.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/TickerConfig.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/Trade.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/Trade.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/common.iml" afterPath="$PROJECT_DIR$/common/common.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/execution.iml" afterPath="$PROJECT_DIR$/execution/execution.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ibadapter/ibadapter.iml" afterPath="$PROJECT_DIR$/ibadapter/ibadapter.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ibgate/ibgate.iml" afterPath="$PROJECT_DIR$/ibgate/ibgate.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/pom.xml" afterPath="$PROJECT_DIR$/common/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/pom.xml" afterPath="$PROJECT_DIR$/execution/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ibadapter/pom.xml" afterPath="$PROJECT_DIR$/ibadapter/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ibgate/pom.xml" afterPath="$PROJECT_DIR$/ibgate/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/runtime.iml" afterPath="$PROJECT_DIR$/runtime/runtime.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/scalastyle-output.xml" afterPath="$PROJECT_DIR$/common/scalastyle-output.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/scalastyle-output.xml" afterPath="$PROJECT_DIR$/execution/scalastyle-output.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ibadapter/scalastyle-output.xml" afterPath="$PROJECT_DIR$/ibadapter/scalastyle-output.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/strats/strats.iml" afterPath="$PROJECT_DIR$/strats/strats.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ScalaTest.iws" />
@@ -463,8 +192,8 @@
       <file leaf-file-name="EWrapperImpl.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/ibadapter/src/main/java/firelib/ibadapter/EWrapperImpl.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.2666667" vertical-offset="0" max-vertical-offset="4750">
-              <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+            <state vertical-scroll-proportion="0.035916824" vertical-offset="0" max-vertical-offset="4750">
+              <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -790,420 +519,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="runtime" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ibadapter" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ibadapter" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ibadapter" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ibadapter" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ibadapter" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ibadapter" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ibadapter" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="execution" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="execution" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="execution" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="execution" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="execution" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="backtest" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="backtest" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="package.scala" />
-              <option name="myItemType" value="org.jetbrains.plugins.scala.components.ScalaDefsProjectViewProvider$ScalaFileTreeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="common" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1948,7 +1263,7 @@
       <workItem from="1407783426643" duration="51953000" />
       <workItem from="1408093314417" duration="4150000" />
       <workItem from="1408107080089" duration="16192000" />
-      <workItem from="1408170582527" duration="5215000" />
+      <workItem from="1408170582527" duration="5519000" />
     </task>
     <task id="LOCAL-00001" summary="scala initial commit">
       <created>1405602903339</created>
@@ -1994,11 +1309,15 @@
       <created>1408106476469</created>
       <updated>1408106476469</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="scala initial commit">
+      <created>1408176252436</created>
+      <updated>1408176252436</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="588914000" />
+    <option name="totallyTimeSpent" value="589218000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -2024,7 +1343,7 @@
     <frame x="-2" y="-3" width="1924" height="1087" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.8632479" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3621795" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29700854" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5032051" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -2038,7 +1357,7 @@
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4017094" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2761752" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2761752" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -2531,8 +1850,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ibadapter/src/main/java/firelib/ibadapter/EWrapperImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.2666667" vertical-offset="0" max-vertical-offset="4750">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.035916824" vertical-offset="0" max-vertical-offset="4750">
+          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding />
         </state>
       </provider>
