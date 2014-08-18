@@ -6,3 +6,5 @@ package firelib.domain
 trait IIndicator[T] {
     def value: T
 }
+
+

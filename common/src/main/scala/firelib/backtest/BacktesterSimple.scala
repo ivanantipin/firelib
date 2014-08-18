@@ -18,7 +18,7 @@ class BacktesterSimple (envFactory : BacktestEnvironmentFactory, stubFactory : M
 
         val env : BacktestEnvironment = envFactory(cfg)
 
-        val model = cfg.newInstance()
+        val model = cfg.newModelInstance()
 
         val stubs: ArrayBuffer[IMarketStub] = cfg.tickerConfigs.map(stubFactory)
 

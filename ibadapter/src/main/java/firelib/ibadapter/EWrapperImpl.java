@@ -20,7 +20,7 @@ public class EWrapperImpl implements EWrapper
         public EClientSocket ClientSocket
         {
             get { return clientSocket; }
-            set { clientSocket = value; }
+            set { clientSockjet = value; }
         }
 */
 

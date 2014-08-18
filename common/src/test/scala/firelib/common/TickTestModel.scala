@@ -15,11 +15,11 @@ class TickTestModel extends BasketModel with IMarketDataListener {
 
     var endTime = Instant.MIN
 
-    val startTimesGmt = new ArrayBuffer[Instant]()
+    val daysStarts = new ArrayBuffer[Instant]()
 
     private var hist: ITimeSeries[Ohlc] = _
 
-    private val uniqTimes = new util.HashSet[Instant]()
+    val uniqTimes = new util.HashSet[Instant]()
 
 
     override def applyProperties(mprops: Map[String, String]) = {
@@ -44,13 +44,16 @@ class TickTestModel extends BasketModel with IMarketDataListener {
 
     def onOhlc(idx: Int, ohlc: Ohlc, next: Ohlc) = ???
 
-    def onTick(idx: Int, pQuote: Tick, next: Tick) = {
-        NumberOfTickes += 1
-        assert(!uniqTimes.contains(pQuote.DtGmt),"dupe time " + pQuote.DtGmt)
-        uniqTimes.add(pQuote.DtGmt)
+    val ticks = new ArrayBuffer[Tick]()
 
-        if (startTimesGmt.size == 0 || startTimesGmt.last.truncatedTo(ChronoUnit.DAYS) != pQuote.DtGmt.truncatedTo(ChronoUnit.DAYS)) {
-            startTimesGmt += pQuote.DtGmt
+    def onTick(idx: Int, tick: Tick, next: Tick) = {
+        NumberOfTickes += 1
+        assert(!uniqTimes.contains(tick.DtGmt),"dupe time " + tick.DtGmt)
+        uniqTimes.add(tick.DtGmt)
+        ticks += tick
+
+        if (daysStarts.size == 0 || daysStarts.last.truncatedTo(ChronoUnit.DAYS) != tick.DtGmt.truncatedTo(ChronoUnit.DAYS)) {
+            daysStarts += tick.DtGmt
         }
     }
 

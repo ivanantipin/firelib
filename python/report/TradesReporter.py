@@ -194,6 +194,8 @@ class BacktestResults(object):
         self.opts = pd.read_csv(filename, index_col=False, sep=';')
         self.opts.fillna(0,inplace=True)
 
+        self.opts.sort(columns=[self.opts.columns[0]], inplace=True)
+
     def sort(self):
         """
         Sort trades by EntryDate (assumes self.trades.index contains EntryDate).
@@ -326,16 +328,16 @@ class BacktestResults(object):
                 fig.set_size_inches([10,10])
                 X = dfOpt[optCols[0]]
                 Y = dfOpt[optCols[1]]
-                Z = dfOpt['PfStat']
+                Z = dfOpt['Pf']
                 self.plotHeatMap(X,Y,Z,'pf',optCols[0],optCols[1])
             elif len(optCols) == 1:
                 fig = plt.figure(figsize=plt.figaspect(0.3))
                 fig.set_size_inches([20,5])
                 X = dfOpt[optCols[0]]
-                Y = dfOpt['PfStat']
+                Y = dfOpt['Pf']
                 plt.plot(X,Y)
                 fig = plt.figure(figsize=plt.figaspect(0.3))
-                Y1 = dfOpt['PnlStat']
+                Y1 = dfOpt['Pnl']
                 fig.set_size_inches([20,5])
                 ax=plt.plot(X,Y1)
 

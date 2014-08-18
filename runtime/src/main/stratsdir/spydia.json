@@ -1,0 +1,68 @@
+{
+  "modelConfig" : {
+    "tickerConfigs" : [ {
+      "ticker" : "SPY",
+      "path" : "1MIN/STK/SPY_1.csv",
+      "mdType" : {
+        "name" : "Ohlc"
+      }
+    }, {
+      "ticker" : "DIA",
+      "path" : "1MIN/STK/DIA_1.csv",
+      "mdType" : {
+        "name" : "Ohlc"
+      }
+    } ],
+    "startDateGmt" : null,
+    "endDate" : null,
+    "dataServerRoot" : "/home/ivan/IdeaProjects/firelib/./strats/src/main/sampleRoot/dsRoot",
+    "reportRoot" : "/home/ivan/IdeaProjects/firelib/./runtime/src/main/stratsdir/report",
+    "modelClassName" : "firelib.spydia.SpyDiaPair",
+    "customParams" : {
+      "trading.hour" : "10"
+    },
+    "optParams" : [ ],
+    "optBatchSize" : 500,
+    "optThreadNumber" : 1,
+    "optMinNumberOfTrades" : 30,
+    "optimizedPeriodDays" : 365,
+    "backtestMode" : {
+      "name" : "SimpleRun"
+    },
+    "backtestStepInterval" : {
+      "name" : "Min1",
+      "durationMs" : 60000
+    },
+    "optimizedMetric" : {
+      "name" : "Sharpe"
+    },
+    "calculatedMetrics" : [ {
+      "name" : "Pf"
+    }, {
+      "name" : "Pnl"
+    }, {
+      "name" : "Sharpe"
+    }, {
+      "name" : "AvgPnl"
+    } ]
+  },
+  "gatewayType" : "IB",
+  "runBacktest" : true,
+  "gatewayConfig" : {
+    "port" : "4001",
+    "client.id" : "1"
+  },
+  "tradeLogDirectory" : null,
+  "ibContractMapping" : {
+    "AMLP" : "m_symbol=AMLP;m_secType=STK;m_currency=USD;m_exchange=ARCA",
+    "EEM" : "m_symbol=EEM;m_secType=STK;m_currency=USD;m_exchange=ARCA",
+    "SPY" : "m_symbol=SPY;m_secType=STK;m_currency=USD;m_exchange=ARCA",
+    "QQQ" : "m_symbol=QQQ;m_secType=STK;m_currency=USD;m_exchange=ARCA",
+    "DIA" : "m_symbol=DIA;m_secType=STK;m_currency=USD;m_exchange=ARCA",
+    "DXJ" : "m_symbol=DXJ;m_secType=STK;m_currency=USD;m_exchange=ARCA",
+    "EURUSD" : "m_symbol=EUR;m_secType=CASH;m_currency=USD;m_exchange=IDEALPRO"
+  }
+}
+: "m_symbol=EUR;m_secType=CASH;m_currency=USD;m_exchange=IDEALPRO"
+  }
+}

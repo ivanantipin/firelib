@@ -16,7 +16,7 @@ object OptParamsWriter {
     def write(targetDir: String, optEnd: Instant, estimates: Seq[ExecutionEstimates], optParams: Seq[OptimizedParameter], metrics: Seq[StrategyMetric]) = {
         var rows = new ArrayBuffer[String]()
 
-        rows += (optParams.map(_.name) ++ metrics.map(_.Name)).mkString(separator)
+        rows += (optParams.map(_.name) ++ metrics.map(_.name)).mkString(separator)
         for (est <- estimates) {
             val opts: Seq[String] = optParams.map(nm => est.optParams(nm.name).toString)
             val calcMetrics: Seq[String] = metrics.map(m => {
@@ -26,7 +26,9 @@ object OptParamsWriter {
         }
         StatFileDumper.writeRows(Paths.get(targetDir, "Opt.csv").toString, rows)
 
-        val ipypath = Paths.get("/home/ivan/tmp/report", "Python/IPythonReport/OptStdReport.ipynb")
+        var baseDir = "."
+
+        val ipypath = Paths.get(baseDir, "python/report/ipython/OptStdReport.ipynb")
 
         Files.copy(ipypath, Paths.get(targetDir, "OptStdReport.ipynb"), StandardCopyOption.REPLACE_EXISTING)
 

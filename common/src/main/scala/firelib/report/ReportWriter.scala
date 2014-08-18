@@ -11,6 +11,9 @@ import scala.collection.immutable.HashMap
 object ReportWriter {
     def write(model: IModel, cfg: ModelConfig, targetDir: String) : Unit = {
 
+        if(!Files.exists(Paths.get(targetDir)))
+            Files.createDirectory(Paths.get(targetDir))
+
         JacksonWrapper.serialize(cfg,Paths.get(targetDir, "cfg.json").toString)
 
         var trades = model.trades

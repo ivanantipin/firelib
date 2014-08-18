@@ -6,7 +6,6 @@ import scala.collection.mutable.ArrayBuffer
 import scala.collection.{Map, mutable}
 
 class ReportProcessor(val metricsCalculator : MetricsCalculator, val optimizedFunctionName: StrategyMetric,
-
                       val optParams: Seq[String], val topModelsToKeep: Int = 3, val minNumberOfTrades: Int = 1, val removeOutlierTrades: Int = 2) {
 
 
@@ -25,7 +24,7 @@ class ReportProcessor(val metricsCalculator : MetricsCalculator, val optimizedFu
 
     def process(models: Seq[IModel]) = {
 
-        models.foreach(model => {
+        models.filter(_.trades.size >= minNumberOfTrades).foreach(model => {
 
             val tradingCases = utils.toTradingCases(model.trades)
 

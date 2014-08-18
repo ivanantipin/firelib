@@ -59,7 +59,7 @@ class BacktesterOptimized (backtestEnvFactory : BacktestEnvironmentFactory, mark
 
         val bm = reportProcessor.bestModels.last
         val env = backtestEnvFactory(cfg)
-        val model = cfg.newInstance()
+        val model = cfg.newModelInstance()
         val stubs: ArrayBuffer[IMarketStub] = cfg.tickerConfigs.map(marketStubFactory)
         env.bindModelIntoEnv(model,stubs,bm.properties)
         env.backtest()
@@ -86,7 +86,7 @@ class BacktesterOptimized (backtestEnvFactory : BacktestEnvironmentFactory, mark
         val env: BacktestEnvironment = backtestEnvFactory(cfg)
         while (variator.hasNext()) {
             var opts = variator.next
-            val model: IModel = cfg.newInstance()
+            val model: IModel = cfg.newModelInstance()
             val stubs: Seq[IMarketStub] = cfg.tickerConfigs.map(marketStubFactory)
             env.bindModelIntoEnv(model,stubs,cfg.customParams.toMap ++ opts.map(t => (t._1, t._2.toString)))
 

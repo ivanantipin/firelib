@@ -10,7 +10,7 @@ object defaultTimeBoundsCalculator extends TimeBoundsCalculator{
     def calcStartDate(cfg: ModelConfig): Instant = {
         var startDtGmt = if (cfg.startDateGmt == null) Instant.EPOCH else cfg.startDateGmt.parseStandard
 
-        startDtGmt = cfg.interval.roundTime(startDtGmt)
+        startDtGmt = cfg.backtestStepInterval.roundTime(startDtGmt)
 
         val readerFactory: DefaultReaderFactory = new DefaultReaderFactory(cfg.dataServerRoot)
 

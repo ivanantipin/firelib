@@ -1,0 +1,51 @@
+{
+  "tickerConfigs" : [ {
+    "ticker" : "SPY",
+    "path" : "1MIN/STK/SPY_1.csv",
+    "mdType" : {
+      "name" : "Ohlc"
+    }
+  }, {
+    "ticker" : "DIA",
+    "path" : "1MIN/STK/DIA_1.csv",
+    "mdType" : {
+      "name" : "Ohlc"
+    }
+  } ],
+  "startDateGmt" : null,
+  "endDate" : null,
+  "dataServerRoot" : "/home/ivan/IdeaProjects/firelib/./strats/src/main/sampleRoot/dsRoot",
+  "reportRoot" : "/home/ivan/IdeaProjects/firelib/./strats/src/main/sampleRoot/reportRoot/spydia",
+  "modelClassName" : "firelib.spydia.SpyDiaPair",
+  "customParams" : { },
+  "optParams" : [ {
+    "name" : "trading.hour",
+    "start" : 0,
+    "end" : 24,
+    "step" : 1
+  } ],
+  "optBatchSize" : 500,
+  "optThreadNumber" : 1,
+  "optMinNumberOfTrades" : 30,
+  "optimizedPeriodDays" : 365,
+  "backtestMode" : {
+    "name" : "SimpleRun"
+  },
+  "backtestStepInterval" : {
+    "name" : "Min1",
+    "durationMs" : 60000
+  },
+  "optimizedMetric" : {
+    "name" : "Sharpe"
+  },
+  "calculatedMetrics" : [ {
+    "name" : "Pf"
+  }, {
+    "name" : "Pnl"
+  }, {
+    "name" : "Sharpe"
+  }, {
+    "name" : "AvgPnl"
+  } ]
+}
+}

@@ -9,4 +9,6 @@ trait ITimeSeries[T] {
 
     def listen(listener: ITimeSeries[T] => Unit)
 
+    def last : T = apply(0)
+
 }

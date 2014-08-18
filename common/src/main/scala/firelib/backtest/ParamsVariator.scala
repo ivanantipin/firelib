@@ -6,7 +6,7 @@ import scala.collection.mutable
 
 /**
  * iterator over all combinations of optimized variables
- * returns map [string,int] where key is name of parameter
+ * returns on iteration map [string,int] where key is name of parameter
  * @param optParams
  */
 class ParamsVariator(optParams: Seq[OptimizedParameter]) {

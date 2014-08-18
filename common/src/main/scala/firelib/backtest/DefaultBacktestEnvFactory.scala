@@ -11,7 +11,7 @@ class DefaultBacktestEnvFactory(readerFactory: ReadersFactory, timeBoundsCalc: T
 
         val readers: Seq[ISimpleReader[Timed]] = readerFactory(cfg.tickerConfigs, bound._1)
 
-        val mdPlayer = new MarketDataPlayer(wrapReadersWithAdapters(readers, cfg.tickerConfigs),bound,cfg.interval.durationMs)
+        val mdPlayer = new MarketDataPlayer(wrapReadersWithAdapters(readers, cfg.tickerConfigs),bound,cfg.backtestStepInterval.durationMs)
         val distributor = new MarketDataDistributor(cfg.tickerConfigs.length, intervalService)
         mdPlayer.addStepListener(intervalService)
         mdPlayer.addListener(distributor)

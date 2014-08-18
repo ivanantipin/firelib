@@ -18,7 +18,7 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
     val modelConfig: ModelConfig = modelRuntimeConfig.modelConfig
 
-    val executor = new ThreadExecutor(threadName = modelRuntimeConfig.modelConfig.className).start()
+    val executor = new ThreadExecutor(threadName = modelRuntimeConfig.modelConfig.modelClassName).start()
 
     val (tradeGate, marketDataProvider) = providersFactory.create(modelRuntimeConfig, executor)
 
@@ -44,12 +44,12 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
 
 
-    private val frequencer = new Frequencer(modelConfig.interval, environment.player.getStepListeners(), executor)
+    private val frequencer = new Frequencer(modelConfig.backtestStepInterval, environment.player.getStepListeners(), executor)
 
     for (switcher <- model.stubs.map(ms => ms.asInstanceOf[MarketStubSwitcher])) {
         switcher.switchStubs()
         //to write trades to csv file
-        switcher.addCallback(new TradeGateCallbackAdapter((t) => RuntimeTradeWriter.write(tradesPath, modelConfig.className, t)))
+        switcher.addCallback(new TradeGateCallbackAdapter((t) => RuntimeTradeWriter.write(tradesPath, modelConfig.modelClassName, t)))
     }
 
     log.info("Started ")

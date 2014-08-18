@@ -1,7 +1,7 @@
 package firelib.common
 
-sealed class MarketDataType private (val Name: String) {
-    override def toString: String = Name
+sealed case class MarketDataType private (val name: String) {
+    override def toString: String = name
 }
 
 object MarketDataType {

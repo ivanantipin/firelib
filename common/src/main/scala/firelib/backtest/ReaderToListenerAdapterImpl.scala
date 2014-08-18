@@ -19,7 +19,7 @@ class ReaderToListenerAdapterImpl[T <: Timed](val reader : ISimpleReader[T],
     override def readUntil(chunkEndGmt:Instant): Boolean = {
         while (!reader.current.DtGmt.isAfter(chunkEndGmt)) {
             val current = reader.current
-            if (!reader.read) {
+            if (!reader.read()) {
                 return false
             }
             listeners.foreach(bridgeFunction(_,idx,current,reader.current))

@@ -41,7 +41,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
         try{
             clientSocket.reqIds(1)
         }catch {
-            case Throwable => return None
+            case ex : Throwable => return None
         }
         val ordId = orderIdQueue.poll(5, TimeUnit.SECONDS)
         if (ordId == null) {

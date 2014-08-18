@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="5.0">
+ <file name="/home/ivan/IdeaProjects/firelib/execution/src/main/scala/firelib/execution/folderStarter.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="warning" message="Header does not match expected text"></error>
+ </file>
  <file name="/home/ivan/IdeaProjects/firelib/execution/src/main/scala/firelib/execution/IMarketDataProvider.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="warning" message="Header does not match expected text"></error>
-  <error column="0" line="3" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"></error>
  </file>
  <file name="/home/ivan/IdeaProjects/firelib/execution/src/main/scala/firelib/execution/providersFactory.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="warning" message="Header does not match expected text"></error>
@@ -55,9 +57,9 @@
  </file>
  <file name="/home/ivan/IdeaProjects/firelib/execution/src/main/scala/firelib/execution/ModelRuntimeContainer.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="warning" message="Header does not match expected text"></error>
-  <error column="138" line="63" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"></error>
-  <error column="4" line="36" source="org.scalastyle.scalariform.IfBraceChecker" severity="warning" message="If block needs braces"></error>
-  <error column="8" line="59" source="org.scalastyle.scalariform.PublicMethodsHaveTypeChecker" severity="warning" message="Public method must have explicit type"></error>
+  <error column="138" line="62" source="org.scalastyle.scalariform.NullChecker" severity="warning" message="Avoid using null"></error>
+  <error column="4" line="35" source="org.scalastyle.scalariform.IfBraceChecker" severity="warning" message="If block needs braces"></error>
+  <error column="8" line="58" source="org.scalastyle.scalariform.PublicMethodsHaveTypeChecker" severity="warning" message="Public method must have explicit type"></error>
   <error column="0" line="5" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"></error>
   <error column="0" line="6" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"></error>
  </file>

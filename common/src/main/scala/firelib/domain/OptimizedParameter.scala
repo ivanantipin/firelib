@@ -1,5 +1,7 @@
 package firelib.common
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+
 /**
  * optimized parameter configuration - support only int values
  * @param name - name of parameter
@@ -9,5 +11,6 @@ package firelib.common
  */
 class OptimizedParameter(val name: String, val start: Int, val end: Int, val step: Int = 1) {
 
+    @JsonIgnore
     def getVariations(): List[Int] = List.range(start, end, step)
 }

@@ -29,19 +29,22 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
 
     private T currentRecord;
     //21.05.2007,094800,90.05,90.05,90.05,90.05,900,1100
-    private final CharBuffer charBuffer = CharBuffer.allocate(40000000);
+    private final CharBuffer charBuffer;
 
     long endReadPosition = 0;
     private final CharsetDecoder charsetDecoder;
+    private String fileName;
 
 
     public Parser(String fileName, IHandler<T>[] handlers, Supplier<T> factory) {
-        this(fileName, handlers, factory, 80000000);
+        this(fileName, handlers, factory, 20000000);
     }
 
-    public Parser(String fileName, IHandler<T>[] handlers, Supplier<T> factory, int capacity) {
+    public Parser(String fileName, IHandler<T>[] handlers, Supplier<T> factory, int capacityBytes) {
+        this.fileName = fileName;
         try {
-            this.capacity = capacity;
+            this.capacity = capacityBytes;
+            charBuffer = CharBuffer.allocate(capacityBytes*2);
             this.handlers = handlers;
             this.factory = factory;
             File aFile = new File(fileName);
@@ -126,6 +129,7 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
         currentRecord = readFromBuffer();
         if (currentRecord == null) {
             charBuffer.compact();
+            System.out.println("buffering " + fileName);
             long len = buffer(endReadPosition);
             endReadPosition += len;
             if (len == 0) {

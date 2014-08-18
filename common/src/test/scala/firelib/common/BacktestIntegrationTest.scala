@@ -61,18 +61,17 @@ class BacktestIntegrationTest {
         cfg.reportRoot = "/home/ivan/tmp/testReportDir"
         cfg.tickerConfigs += new TickerConfig("XG", fileName, MarketDataType.Tick)
         cfg.startDateGmt = "08.03.2013 05:00:00"
-        cfg.frequencyIntervalId = Interval.Sec1.Name
+        cfg.backtestStepInterval = Interval.Sec1
         var startTime = cfg.startDateGmt.parseStandard
-        cfg.className = "firelib.common.TickTestModel"
-        backtestStarter.Start(cfg)
+        cfg.modelClassName = "firelib.common.TickTestModel"
+        backtestStarter.runBacktest(cfg)
 
 
         //less by one because we read next at the same time
         Assert.assertTrue("ticks number not match " + testHelper.instanceTick.NumberOfTickes + " <> " + (totalTicksNumber - 1), testHelper.instanceTick.NumberOfTickes == (totalTicksNumber - 1))
-        Assert.assertTrue("days number", testHelper.instanceTick.startTimesGmt.length == 4)
-        Assert.assertTrue("time check", testHelper.instanceTick.startTimesGmt(0) == d0)
-        //????? ????? ?????
-        Assert.assertEquals(d2, testHelper.instanceTick.startTimesGmt(2))
+        Assert.assertTrue("days number", testHelper.instanceTick.daysStarts.length == 4)
+        Assert.assertTrue("time check", testHelper.instanceTick.daysStarts(0) == d0)
+        Assert.assertEquals(d2, testHelper.instanceTick.daysStarts(2))
 
         //2 h without ticks
         //Assert.assertEquals(TimeSpan.FromHours(0), d0.ToGmt("NY") - startTime)
@@ -152,14 +151,14 @@ class BacktestIntegrationTest {
 
         cfg.startDateGmt = "08.03.2013 05:00:00"
 
-        cfg.frequencyIntervalId = Interval.Sec1.Name
+        cfg.backtestStepInterval = Interval.Sec1
 
         val startTime = cfg.startDateGmt.parseStandard
 
-        cfg.className = "firelib.common.OhlcTestModel"
+        cfg.modelClassName = "firelib.common.OhlcTestModel"
 
 
-        backtestStarter.Start(cfg)
+        backtestStarter.runBacktest(cfg)
 
         var idx = -1
         val modelBars = testHelper.instanceOhlc.bars

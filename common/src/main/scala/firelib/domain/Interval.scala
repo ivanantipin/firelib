@@ -5,7 +5,7 @@ import java.time.Instant
 import scala.collection.mutable.ArrayBuffer
 
 
-sealed class Interval private (val Name: String, val durationMs: Int) {
+sealed class Interval private (val name: String, val durationMs: Int) {
 
     Interval.intervals += this
 
@@ -13,7 +13,7 @@ sealed class Interval private (val Name: String, val durationMs: Int) {
 
     def roundEpochMs(epochMs : Long): Long  =  (epochMs/ durationMs) * durationMs
 
-    override def toString: String = Name
+    override def toString: String = name
 }
 
 object Interval {
@@ -33,7 +33,7 @@ object Interval {
 
     def resolveFromMs(ms: Long) = intervals.find(_.durationMs == ms).get
 
-    def resolveFromName(name: String) = intervals.find(_.Name == name).get
+    def resolveFromName(name: String) = intervals.find(_.name == name).get
 
 }
 

@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="5.0">
+ <file name="/home/ivan/IdeaProjects/firelib/strats/src/main/scala/firelib/starts/qusma/QusmaLowQuart.scala">
+  <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="warning" message="Header does not match expected text"></error>
+  <error column="0" line="215" source="org.scalastyle.file.WhitespaceEndOfLineChecker" severity="warning" message="Whitespace at end of line"></error>
+  <error column="26" line="21" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="47" line="52" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="47" line="57" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="48" line="63" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="34" line="70" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="53" line="72" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="47" line="84" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="34" line="89" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="53" line="90" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="47" line="100" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="49" line="157" source="org.scalastyle.scalariform.MagicNumberChecker" severity="warning" message="Magic Number"></error>
+  <error column="12" line="123" source="org.scalastyle.scalariform.ReturnChecker" severity="warning" message="Avoid using return"></error>
+  <error column="12" line="138" source="org.scalastyle.scalariform.ReturnChecker" severity="warning" message="Avoid using return"></error>
+  <error column="8" line="141" source="org.scalastyle.scalariform.ReturnChecker" severity="warning" message="Avoid using return"></error>
+  <error column="12" line="146" source="org.scalastyle.scalariform.ReturnChecker" severity="warning" message="Avoid using return"></error>
+  <error column="8" line="151" source="org.scalastyle.scalariform.ReturnChecker" severity="warning" message="Avoid using return"></error>
+  <error column="12" line="164" source="org.scalastyle.scalariform.ReturnChecker" severity="warning" message="Avoid using return"></error>
+  <error column="27" line="28" source="org.scalastyle.scalariform.CyclomaticComplexityChecker" severity="warning" message="Cyclomatic complexity of 12 exceeds max of 10"></error>
+  <error column="16" line="154" source="org.scalastyle.scalariform.CyclomaticComplexityChecker" severity="warning" message="Cyclomatic complexity of 15 exceeds max of 10"></error>
+  <error column="10" line="112" source="org.scalastyle.scalariform.IfBraceChecker" severity="warning" message="If block needs braces"></error>
+  <error column="27" line="28" source="org.scalastyle.scalariform.MethodLengthChecker" severity="warning" message="Method is longer than 50 lines"></error>
+  <error column="17" line="110" source="org.scalastyle.scalariform.PublicMethodsHaveTypeChecker" severity="warning" message="Public method must have explicit type"></error>
+  <error column="8" line="201" source="org.scalastyle.scalariform.PublicMethodsHaveTypeChecker" severity="warning" message="Public method must have explicit type"></error>
+  <error column="0" line="7" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"></error>
+  <error column="37" line="49" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;DXJ&quot; appears 4 times in the file."></error>
+  <error column="37" line="54" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;SPY&quot; appears 4 times in the file."></error>
+  <error column="37" line="60" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;AMLP&quot; appears 3 times in the file."></error>
+  <error column="37" line="68" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;QQQ&quot; appears 4 times in the file."></error>
+  <error column="37" line="87" source="org.scalastyle.scalariform.MultipleStringLiteralsChecker" severity="warning" message="The string literal &quot;EEM&quot; appears 4 times in the file."></error>
+ </file>
  <file name="/home/ivan/IdeaProjects/firelib/strats/src/main/scala/firelib/strats/dummy/BacktestEntryPoint.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="warning" message="Header does not match expected text"></error>
   <error column="0" line="4" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"></error>
