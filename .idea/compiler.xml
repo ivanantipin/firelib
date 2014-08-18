@@ -27,6 +27,7 @@
         <module name="execution" />
         <module name="ibadapter" />
         <module name="ibgate" />
+        <module name="mystrats" />
         <module name="runtime" />
         <module name="ScalaTest" />
         <module name="strats" />
@@ -38,6 +39,7 @@
       <module name="execution" target="1.8" />
       <module name="ibadapter" target="1.8" />
       <module name="ibgate" target="1.8" />
+      <module name="mystrats" target="1.8" />
       <module name="runtime" target="1.8" />
       <module name="strats" target="1.8" />
     </bytecodeTargetLevel>

@@ -2,10 +2,9 @@
 <checkstyle version="5.0">
  <file name="/home/ivan/IdeaProjects/firelib/runtime/src/main/scala/firelib/runtime/starter.scala">
   <error line="1" source="org.scalastyle.file.HeaderMatchesChecker" severity="warning" message="Header does not match expected text"></error>
-  <error column="0" line="15" source="org.scalastyle.file.WhitespaceEndOfLineChecker" severity="warning" message="Whitespace at end of line"></error>
-  <error column="7" line="14" source="org.scalastyle.scalariform.ObjectNamesChecker" severity="warning" message="Object name does not match the regular expression '[A-Z][A-Za-z]*'"></error>
-  <error column="8" line="29" source="org.scalastyle.scalariform.ReturnChecker" severity="warning" message="Avoid using return"></error>
-  <error column="8" line="33" source="org.scalastyle.scalariform.PublicMethodsHaveTypeChecker" severity="warning" message="Public method must have explicit type"></error>
-  <error column="0" line="7" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"></error>
+  <error column="0" line="12" source="org.scalastyle.file.WhitespaceEndOfLineChecker" severity="warning" message="Whitespace at end of line"></error>
+  <error column="7" line="9" source="org.scalastyle.scalariform.ObjectNamesChecker" severity="warning" message="Object name does not match the regular expression '[A-Z][A-Za-z]*'"></error>
+  <error column="8" line="28" source="org.scalastyle.scalariform.PublicMethodsHaveTypeChecker" severity="warning" message="Public method must have explicit type"></error>
+  <error column="0" line="5" source="org.scalastyle.scalariform.UnderscoreImportChecker" severity="warning" message="Avoid wildcard imports"></error>
  </file>
 </checkstyle>

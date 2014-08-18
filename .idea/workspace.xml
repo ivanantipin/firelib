@@ -2,234 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="75d53c99-3fb3-4f21-af3e-c472c9d70c24" name="Default" comment="scala initial commit">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/indicators/ATR.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/BacktestMode.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/dsRoot/1MIN/STK/DIA_1.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/reportRoot/spydia/Opt.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/reportRoot/spydia/OptStdReport.ipynb" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/src/main/scala/firelib/starts/qusma/QusmaLowQuart.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/dsRoot/1MIN/STK/SPY_1.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/indicators/SimpleMovingAverage.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/src/main/scala/firelib/spydia/SpyDiaPair.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/runtime/src/main/stratsdir/report/StdReport.ipynb" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/reportRoot/spydia/StdReport.ipynb" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/runtime/src/main/stratsdir/report/cfg.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/reportRoot/spydia/cfg.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/dsRoot/1MIN/STK/common.ini" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/folderStarter.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/runtime/src/main/stratsdir/report/modelProps.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/reportRoot/spydia/modelProps.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/common/src/test/testresources/readme.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/runtime/src/main/stratsdir/report/reportenv.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/reportRoot/spydia/reportenv.properties" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/runtime/src/main/stratsdir/spydia.json" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/runtime/src/main/scala/firelib/runtime/starter.scala" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/runtime/src/main/stratsdir/report/trades.csv" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/reportRoot/spydia/trades.csv" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/ResearchMode.scala" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/common/src/test/resources/XG/TestIndicator ()_Sec1.h5" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/runtime/src/main/scala/firelib/runtime/Starter.scala" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Chain1/201212/@ES#_201010.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/Chain1/201212/@ES#_201010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Chain1/201212/@ES#_201102.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/Chain1/201212/@ES#_201102.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Chain1/201212/@ES#_201210.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/Chain1/201212/@ES#_201210.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Chain1/201212/@ES#_201212.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/Chain1/201212/@ES#_201212.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Chain1/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/Chain1/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Chain1/@ES#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/Chain1/@ES#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Chain1/@ES#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/Chain1/@ES#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Chain1/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/Chain1/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201005.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201005.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201005.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201005.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201007.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201007.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201010.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201102.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201102.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201104.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201104.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201106.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201106.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201108.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201108.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201110.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201110.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201202.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201202.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201204.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201204.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201206.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201206.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201208.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201208.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201210.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201210.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/@ES#_201212.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/@ES#_201212.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/ANFUTURES.COM/TICKS/FUT/ES_201006.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/ANFUTURES.COM/TICKS/FUT/ES_201006.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/ANFUTURES.COM/TICKS/FUT/ES_201006.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/ANFUTURES.COM/TICKS/FUT/ES_201006.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/ANFUTURES.COM/TICKS/FUT/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/ANFUTURES.COM/TICKS/FUT/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/@ES#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/@ES#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni1/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni1/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni2/@ES#_201005.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni2/@ES#_201005.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/CommonIni2/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/CommonIni2/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/IntegrationTestDsRoot/TICKS/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/IntegrationTestDsRoot/TICKS/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/IntegrationTestDsRoot/dummy.txt" afterPath="$PROJECT_DIR$/common/src/test/testresources/IntegrationTestDsRoot/dummy.txt" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/LongFile/XG_#.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/LongFile/XG_#.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/LongFile/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/LongFile/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/LoopChain1/201212/@ES#_201005.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/LoopChain1/201212/@ES#_201005.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/LoopChain1/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/LoopChain1/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/LoopChain1/@ES#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/LoopChain1/@ES#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/LoopChain1/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/LoopChain1/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Seek1/RI#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/Seek1/RI#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Seek1/RI#_200912.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/Seek1/RI#_200912.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Seek1/RI#_201012.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/Seek1/RI#_201012.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Seek1/RI#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/Seek1/RI#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/Seek1/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/Seek1/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TempData/1_#.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TempData/1_#.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TempData/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/TempData/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TempData/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/TempData/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_2009.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_2009.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_200908.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_200908.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_20090815.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_20090815.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_200912.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_200912.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_2010.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_2010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_2011.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_2011.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_201102.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_201102.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_2012.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_2012.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_20120920.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_20120920.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_20121020.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_20121020.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/RI#_201211.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/RI#_201211.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_1.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_1.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_2009.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_2009.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_200908.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_200908.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_20090815.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_20090815.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_200912.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_200912.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_2010.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_2010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_2011.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_2011.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_201102.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_201102.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_2012.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_2012.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_20120920.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_20120920.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_20121020.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_20121020.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/RI#_201211.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/RI#_201211.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TickersSorting2/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/TickersSorting2/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TstData/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/TstData/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TstData/data1_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TstData/data1_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TstData/data2_empty.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TstData/data2_empty.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TstData/data3_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TstData/data3_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/TstData/data4_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/TstData/data4_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/@ES#_1.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/@ES#_1.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/XAUUSD_1.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/XAUUSD_1.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/BarData_DUKAS_SKIP_SYMBOL/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/BarData_IQFEED/@ES#_1.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/BarData_IQFEED/@ES#_1.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/BarData_IQFEED/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/BarData_IQFEED/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201010.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201102.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201102.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201210.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201210.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201212.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain2_WithZeroLenCsv/201212/@ES#_201212.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain2_WithZeroLenCsv/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/@ES#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain2_WithZeroLenCsv/@ES#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/@ES#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain2_WithZeroLenCsv/@ES#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain2_WithZeroLenCsv/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain2_WithZeroLenCsv/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200603.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200603.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200606.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200606.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200609.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200609.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200612.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200612.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200703.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200703.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200706.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200706.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200709.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200709.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200712.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200712.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200803.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200803.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200806.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200806.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200809.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200809.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200812.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200812.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200903.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200903.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200906.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200906.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200909.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200909.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200912.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_200912.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201003.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201003.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201006.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201006.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201006.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201006.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201009.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/ES_201009.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/ANFUTURES.COM/TICKS/FUT/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201005.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201005.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201005.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201005.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201010.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201210.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201210.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201212.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201212.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/@ES#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/@ES#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain3_DSlike/IQFEED/TICKS/FUT/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201005.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/201212/@ES#_201005.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/201212/XG#_201212.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/201212/XG#_201212.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/201212/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/201212/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/XG#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/XG#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain4_DSlike/IQFEED/TICKS/FUT/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/TICKDATA.COM/TICKS/FUT/XG#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain4_DSlike/TICKDATA.COM/TICKS/FUT/XG#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Chain4_DSlike/TICKDATA.COM/TICKS/FUT/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Chain4_DSlike/TICKDATA.COM/TICKS/FUT/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/LabudaFile/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/LabudaFile/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/LabudaFile/labuda_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/LabudaFile/labuda_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201005.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201005.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201005.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201005.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201007.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201007.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201010.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201010.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201102.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201102.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201104.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201104.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201106.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201106.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201108.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201108.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201110.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201110.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201202.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201202.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201204.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201204.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201206.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201206.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201208.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201208.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201210.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201210.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/@ES#_201212.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/@ES#_201212.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/MergeCommonIni1/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/MergeCommonIni1/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Seek2/RI#_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Seek2/RI#_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Seek2/RI#_200912.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Seek2/RI#_200912.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Seek2/RI#_201012.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Seek2/RI#_201012.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Seek2/RI#_201112.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Seek2/RI#_201112.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/Seek2/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/Seek2/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/TstData2/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/TstData2/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/TstData2/data1_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/TstData2/data1_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/TstData2/data2_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/TstData2/data2_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/WrongFileName/WrongFileName.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/WrongFileName/WrongFileName.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/WrongFileName/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/WrongFileName/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/ZerolenFile/common.ini" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/ZerolenFile/common.ini" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/resources/UltraFastParser/ZerolenFile/zerolen_0.csv" afterPath="$PROJECT_DIR$/common/src/test/testresources/UltraFastParser/ZerolenFile/zerolen_0.csv" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/scala/firelib/common/ParserTests.java" afterPath="$PROJECT_DIR$/common/src/test/java/firelib/domain/ParserTests.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/common/src/test/scala/firelib/common/SingleParserTests.java" afterPath="$PROJECT_DIR$/common/src/test/java/firelib/domain/SingleParserTests.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/python/report/ipython/StdReport.ipynb" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/reportRoot/spydia/.ipynb_checkpoints/StdReport-checkpoint.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/strats/src/main/scala/firelib/strats/dummy/BacktestEntryPoint.scala" afterPath="$PROJECT_DIR$/strats/src/main/scala/firelib/strats/dummy/BacktestEntryPoint.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/test/scala/firelib/common/BacktestIntegrationTest.scala" afterPath="$PROJECT_DIR$/common/src/test/scala/firelib/common/BacktestIntegrationTest.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/BacktesterOptimized.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/BacktesterOptimized.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/BacktesterSimple.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/BacktesterSimple.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/DefaultBacktestEnvFactory.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/DefaultBacktestEnvFactory.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ibadapter/src/main/java/firelib/ibadapter/EWrapperImpl.java" afterPath="$PROJECT_DIR$/ibadapter/src/main/java/firelib/ibadapter/EWrapperImpl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/IIndicator.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/IIndicator.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/ITimeSeries.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/ITimeSeries.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ibadapter/src/main/scala/firelib/ibadapter/IbTradeGate.scala" afterPath="$PROJECT_DIR$/ibadapter/src/main/scala/firelib/ibadapter/IbTradeGate.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/Interval.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/Interval.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/MarketDataType.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/MarketDataType.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/ModelConfig.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/ModelConfig.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ModelRuntimeConfig.scala" afterPath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ModelRuntimeConfig.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ModelRuntimeContainer.scala" afterPath="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ModelRuntimeContainer.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/report/OptParamsWriter.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/report/OptParamsWriter.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/OptimizedParameter.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/OptimizedParameter.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/ParamsVariator.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/ParamsVariator.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/java/firelib/parser/Parser.java" afterPath="$PROJECT_DIR$/common/src/main/java/firelib/parser/Parser.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/ReaderToListenerAdapterImpl.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/ReaderToListenerAdapterImpl.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/ReportProcessor.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/ReportProcessor.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/report/ReportWriter.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/report/ReportWriter.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/report/ipython/StdReport.ipynb" afterPath="$PROJECT_DIR$/python/report/ipython/StdReport.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/StrategyMetric.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/domain/StrategyMetric.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/test/scala/firelib/common/TickTestModel.scala" afterPath="$PROJECT_DIR$/common/src/test/scala/firelib/common/TickTestModel.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/report/TradesReporter.py" afterPath="$PROJECT_DIR$/python/report/TradesReporter.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/backtestStarter.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/backtestStarter.scala" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/defaultTimeBoundsCalculator.scala" afterPath="$PROJECT_DIR$/common/src/main/scala/firelib/backtest/defaultTimeBoundsCalculator.scala" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../mystrats/src/main/scala/firelib/strats/qusma/QusmaLowQuart.scala" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../mystrats/mystrats.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../mystrats/pom.xml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/strats/src/main/scala/firelib/starts/qusma/QusmaLowQuart.scala" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/strats/src/main/scala/firelib/strats/dummy/BacktestEntryPoint.scala" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/strats/src/main/scala/firelib/strats/dummy/DummyStrat.scala" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/strats/src/main/sampleRoot/dsRoot/1MIN/STK/DIA_1.csv" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/dsRoot/1MIN/STK/DIA_1.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/strats/src/main/sampleRoot/dsRoot/1MIN/STK/SPY_1.csv" afterPath="$PROJECT_DIR$/strats/src/main/sampleRoot/dsRoot/1MIN/STK/SPY_1.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/strats/pom.xml" afterPath="$PROJECT_DIR$/strats/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/runtime.iml" afterPath="$PROJECT_DIR$/runtime/runtime.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/common/scalastyle-output.xml" afterPath="$PROJECT_DIR$/common/scalastyle-output.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/execution/scalastyle-output.xml" afterPath="$PROJECT_DIR$/execution/scalastyle-output.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/ibadapter/scalastyle-output.xml" afterPath="$PROJECT_DIR$/ibadapter/scalastyle-output.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runtime/scalastyle-output.xml" afterPath="$PROJECT_DIR$/runtime/scalastyle-output.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/strats/scalastyle-output.xml" afterPath="$PROJECT_DIR$/strats/scalastyle-output.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/strats/strats.iml" afterPath="$PROJECT_DIR$/strats/strats.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="ScalaTest.iws" />
@@ -242,6 +30,11 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="Commander">
+    <leftPanel />
+    <rightPanel />
+    <splitter proportion="0.5" />
+  </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/ScalaTest$run.coverage" NAME="run Coverage Results" MODIFIED="1407576841187" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/research" />
     <SUITE FILE_PATH="coverage/ScalaTest$Starter.coverage" NAME="Starter Coverage Results" MODIFIED="1408104236893" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
@@ -300,21 +93,55 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="SpyDiaPair.scala" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/strats/src/main/scala/firelib/spydia/SpyDiaPair.scala">
+      <file leaf-file-name="QusmaLowQuart.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../mystrats/src/main/scala/firelib/strats/qusma/QusmaLowQuart.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="2.358108" vertical-offset="392" max-vertical-offset="1824">
-              <caret line="39" column="20" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="20" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4351">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding>
+                <element signature="e#30#64#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/strats/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="684">
+              <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="starter.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/runtime/src/main/scala/firelib/runtime/starter.scala">
+      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="988">
-              <caret line="14" column="24" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="24" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="969" max-vertical-offset="3515">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SpyDiaPair.scala" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/strats/src/main/scala/firelib/spydia/SpyDiaPair.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="1002" max-vertical-offset="1824">
+              <caret line="62" column="13" selection-start-line="62" selection-start-column="13" selection-end-line="62" selection-end-column="13" />
+              <folding>
+                <element signature="e#24#58#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../mystrats/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="3.0289855" vertical-offset="0" max-vertical-offset="703">
+              <caret line="22" column="20" selection-start-line="22" selection-start-column="20" selection-end-line="22" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -323,50 +150,8 @@
       <file leaf-file-name="folderStarter.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/execution/src/main/scala/firelib/execution/folderStarter.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="214" max-vertical-offset="532">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="532">
               <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-              <folding>
-                <element signature="e#27#60#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ModelRuntimeContainer.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ModelRuntimeContainer.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="367" max-vertical-offset="1235">
-              <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TickerConfig.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/scala/firelib/domain/TickerConfig.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="171">
-              <caret line="2" column="11" selection-start-line="2" selection-start-column="11" selection-end-line="2" selection-end-column="11" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BacktesterSimple.scala" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common/src/main/scala/firelib/backtest/BacktesterSimple.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="113" max-vertical-offset="741">
-              <caret line="26" column="0" selection-start-line="26" selection-start-column="0" selection-end-line="26" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="spydia.json" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/runtime/src/main/stratsdir/spydia.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-21.035715" vertical-offset="0" max-vertical-offset="1406">
-              <caret line="31" column="30" selection-start-line="31" selection-start-column="30" selection-end-line="31" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -375,8 +160,28 @@
       <file leaf-file-name="DefaultBacktestEnvFactory.scala" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/common/src/main/scala/firelib/backtest/DefaultBacktestEnvFactory.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="126" max-vertical-offset="817">
-              <caret line="29" column="47" selection-start-line="29" selection-start-column="47" selection-end-line="29" selection-end-column="47" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="26" max-vertical-offset="817">
+              <caret line="37" column="1" selection-start-line="37" selection-start-column="1" selection-end-line="37" selection-end-column="1" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pom.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/runtime/pom.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="836">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="compiler.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.idea/compiler.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1026">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -405,13 +210,11 @@
         <option value="ivan.antipin@gmail.com" />
       </list>
     </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../mystrats" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ExecutionMarketStub.scala" />
-        <option value="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ITradeGate.scala" />
         <option value="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/ModelRuntimeContainer.scala" />
         <option value="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/providersFactory.scala" />
         <option value="$PROJECT_DIR$/execution/src/main/scala/firelib/execution/Frequencer.scala" />
@@ -461,6 +264,8 @@
         <option value="$PROJECT_DIR$/runtime/src/main/scala/firelib/runtime/starter.scala" />
         <option value="$PROJECT_DIR$/common/src/main/scala/firelib/domain/MarketDataType.scala" />
         <option value="$PROJECT_DIR$/strats/src/main/scala/firelib/spydia/SpyDiaPair.scala" />
+        <option value="$PROJECT_DIR$/../mystrats/pom.xml" />
+        <option value="$PROJECT_DIR$/../mystrats/src/main/scala/firelib/strats/qusma/QusmaLowQuart.scala" />
       </list>
     </option>
   </component>
@@ -530,6 +335,30 @@
         <PATH_ELEMENT>
           <option name="myItemId" value="" />
           <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="mystrats" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
+        </PATH_ELEMENT>
+      </PATH>
+      <PATH>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$RootNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="mystrats" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$ProjectNode" />
+        </PATH_ELEMENT>
+        <PATH_ELEMENT>
+          <option name="myItemId" value="Lifecycle" />
+          <option name="myItemType" value="org.jetbrains.idea.maven.navigator.MavenProjectsStructure$LifecycleNode" />
         </PATH_ELEMENT>
       </PATH>
       <PATH>
@@ -685,7 +514,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
+              <option name="myItemId" value="mystrats" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -695,35 +524,13 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="strats" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="strats" />
+              <option name="myItemId" value="mystrats" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="src" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -732,104 +539,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="strats" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="scala" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="strats" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sampleRoot" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="reportRoot" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="spydia" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="strats" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sampleRoot" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="strats" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -844,156 +553,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="runtime" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="runtime" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="runtime" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="stratsdir" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="runtime" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="stratsdir" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="report" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="runtime" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="python" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="python" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="research" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="firelib" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="python" />
-              <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="report" />
               <option name="myItemType" value="com.android.tools.idea.gradle.projectView.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1022,7 +581,7 @@
     <property name="LayoutCode.rearrangeEntriesXML" value="false" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.15227629" />
+    <property name="project.structure.side.proportion" value="0.4167975" />
     <property name="last_opened_file_path" value="/usr/bin/python2.7" />
     <property name="LayoutCode.rearrangeEntries" value="false" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="190" />
@@ -1072,6 +631,7 @@
       <recent name="$PROJECT_DIR$/backtest/src/main/java/firelib/parser" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="firelib.strats.qusma" />
       <recent name="firelib.domain" />
       <recent name="firelib.common" />
       <recent name="firelib.backtest" />
@@ -1089,7 +649,7 @@
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
-      <option name="MAIN_CLASS_NAME" value="firelib.starts.qusma.QusmaLowQuart" />
+      <option name="MAIN_CLASS_NAME" value="firelib.strats.qusma.QusmaLowQuart" />
       <option name="VM_PARAMETERS" />
       <option name="PROGRAM_PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -1098,7 +658,7 @@
       <option name="ENABLE_SWING_INSPECTOR" value="false" />
       <option name="ENV_VARIABLES" />
       <option name="PASS_PARENT_ENVS" value="true" />
-      <module name="strats" />
+      <module name="mystrats" />
       <envs />
       <RunnerSettings RunnerId="Debug">
         <option name="DEBUG_PORT" value="" />
@@ -1733,7 +1293,7 @@
       <workItem from="1408093314417" duration="4150000" />
       <workItem from="1408107080089" duration="16192000" />
       <workItem from="1408170582527" duration="38139000" />
-      <workItem from="1408284782080" duration="18751000" />
+      <workItem from="1408284782080" duration="21236000" />
     </task>
     <task id="LOCAL-00001" summary="scala initial commit">
       <created>1405602903339</created>
@@ -1787,11 +1347,15 @@
       <created>1408176528069</created>
       <updated>1408176528069</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="scala initial commit">
+      <created>1408335444728</created>
+      <updated>1408335444728</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="640589000" />
+    <option name="totallyTimeSpent" value="643074000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -1817,7 +1381,7 @@
     <frame x="-2" y="-3" width="1924" height="1087" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.7831197" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.7938034" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29700854" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24358974" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -1827,7 +1391,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.36485043" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.46688035" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.44444445" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4017094" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1920,38 +1484,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/common/src/main/scala/firelib/backtest/BidAskUpdater.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="646">
-          <caret line="7" column="6" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/scala/firelib/report/TradesCsvWriter.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="703">
-          <caret line="8" column="7" selection-start-line="8" selection-start-column="7" selection-end-line="8" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/java/firelib/parser/CommonIniSettings.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="77" max-vertical-offset="950">
-          <caret line="33" column="58" selection-start-line="33" selection-start-column="58" selection-end-line="33" selection-end-column="58" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/execution/src/main/scala/firelib/execution/Frequencer.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="532">
-          <caret line="9" column="20" selection-start-line="9" selection-start-column="20" selection-end-line="9" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/common/src/main/scala/firelib/common/IMarketStub.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="71" max-vertical-offset="912">
@@ -1980,14 +1512,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="304">
           <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/strats/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="684">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -2043,14 +1567,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/runtime/pom.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="162" max-vertical-offset="836">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/common/src/test/scala/firelib/common/BacktestIntegrationTest.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2550" max-vertical-offset="4560">
@@ -2072,24 +1588,6 @@
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="532">
           <caret line="2" column="6" selection-start-line="2" selection-start-column="6" selection-end-line="2" selection-end-column="6" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/strats/src/main/scala/firelib/strats/dummy/BacktestEntryPoint.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="475">
-          <caret line="10" column="48" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/strats/src/main/scala/firelib/starts/qusma/QusmaLowQuart.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="3456" max-vertical-offset="4332">
-          <caret line="220" column="0" selection-start-line="201" selection-start-column="0" selection-end-line="220" selection-end-column="0" />
-          <folding>
-            <element signature="e#30#64#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2303,24 +1801,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/execution/src/main/scala/firelib/execution/folderStarter.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="214" max-vertical-offset="532">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
-          <folding>
-            <element signature="e#27#60#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/common/src/main/scala/firelib/backtest/DefaultBacktestEnvFactory.scala">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="126" max-vertical-offset="817">
-          <caret line="29" column="47" selection-start-line="29" selection-start-column="47" selection-end-line="29" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/runtime/src/main/stratsdir/report/trades.csv">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="6327">
@@ -2337,10 +1817,83 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/strats/src/main/sampleRoot/dsRoot/1MIN/STK/DIA_1.csv">
+      <provider selected="true" editor-type-id="LargeFileEditor">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3515">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/strats/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="684">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../mystrats/src/main/scala/firelib/strats/qusma/QusmaLowQuart.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4351">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#30#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/strats/src/main/scala/firelib/spydia/SpyDiaPair.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.358108" vertical-offset="392" max-vertical-offset="1824">
-          <caret line="39" column="20" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="20" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="1002" max-vertical-offset="1824">
+          <caret line="62" column="13" selection-start-line="62" selection-start-column="13" selection-end-line="62" selection-end-column="13" />
+          <folding>
+            <element signature="e#24#58#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/execution/src/main/scala/firelib/execution/folderStarter.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="214" max-vertical-offset="532">
+          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common/src/main/scala/firelib/backtest/DefaultBacktestEnvFactory.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="26" max-vertical-offset="817">
+          <caret line="37" column="1" selection-start-line="37" selection-start-column="1" selection-end-line="37" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runtime/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="162" max-vertical-offset="836">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/compiler.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1026">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../mystrats/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="3.0289855" vertical-offset="0" max-vertical-offset="703">
+          <caret line="22" column="20" selection-start-line="22" selection-start-column="20" selection-end-line="22" selection-end-column="20" />
           <folding />
         </state>
       </provider>
@@ -2373,7 +1926,7 @@
       </state>
       <state key="FacetStructureConfigurable.UI">
         <settings>
-          <last-edited>Scala (runtime)|Scala</last-edited>
+          <last-edited>Scala (mystrats)|Scala</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
@@ -2409,12 +1962,11 @@
       </state>
       <state key="ModuleStructureConfigurable.UI">
         <settings>
-          <last-edited>strats</last-edited>
+          <last-edited>Scala|strats</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.15227629" />
-                <option value="0.6" />
+                <option value="0.4167975" />
               </list>
             </option>
           </splitter-proportions>
@@ -2426,7 +1978,7 @@
           <splitter-proportions>
             <option name="proportions">
               <list>
-                <option value="0.50246793" />
+                <option value="0.4167975" />
               </list>
             </option>
           </splitter-proportions>

@@ -19,7 +19,8 @@
     <file url="file://$PROJECT_DIR$/ibgate" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/runtime" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/strats" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/strats/src/main/scala/firelib/starts/qusma/QusmaLowQuart.scala" charset="US-ASCII" />
+    <file url="file://$PROJECT_DIR$/../mystrats" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../mystrats/src/main/scala/firelib/strats/qusma/QusmaLowQuart.scala" charset="US-ASCII" />
     <file url="PROJECT" charset="US-ASCII" />
   </component>
 </project>

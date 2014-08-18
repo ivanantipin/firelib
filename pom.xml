@@ -12,6 +12,7 @@
         <module>ibadapter</module>
         <module>strats</module>
         <module>runtime</module>
+        <module>../mystrats</module>
     </modules>
 
     <packaging>pom</packaging>
