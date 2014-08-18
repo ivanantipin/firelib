@@ -126,7 +126,7 @@
       <file leaf-file-name="pom.xml" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/../mystrats/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.48910892" vertical-offset="171" max-vertical-offset="703">
+            <state vertical-scroll-proportion="0.8277228" vertical-offset="0" max-vertical-offset="703">
               <caret line="22" column="20" selection-start-line="22" selection-start-column="20" selection-end-line="22" selection-end-column="20" />
               <folding />
             </state>
@@ -196,6 +196,7 @@
         <option value="ivan.antipin@gmail.com" />
       </list>
     </option>
+    <option name="SYNC_SETTING" value="SYNC" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../mystrats" />
   </component>
   <component name="IdeDocumentHistory">
@@ -1393,7 +1394,7 @@
       <workItem from="1408093314417" duration="4150000" />
       <workItem from="1408107080089" duration="16192000" />
       <workItem from="1408170582527" duration="38139000" />
-      <workItem from="1408284782080" duration="22364000" />
+      <workItem from="1408284782080" duration="22707000" />
     </task>
     <task id="LOCAL-00001" summary="scala initial commit">
       <created>1405602903339</created>
@@ -1459,11 +1460,15 @@
       <created>1408338405303</created>
       <updated>1408338405303</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="scala initial commit">
+      <created>1408384246221</created>
+      <updated>1408384246221</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="644202000" />
+    <option name="totallyTimeSpent" value="644545000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -1489,7 +1494,7 @@
     <frame x="-2" y="-3" width="1924" height="1087" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.15811966" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.64850426" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29700854" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24358974" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -2000,7 +2005,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../mystrats/pom.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.48910892" vertical-offset="171" max-vertical-offset="703">
+        <state vertical-scroll-proportion="0.8277228" vertical-offset="0" max-vertical-offset="703">
           <caret line="22" column="20" selection-start-line="22" selection-start-column="20" selection-end-line="22" selection-end-column="20" />
           <folding />
         </state>
