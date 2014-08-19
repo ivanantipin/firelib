@@ -29,7 +29,7 @@
   "optMinNumberOfTrades" : 30,
   "optimizedPeriodDays" : 365,
   "backtestMode" : {
-    "name" : "SimpleRun"
+    "name" : "InOutSample"
   },
   "backtestStepInterval" : {
     "name" : "Min1",
@@ -47,5 +47,4 @@
   }, {
     "name" : "AvgPnl"
   } ]
-}
 }

@@ -1,6 +1,6 @@
 package firelib.report
 
-import java.nio.file.{Files, Paths, StandardCopyOption}
+import java.nio.file.Paths
 import java.time.Instant
 
 import firelib.common._
@@ -26,11 +26,13 @@ object OptParamsWriter {
         }
         StatFileDumper.writeRows(Paths.get(targetDir, "Opt.csv").toString, rows)
 
+/*
         var baseDir = "."
 
         val ipypath = Paths.get(baseDir, "python/report/ipython/OptStdReport.ipynb")
 
         Files.copy(ipypath, Paths.get(targetDir, "OptStdReport.ipynb"), StandardCopyOption.REPLACE_EXISTING)
+*/
 
     }
 }

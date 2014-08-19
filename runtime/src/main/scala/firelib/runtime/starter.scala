@@ -12,7 +12,7 @@ object starter {
     
     def main(args : Array[String]) {
         genSampleModelRuntimeConfigForSpyDiaStrat()
-        folderStarter.start(stratsDir.toAbsolutePath.toString)
+        runtimeModelsFolderStarter.runFolderWithModelConfigs(stratsDir.toAbsolutePath.toString)
     }
 
     /**
@@ -24,7 +24,12 @@ object starter {
     }
 
 
-
+    /**
+     * creates runtime config from model config which was created from backtest
+     * to run strategy against IB adapter
+     * assumed that adapter is running on local box on  port 4001
+     * @param fileName
+     */
     def genSampleRuntimeModelConfig(fileName : String) = {
         val cfgFile: String = "./strats/src/main/sampleRoot/reportRoot/spydia/cfg.json"
         val spyDiaModelConfig = JacksonWrapper.deserialize(cfgFile,classOf[ModelConfig])
@@ -45,6 +50,9 @@ object starter {
         cfg.gatewayType="IB"
         //need to run backtest as we need to initialize quantile
         cfg.runBacktest = true
+        System.out.println("config serialized : ")
+        System.out.println(JacksonWrapper.toJsonString(cfg))
+
         JacksonWrapper.serialize(cfg, fileName)
     }
 }

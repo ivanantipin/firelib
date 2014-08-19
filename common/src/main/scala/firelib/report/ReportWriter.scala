@@ -4,6 +4,7 @@ import java.nio.file._
 
 import firelib.common._
 import firelib.utils.{JacksonWrapper, StatFileDumper}
+import org.apache.commons.io.FileUtils
 
 import scala.collection.immutable.HashMap
 
@@ -11,8 +12,9 @@ import scala.collection.immutable.HashMap
 object ReportWriter {
     def write(model: IModel, cfg: ModelConfig, targetDir: String) : Unit = {
 
-        if(!Files.exists(Paths.get(targetDir)))
-            Files.createDirectory(Paths.get(targetDir))
+        FileUtils.deleteDirectory(Paths.get(targetDir).toFile)
+
+        FileUtils.forceMkdir(Paths.get(targetDir).toFile)
 
         JacksonWrapper.serialize(cfg,Paths.get(targetDir, "cfg.json").toString)
 
