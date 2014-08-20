@@ -135,6 +135,26 @@
                             <target>1.8</target>
                         </configuration>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>scala style plugin</id>
+            <activation>
+                <file>
+                    <exists>${basedir}/../scalastyle_config.xml</exists>
+                </file>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                    <version>2.11.1</version>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
                     <plugin>
                         <groupId>org.scalastyle</groupId>
                         <artifactId>scalastyle-maven-plugin</artifactId>
