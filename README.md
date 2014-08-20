@@ -1,29 +1,29 @@
-# README #
-
-This README would normally document whatever steps are necessary to get your application up and running.
-
 ### What is this repository for? ###
 
 * Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+
+firelib is simple framework written in scala/java/python
+
+* features
+    * backtest
+    * execution
+    * reporting
 
 ### How do I get set up? ###
 
 * Summary of set up
 * Configuration
 * Dependencies
-* Database configuration
-* How to run tests
+    * [maven 3.](http://maven.apache.org/download.cgi)
+    * [java 8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
+    * [Python 2.7](https://www.python.org/download/releases/2.7/)
+    * [Pandas 1.4] (http://pandas.pydata.org)
+
+ 
+
 * Deployment instructions
 
-### Contribution guidelines ###
+    * git clone https://ivan_antipin@bitbucket.org/ivan_antipin/firelib.git
+    * cd firelib
+    * mvn clean install
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
