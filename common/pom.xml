@@ -26,6 +26,14 @@
 
     </dependencies>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/../python/report</directory>
+            </resource>
+        </resources>
+    </build>
+
 
 
 </project>

@@ -4,7 +4,7 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 import firelib.common._
-import firelib.report.{OptParamsWriter, ReportWriter}
+import firelib.report.{OptParamsWriter, reportWriter}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -64,7 +64,7 @@ class BacktesterOptimized (backtestEnvFactory : BacktestEnvironmentFactory, mark
         env.bindModelIntoEnv(model,stubs,bm.properties)
         env.backtest()
 
-        ReportWriter.write(model, cfg, cfg.reportRoot)
+        reportWriter.write(model, cfg, cfg.reportRoot)
 
         writeOptimizedReport(cfg, reportProcessor, endOfOptimize)
 

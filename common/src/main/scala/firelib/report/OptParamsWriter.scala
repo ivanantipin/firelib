@@ -4,7 +4,7 @@ import java.nio.file.Paths
 import java.time.Instant
 
 import firelib.common._
-import firelib.utils.StatFileDumper
+import firelib.utils.statFileDumper
 
 import scala.collection.immutable.StringOps
 import scala.collection.mutable.ArrayBuffer
@@ -24,7 +24,7 @@ object OptParamsWriter {
             })
             rows += (opts ++ calcMetrics).mkString(separator)
         }
-        StatFileDumper.writeRows(Paths.get(targetDir, "Opt.csv").toString, rows)
+        statFileDumper.writeRows(Paths.get(targetDir, "Opt.csv").toString, rows)
 
 /*
         var baseDir = "."

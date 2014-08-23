@@ -4,7 +4,7 @@ import java.nio.file.{Files, Paths, StandardOpenOption}
 
 import scala.collection.JavaConversions._
 
-object StatFileDumper
+object statFileDumper
     {
         def appendRow(ff : String, row : String)
         {

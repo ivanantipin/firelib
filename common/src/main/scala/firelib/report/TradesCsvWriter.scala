@@ -2,7 +2,7 @@ package firelib.report
 
 import firelib.common._
 import firelib.utils.DateTimeExt._
-import firelib.utils.StatFileDumper
+import firelib.utils.statFileDumper
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -30,6 +30,6 @@ object TradesCsvWriter {
             ) ++ factorcols.map(t._1.factors(_))
             rows += vals.mkString(";")
         }
-        StatFileDumper.writeRows(file, rows)
+        statFileDumper.writeRows(file, rows)
     }
 }

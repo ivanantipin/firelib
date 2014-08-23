@@ -1,7 +1,7 @@
 package firelib.backtest
 
 import firelib.common._
-import firelib.report.ReportWriter
+import firelib.report.reportWriter
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -26,7 +26,7 @@ class BacktesterSimple (envFactory : BacktestEnvironmentFactory, stubFactory : M
 
         env.backtest()
 
-        ReportWriter.write(model, cfg, cfg.reportRoot)
+        reportWriter.write(model, cfg, cfg.reportRoot)
 
         return env
     }

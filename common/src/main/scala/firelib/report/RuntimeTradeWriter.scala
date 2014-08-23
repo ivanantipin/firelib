@@ -2,7 +2,7 @@ package firelib.report
 
 import firelib.common._
 import firelib.utils.DateTimeExt._
-import firelib.utils.StatFileDumper
+import firelib.utils.statFileDumper
 
 object RuntimeTradeWriter {
 
@@ -25,7 +25,7 @@ object RuntimeTradeWriter {
     }
 
     def write(fileName: String, model: String, trade: Trade) = {
-        StatFileDumper.appendRow(fileName, SerializeTrade(model, trade))
+        statFileDumper.appendRow(fileName, SerializeTrade(model, trade))
     }
 }
 
