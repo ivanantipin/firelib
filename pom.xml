@@ -10,8 +10,6 @@
         <module>ibgate</module>
         <module>execution</module>
         <module>ibadapter</module>
-        <module>strats</module>
-        <module>runtime</module>
     </modules>
 
     <packaging>pom</packaging>
