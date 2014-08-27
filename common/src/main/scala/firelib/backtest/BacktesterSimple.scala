@@ -26,7 +26,7 @@ class BacktesterSimple (envFactory : BacktestEnvironmentFactory, stubFactory : M
 
         env.backtest()
 
-        reportWriter.write(model, cfg, cfg.reportRoot)
+        reportWriter.write(model, cfg, cfg.reportTargetPath)
 
         return env
     }

@@ -45,14 +45,14 @@ class BacktesterOptimized (backtestEnvFactory : BacktestEnvironmentFactory, mark
                 env.backtest()
                 reportExecutor.execute(()=>reportProcessor.process(env.models))
             })
-            System.out.println("models scheduled " + env.models.length)
+            System.out.println(s"models scheduled for optimization ${env.models.length}")
 
         }
 
         executor.shutdown()
         reportExecutor.shutdown()
 
-        System.out.println("Model optimized in " + (System.currentTimeMillis() - startTime) / 1000 + " sec. ")
+        System.out.println(s"Model optimized in ${(System.currentTimeMillis() - startTime) / 1000} sec")
 
 
         assert(reportProcessor.bestModels.length > 0, "no models get produced!!")
@@ -64,7 +64,7 @@ class BacktesterOptimized (backtestEnvFactory : BacktestEnvironmentFactory, mark
         env.bindModelIntoEnv(model,stubs,bm.properties)
         env.backtest()
 
-        reportWriter.write(model, cfg, cfg.reportRoot)
+        reportWriter.write(model, cfg, cfg.reportTargetPath)
 
         writeOptimizedReport(cfg, reportProcessor, endOfOptimize)
 
@@ -74,7 +74,7 @@ class BacktesterOptimized (backtestEnvFactory : BacktestEnvironmentFactory, mark
 
     private def writeOptimizedReport(cfg: ModelConfig, reportProcessor: ReportProcessor, endOfOptimize:Instant) = {
         OptParamsWriter.write(
-            cfg.reportRoot,
+            cfg.reportTargetPath,
             optEnd = endOfOptimize,
             estimates = reportProcessor.estimates,
             optParams = cfg.optParams,

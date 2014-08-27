@@ -10,6 +10,8 @@ import scala.collection.immutable.HashMap
 
 
 object reportWriter {
+
+
     def write(model: IModel, cfg: ModelConfig, targetDir: String) : Unit = {
 
         FileUtils.deleteDirectory(Paths.get(targetDir).toFile)
@@ -31,6 +33,8 @@ object reportWriter {
 
         copyJarFileToReal("/StdReport.ipynb", Paths.get(targetDir,"StdReport.ipynb").toAbsolutePath.toString)
         copyJarFileToReal("/TradesReporter.py", Paths.get(targetDir,"TradesReporter.py").toAbsolutePath.toString)
+
+        System.out.println(s"report written to $targetDir you can run it with command 'ipython notebook StdReport.ipynb'")
 
         //val envProps  = List("report.lib.path=" + Paths.get(baseDir, "python/report/").toAbsolutePath.toString)
         //StatFileDumper.writeRows(Paths.get(targetDir, "reportenv.properties").toAbsolutePath.toString,  envProps)

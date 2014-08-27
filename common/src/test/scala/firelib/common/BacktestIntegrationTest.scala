@@ -58,7 +58,7 @@ class BacktestIntegrationTest {
         var cfg = new ModelConfig()
 
         cfg.dataServerRoot = getDsRoot()
-        cfg.reportRoot = "/home/ivan/tmp/testReportDir"
+        cfg.reportTargetPath = "/home/ivan/tmp/testReportDir"
         cfg.tickerConfigs += new TickerConfig("XG", fileName, MarketDataType.Tick)
         cfg.startDateGmt = "08.03.2013 05:00:00"
         cfg.backtestStepInterval = Interval.Sec1
@@ -144,7 +144,7 @@ class BacktestIntegrationTest {
 
 
         cfg.dataServerRoot = getDsRoot()
-        cfg.reportRoot = "/home/ivan/tmp/testReportDir"
+        cfg.reportTargetPath = "/home/ivan/tmp/testReportDir"
 
 
         cfg.tickerConfigs += new TickerConfig("XG", fileName, MarketDataType.Ohlc)

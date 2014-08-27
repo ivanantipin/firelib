@@ -12,7 +12,7 @@ class ModelConfig {
 
     var dataServerRoot: String = _
 
-    var reportRoot: String = _
+    var reportTargetPath: String = _
     
     var modelClassName: String = _
 

@@ -58,7 +58,7 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
     }
 
 
-    private long buffer(long pos) {
+    private long buffer(long pos, int capacity) {
         MappedByteBuffer mem = null;
         try {
             long len = Math.min(fileChannel.size() - pos, capacity);
@@ -66,8 +66,7 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
                 return len;
             }
             mem = fileChannel.map(FileChannel.MapMode.READ_ONLY, pos, len);
-            CoderResult result = charsetDecoder.decode(mem, charBuffer, false);
-            //System.out.println("len " + result.toString());
+            charsetDecoder.decode(mem, charBuffer, false);
             charBuffer.flip();
             return len;
         } catch (IOException e) {
@@ -77,15 +76,15 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
 
 
     private void initStartEndTimes() throws IOException {
-        buffer(0);
+        buffer(0,1000);
         T first = readFromBuffer();
         startDt = first.DtGmt();
         charBuffer.clear();
         long lastPos = fileChannel.size() - 400;
         if (lastPos < 0) {
-            buffer(0);
+            buffer(0,1000);
         } else {
-            buffer(lastPos);
+            buffer(lastPos,1000);
             if (!align(charBuffer)) {
                 throw new RuntimeException("cant read end");
             }
@@ -130,7 +129,7 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
         if (currentRecord == null) {
             charBuffer.compact();
             System.out.println("buffering " + fileName);
-            long len = buffer(endReadPosition);
+            long len = buffer(endReadPosition,capacity);
             endReadPosition += len;
             if (len == 0) {
                 return false;
