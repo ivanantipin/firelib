@@ -26,8 +26,14 @@ class BacktestIntegrationTest {
         return ret
     }
 
+
+
     def getDsRoot(): String = {
-        return "/home/ivan/tmp/testDsRoot"
+        return Paths.get("./src/test/testresources/TestRoot/testDsRoot").toAbsolutePath.toString
+    }
+
+    def getReportDir(): String = {
+        return Paths.get("./src/test/testresources/TestRoot/testReportDir").toAbsolutePath.toString
     }
 
 
@@ -58,7 +64,7 @@ class BacktestIntegrationTest {
         var cfg = new ModelConfig()
 
         cfg.dataServerRoot = getDsRoot()
-        cfg.reportTargetPath = "/home/ivan/tmp/testReportDir"
+        cfg.reportTargetPath = getReportDir()
         cfg.tickerConfigs += new TickerConfig("XG", fileName, MarketDataType.Tick)
         cfg.startDateGmt = "08.03.2013 05:00:00"
         cfg.backtestStepInterval = Interval.Sec1
@@ -73,12 +79,19 @@ class BacktestIntegrationTest {
         Assert.assertTrue("time check", testHelper.instanceTick.daysStarts(0) == d0)
         Assert.assertEquals(d2, testHelper.instanceTick.daysStarts(2))
 
-        //2 h without ticks
-        //Assert.assertEquals(TimeSpan.FromHours(0), d0.ToGmt("NY") - startTime)
 
         var cursor = startTime
         var idx = 0
-        while (cursor.isBefore(d0)) {
+
+        while (!d1.isBefore(cursor)) {
+            var bar = testHelper.instanceTick.bars(idx)
+            idx += 1
+            Assert.assertTrue("times not match " + bar.dtGmtEnd + " <> " + cursor, bar.dtGmtEnd == cursor)
+            Assert.assertTrue("not interpolated idx = " + idx, !bar.interpolated)
+            cursor = cursor.plusSeconds(5 * 60)
+        }
+
+        while (cursor.isBefore(d2)) {
             var bar = testHelper.instanceTick.bars(idx)
             idx += 1
             Assert.assertTrue("times not match " + bar.dtGmtEnd + " <> " + cursor, bar.dtGmtEnd == cursor)
@@ -87,13 +100,16 @@ class BacktestIntegrationTest {
             cursor = cursor.plusSeconds(5 * 60)
         }
 
-        while (d1.isAfter(cursor)) {
+        //last tick we do not read so not strict
+        while (d3.isAfter(cursor)) {
             var bar = testHelper.instanceTick.bars(idx)
             idx += 1
             Assert.assertTrue("times not match " + bar.dtGmtEnd + " <> " + cursor, bar.dtGmtEnd == cursor)
             Assert.assertTrue("not interpolated idx = " + idx, !bar.interpolated)
             cursor = cursor.plusSeconds(5 * 60)
         }
+
+
     }
 
 
@@ -144,7 +160,7 @@ class BacktestIntegrationTest {
 
 
         cfg.dataServerRoot = getDsRoot()
-        cfg.reportTargetPath = "/home/ivan/tmp/testReportDir"
+        cfg.reportTargetPath = getReportDir()
 
 
         cfg.tickerConfigs += new TickerConfig("XG", fileName, MarketDataType.Ohlc)
