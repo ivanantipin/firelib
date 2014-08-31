@@ -10,8 +10,6 @@ object defaultTimeBoundsCalculator extends TimeBoundsCalculator{
     def calcStartDate(cfg: ModelConfig): Instant = {
         var startDtGmt = if (cfg.startDateGmt == null) Instant.EPOCH else cfg.startDateGmt.parseStandard
 
-        startDtGmt = cfg.backtestStepInterval.roundTime(startDtGmt)
-
         val readerFactory: DefaultReaderFactory = new DefaultReaderFactory(cfg.dataServerRoot)
 
         val readers = readerFactory.apply(cfg.tickerConfigs, startDtGmt)
@@ -20,7 +18,9 @@ object defaultTimeBoundsCalculator extends TimeBoundsCalculator{
 
         readers.foreach(_.close())
 
-        return if (maxReadersStartDate.isAfter(startDtGmt)) maxReadersStartDate else startDtGmt
+        val ret = if (maxReadersStartDate.isAfter(startDtGmt)) maxReadersStartDate else startDtGmt
+
+        return cfg.backtestStepInterval.roundTime(ret)
 
 }
 

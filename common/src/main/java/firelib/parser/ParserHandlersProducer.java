@@ -24,6 +24,9 @@ public class ParserHandlersProducer {
                 return ZoneId.of("America/New_York");
             case "MOSCOW":
                 return ZoneId.of("Europe/Moscow");
+            case "LONDON":
+                return ZoneId.of("Europe/London");
+
         }
         return ZoneId.systemDefault();
     }
@@ -127,7 +130,7 @@ public class ParserHandlersProducer {
                     if(isOhlc(commonIniSettings)){
                         microcode.add(new StdHandler<Ohlc,Integer>((oh,v)->oh.setVolume(v), (chs)->TypeFormat.parseInt(chs)));
                     }else{
-                        microcode.add(new StdHandler<Tick,Integer>((oh,v)->oh.setVol(v), (chs)->TypeFormat.parseInt(chs)));
+                        microcode.add(new StdHandler<Tick,Integer>((oh,v)->oh.setVol(v), (chs)->(int)TypeFormat.parseDouble(chs)));
                     }
 
                     break;

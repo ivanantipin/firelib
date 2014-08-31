@@ -26,7 +26,7 @@ abstract class BasketModel extends IModel {
 
     protected def flattenAll(reason: Option[String] = None) = marketStubs.foreach(_.flattenAll(reason))
 
-    protected def cancelAllOrders = marketStubs.foreach(_.cancelAllOrders)
+    protected def cancelAllOrders() = marketStubs.foreach(_.cancelAllOrders)
 
 
     override def initModel(modelProps: Map[String, String], mktStubs: Seq[IMarketStub], ctx: IMarketDataDistributor) = {

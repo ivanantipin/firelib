@@ -162,6 +162,19 @@ public class SingleParserTests {
         Assert.assertEquals(345600,cnt);
     }
 
+    @Test
+    public void testDukasFileTicks() {
+        ParserHandlersProducer parserHandlersProducer = new ParserHandlersProducer(new CommonIniSettings().loadFromFile(getfile("dukas/common.ini")));
+
+        Parser<Tick> parser = new Parser<>(getfile("dukas/audnzd.csv"), parserHandlersProducer.handlers, () -> new Tick());
+        int cnt = 0;
+        while (parser.read()){
+            cnt+=1;
+        }
+        Assert.assertEquals(1000,cnt);
+    }
+
+
 
 
 }

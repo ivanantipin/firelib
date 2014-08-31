@@ -11,7 +11,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CoderResult;
 import java.time.Instant;
 import java.util.function.Supplier;
 
@@ -134,6 +133,8 @@ public class Parser<T extends Timed> implements ISimpleReader<T> {
             if (len == 0) {
                 return false;
             }
+            int pos = BaseHandler.skippEolOrEmpty(charBuffer,charBuffer.position());
+            charBuffer.position(Math.min(pos,charBuffer.limit()));
             currentRecord = readFromBuffer();
         }
         return currentRecord != null;

@@ -19,7 +19,7 @@ abstract class BaseHandler<T> implements IHandler<T> {
         return ((c == '\n') || (c == '\r'));
     }
 
-    protected int skipTillEolOrSep(CharBuffer buffer, int i) {
+    public static int skipTillEolOrSep(CharBuffer buffer, int i) {
         while (i < buffer.limit() && !eolOrSep(buffer.get(i))) {
             i++;
         }
@@ -34,7 +34,7 @@ abstract class BaseHandler<T> implements IHandler<T> {
         return i;
     }
 
-    protected int skippEolOrEmpty(CharBuffer buffer, int i) {
+    public static int skippEolOrEmpty(CharBuffer buffer, int i) {
         while (i < buffer.limit() && eolOrEmpty(buffer.get(i))) {
             i++;
         }
