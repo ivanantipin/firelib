@@ -2,14 +2,15 @@ package firelib.execution
 
 import java.time.Instant
 
+import firelib.common.TradeGateCallback
+import firelib.common.marketstub.MarketStub
 import firelib.common._
 import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.ArrayBuffer
 
 
-class ExecutionMarketStub(val tradeGate: ITradeGate, val security_ : String, val maxOrderCount: Int = 20) extends IMarketStub with ITradeGateCallback {
-
+class ExecutionMarketStub(val tradeGate: TradeGate, val security_ : String, val maxOrderCount: Int = 20) extends MarketStub with TradeGateCallback {
 
     tradeGate.registerCallback(this)
 
@@ -18,7 +19,7 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security_ : String, val
 
     private val orders_ = new ArrayBuffer[Order]()
 
-    private val tradeGateCallbacks = new ArrayBuffer[ITradeGateCallback]()
+    private val tradeGateCallbacks = new ArrayBuffer[TradeGateCallback]()
 
     private var position_ = 0
 
@@ -38,11 +39,11 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security_ : String, val
     }
 
 
-    def addCallback(callback: ITradeGateCallback) = {
+    def addCallback(callback: TradeGateCallback) = {
         tradeGateCallbacks += callback
     }
 
-    def moveCallbacksTo(marketStub: IMarketStub) = {
+    def moveCallbacksTo(marketStub: MarketStub) = {
         tradeGateCallbacks.foreach(marketStub.addCallback)
         tradeGateCallbacks.clear()
     }
@@ -96,12 +97,9 @@ class ExecutionMarketStub(val tradeGate: ITradeGate, val security_ : String, val
 
 
     def closePosition(reason: Option[String]): Unit = {
-        if (position_ == 0)
+        if (position_ == 0 || hasPendingState)
             return
 
-        if (hasPendingState) {
-            return
-        }
         val order: Order = new Order(OrderType.Market, 0, math.abs(position_), Side.sideForAmt(-position_)) {
             security = security_
         }

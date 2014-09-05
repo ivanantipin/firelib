@@ -2,9 +2,11 @@ package firelib.execution
 
 import java.time.Instant
 
-import firelib.common.{IMarketStub, ITradeGateCallback, Order}
+import firelib.common.TradeGateCallback
+import firelib.common.marketstub.MarketStub
+import firelib.common.Order
 
-class MarketStubSwitcher(val first: IMarketStub, val secondary: IMarketStub) extends IMarketStub {
+class MarketStubSwitcher(val first: MarketStub, val secondary: MarketStub) extends MarketStub {
 
     private var activeStub = first
 
@@ -36,9 +38,9 @@ class MarketStubSwitcher(val first: IMarketStub, val secondary: IMarketStub) ext
 
     def cancelOrderByIds(orderIds: Seq[String]) = activeStub.cancelOrderByIds(orderIds)
 
-    def addCallback(callback: ITradeGateCallback) = activeStub.addCallback(callback)
+    def addCallback(callback: TradeGateCallback) = activeStub.addCallback(callback)
 
-    def moveCallbacksTo(marketStub: IMarketStub) = activeStub.moveCallbacksTo(marketStub)
+    def moveCallbacksTo(marketStub: MarketStub) = activeStub.moveCallbacksTo(marketStub)
 
     def updateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant) = activeStub.updateBidAskAndTime(bid, ask, dtGmt)
 }

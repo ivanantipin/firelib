@@ -1,6 +1,6 @@
 package firelib.parser;
 
-import firelib.common.ISimpleReader;
+import firelib.common.reader.SimpleReader;
 import firelib.domain.Timed;
 
 import java.io.File;
@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.function.Supplier;
 
 
-public class Parser<T extends Timed> implements ISimpleReader<T> {
+public class Parser<T extends Timed> implements SimpleReader<T> {
 
     private final IHandler[] handlers;
     private final Supplier<T> factory;

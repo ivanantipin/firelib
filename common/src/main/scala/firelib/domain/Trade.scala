@@ -2,6 +2,8 @@ package firelib.common
 
 import java.time.Instant
 
+import firelib.common.misc.utils
+
 import scala.collection.mutable
 
 class Trade(val qty: Int, val price: Double, val side: Side, val order: Order, val dtGmt:Instant, val security: String) {

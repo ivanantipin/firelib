@@ -2,7 +2,8 @@ package firelib.domain
 
 import java.time.Instant
 
-import firelib.utils.DateTimeExt._
+import firelib.common.misc.dateUtils
+import dateUtils._
 
 import scala.beans.BeanProperty
 
@@ -23,7 +24,7 @@ class Ohlc() extends Timed {
         Oi = other.Oi
     }
 
-    private def initFrom(other: Tick) {
+    def initFrom(other: Tick) {
         O = other.last
         H = other.last
         L = other.last
@@ -48,6 +49,10 @@ class Ohlc() extends Timed {
     def addTick(tick: Tick) {
         if (interpolated) {
             initFrom(tick)
+        }
+        //FIXME
+        if(tick.last.isNaN){
+            tick.last = (tick.bid + tick.ask)/2;
         }
         addPrice(tick.last)
         Volume += tick.vol

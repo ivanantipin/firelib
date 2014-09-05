@@ -1,5 +1,6 @@
 package firelib.common
 
+import firelib.common.timeseries.HistoryCircular
 import org.junit.Assert._
 import org.junit.{Assert, Test}
 

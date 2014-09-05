@@ -4,6 +4,9 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util
 
+import firelib.common.interval.Interval
+import firelib.common.model.BasketModel
+import firelib.common.timeseries.TimeSeries
 import firelib.domain.Ohlc
 
 import scala.collection.mutable.ArrayBuffer
@@ -16,10 +19,10 @@ class OhlcTestModel extends BasketModel {
     val startTimesGmt = new ArrayBuffer[Instant]();
 
 
-    private var hist: ITimeSeries[Ohlc] = _
+    private var hist: TimeSeries[Ohlc] = _
 
 
-    var dayHist: ITimeSeries[Ohlc] = _
+    var dayHist: TimeSeries[Ohlc] = _
 
 
     val uniqTimes = new util.HashSet[Instant]()
@@ -37,7 +40,7 @@ class OhlcTestModel extends BasketModel {
     }
 
 
-    def On5Min(hh: ITimeSeries[Ohlc]): Unit = {
+    def On5Min(hh: TimeSeries[Ohlc]): Unit = {
         if (dayHist.count > 0 && dayHist(0).dtGmtEnd.truncatedTo(ChronoUnit.DAYS) != dayHist(0).dtGmtEnd) {
             throw new Exception("time of day ts not correct");
         }

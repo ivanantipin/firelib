@@ -2,7 +2,8 @@ package firelib.execution
 
 import java.io.{File, FileFilter}
 
-import firelib.utils.JacksonWrapper
+import firelib.common.misc.jsonHelper
+import firelib.execution.config.ModelRuntimeConfig
 import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.ArrayBuffer
@@ -22,7 +23,7 @@ object runtimeModelsFolderStarter {
         for (f <- new File(confDir).listFiles(jsonFilter)) {
             log.info("starting config file : " + f)
 
-            val cfg = JacksonWrapper.deserialize(f.toPath.toAbsolutePath.toString, classOf[ModelRuntimeConfig])
+            val cfg = jsonHelper.deserialize(f.toPath.toAbsolutePath.toString, classOf[ModelRuntimeConfig])
             val container: ModelRuntimeContainer = new ModelRuntimeContainer(cfg)
             container.start()
             lst += container

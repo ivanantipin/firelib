@@ -1,7 +1,6 @@
 package firelib.common
 
-
-import firelib.utils.HeapQuantile
+import firelib.common.misc.HeapQuantile
 import org.apache.commons.math3.distribution.NormalDistribution
 import org.junit.{Assert, Test}
 

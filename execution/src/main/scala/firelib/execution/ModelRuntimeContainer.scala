@@ -1,66 +1,98 @@
 package firelib.execution
 
 import java.nio.file.Paths
+import java.time.Instant
 
-import firelib.backtest._
 import firelib.common._
-import firelib.domain.Tick
-import firelib.report.RuntimeTradeWriter
-import firelib.utils.JacksonWrapper
+import firelib.common.config.{ModelConfig, TickerConfig}
+import firelib.common.core.SimpleRunCtx
+import firelib.common.marketstub.{MarketStub, MarketStubImpl}
+import firelib.common.misc.jsonHelper
+import firelib.common.model.Model
+import firelib.common.reader.{ReadersFactory, SimpleReader}
+import firelib.common.threading.ThreadExecutorImpl
+import firelib.common.timeboundscalc.TimeBoundsCalculator
+import firelib.domain.{Tick, Timed}
+import firelib.execution.config.ModelRuntimeConfig
 import org.slf4j.LoggerFactory
+
+
 class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
     val log = LoggerFactory.getLogger(getClass)
 
-    log.info("Starting config " + JacksonWrapper.toJsonString(modelRuntimeConfig))
+    log.info("Starting config " + jsonHelper.toJsonString(modelRuntimeConfig))
 
     val tradesPath = Paths.get(modelRuntimeConfig.tradeLogDirectory.getOrElse("trades_live.csv")).toFile.getName
 
     val modelConfig: ModelConfig = modelRuntimeConfig.modelConfig
 
-    val executor = new ThreadExecutor(threadName = modelRuntimeConfig.modelConfig.modelClassName).start()
+    val executor = new ThreadExecutorImpl(threadName = modelRuntimeConfig.modelConfig.modelClassName).start()
 
     val (tradeGate, marketDataProvider) = providersFactory.create(modelRuntimeConfig, executor)
 
-    val marketStubFactory = (cfg: TickerConfig) => new MarketStubSwitcher(new MarketStub(cfg.ticker), new ExecutionMarketStub(tradeGate, cfg.ticker))
+    val marketStubSwitcherFactory : (TickerConfig=>MarketStub) = (cfg: TickerConfig) => new MarketStubSwitcher(new MarketStubImpl(cfg.ticker), new ExecutionMarketStub(tradeGate, cfg.ticker))
 
-    private var model : IModel =_
+    var backTestCtx : SimpleRunCtx=_
 
-    private var environment : BacktestEnvironment =_
-
-
-    private val readerFactory: DefaultReaderFactory = new DefaultReaderFactory(modelConfig.dataServerRoot)
-    private var backtestEnvFactory: DefaultBacktestEnvFactory =_
-
-    if(modelRuntimeConfig.runBacktest)
-        backtestEnvFactory = new DefaultBacktestEnvFactory(readerFactory, defaultTimeBoundsCalculator)
+    if (modelRuntimeConfig.runBacktest)
+        backTestCtx = new SimpleRunCtx(modelConfig.dataServerRoot) {
+            override val marketStubFactory = marketStubSwitcherFactory
+        }
     else
-        backtestEnvFactory = new DefaultBacktestEnvFactory(dummyReaderFactory, dummyTimeBoundsCalculator)
+        backTestCtx = new SimpleRunCtx(modelConfig.dataServerRoot) {
+            override val timeBoundsCalculator = dummyTimeBoundsCalculator
+            override val readersFactory = dummyReaderFactory
+            override val marketStubFactory = marketStubSwitcherFactory
+        }
 
-    val starter = new BacktesterSimple(backtestEnvFactory,marketStubFactory)
-    environment = starter.run(modelConfig)
-    model = environment.models(0)
-    environment.player.close()
+    val env = backTestCtx.backtesterSimple.run(modelConfig)
 
+    private val model = env.models(0)
 
-
-    private val frequencer = new Frequencer(modelConfig.backtestStepInterval, environment.player.getStepListeners(), executor)
+    private val frequencer = new Frequencer(modelConfig.backtestStepInterval, env.stepListeners, executor)
 
     for (switcher <- model.stubs.map(ms => ms.asInstanceOf[MarketStubSwitcher])) {
         switcher.switchStubs()
         //to write trades to csv file
-        switcher.addCallback(new TradeGateCallbackAdapter((t) => RuntimeTradeWriter.write(tradesPath, modelConfig.modelClassName, t)))
+        switcher.addCallback(new TradeGateCallbackAdapter((t) => runtimeTradeWriter.write(tradesPath, modelConfig.modelClassName, t)))
     }
 
     log.info("Started ")
-
 
     def start() = {
         for (k <- 0 until modelConfig.tickerConfigs.length) {
             val k1 = k
             //!!!! assumed that market data provider works in the same thread
-            marketDataProvider.subscribeForTick(modelConfig.tickerConfigs(k).ticker, (q: Tick) => environment.mdDistributor.onTick(k1, q, null))
+            marketDataProvider.subscribeForTick(modelConfig.tickerConfigs(k).ticker, (q: Tick) => env.mdDistr.onTick(k1, q, null))
         }
         frequencer.start()
     }
+
+    object dummyReaderFactory extends ReadersFactory{
+        override def apply(cfgs: Seq[TickerConfig], startTime: Instant): Seq[SimpleReader[Timed]] =  cfgs.map(_=>dummyReader)
+    }
+
+    object dummyTimeBoundsCalculator extends TimeBoundsCalculator{
+        override def apply(cfg: ModelConfig): (Instant, Instant) = (Instant.MAX,Instant.MIN)
+    }
+
+    /**
+     * dummy reader used when no backtest required just model initialization
+     */
+    val dummyReader: SimpleReader[Timed] = new SimpleReader[Timed] {
+
+        override def seek(time: Instant): Boolean = true
+
+        override def endTime(): Instant = Instant.MAX
+
+        override def read(): Boolean = false
+
+        override def startTime(): Instant = Instant.MAX
+
+        override def current: Timed = null
+
+        override def close(): Unit = {}
+    }
+
 }

@@ -1,6 +1,6 @@
 package firelib.common
 
-import firelib.backtest.ParamsVariator
+import firelib.common.opt.{OptimizedParameter, ParamsVariator}
 import org.junit.{Assert, Test}
 
 import scala.collection.mutable

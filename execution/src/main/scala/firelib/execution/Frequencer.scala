@@ -3,9 +3,11 @@ package firelib.execution
 import java.time.Instant
 import java.util.concurrent.{Executors, TimeUnit}
 
+import firelib.common.interval.{Interval, StepListener}
+import firelib.common.threading.ThreadExecutor
 import firelib.common._
 
-class Frequencer(val interval: Interval, val listeners : Seq[IStepListener], val callbackExecutor : IThreadExecutor,  val precisionMs: Long = 100) extends Runnable {
+class Frequencer(val interval: Interval, val listeners : Seq[StepListener], val callbackExecutor : ThreadExecutor,  val precisionMs: Long = 100) extends Runnable {
 
     private var lastTimeTrigger: Instant = _
 

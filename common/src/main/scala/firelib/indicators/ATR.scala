@@ -1,9 +1,9 @@
 package firelib.indicators
 
-import firelib.common.ITimeSeries
-import firelib.domain.{IIndicator, Ohlc}
+import firelib.common.timeseries.TimeSeries
+import firelib.domain.Ohlc
 
-class ATR(period: Int, ts: ITimeSeries[Ohlc]) extends IIndicator[Double] with (ITimeSeries[Ohlc] => Unit) {
+class ATR(period: Int, ts: TimeSeries[Ohlc]) extends Indicator[Double] with (TimeSeries[Ohlc] => Unit) {
 
     override def value: Double = avg.value
 
@@ -11,11 +11,11 @@ class ATR(period: Int, ts: ITimeSeries[Ohlc]) extends IIndicator[Double] with (I
 
     ts.listen(this)
 
-    override def apply(v1: ITimeSeries[Ohlc]): Unit = {
+    override def apply(v1: TimeSeries[Ohlc]): Unit = {
         avg.add(lastRange(v1))
     }
 
-    private def lastRange(ts: ITimeSeries[Ohlc]): Double = {
+    private def lastRange(ts: TimeSeries[Ohlc]): Double = {
         val o = ts(0)
         if (o.interpolated) {
             return Double.NaN;

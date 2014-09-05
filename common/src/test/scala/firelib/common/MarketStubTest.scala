@@ -1,6 +1,7 @@
 import java.time.Instant
 
-import firelib.backtest.{MarketStub, TradeGateCallbackAdapter}
+import firelib.common.TradeGateCallbackAdapter
+import firelib.common.marketstub.MarketStubImpl
 import firelib.common._
 import org.junit.{Assert, Test}
 
@@ -115,8 +116,8 @@ class MarketStubTest {
 
     }
 
-    private def createStub(): (MarketStub, Instant, Seq[Trade]) = {
-        var stub = new MarketStub("ss")
+    private def createStub(): (MarketStubImpl, Instant, Seq[Trade]) = {
+        var stub = new MarketStubImpl("ss")
 
 
 

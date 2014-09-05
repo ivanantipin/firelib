@@ -6,9 +6,11 @@ import java.util.concurrent.{Executors, LinkedBlockingQueue, TimeUnit}
 
 import com.ib.client
 import com.ib.client.{Contract, Execution, TagValue}
+import firelib.common.TradeGateCallback
+import firelib.common.threading.ThreadExecutor
 import firelib.common._
 import firelib.domain.{Ohlc, Tick}
-import firelib.execution.{IMarketDataProvider, ITradeGate}
+import firelib.execution.{MarketDataProvider, TradeGate}
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
@@ -18,8 +20,8 @@ import scala.collection.mutable.ArrayBuffer
  * IMPORTANT!! - all code must run in thread executor provided on creation
  *
  */
-class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider {
-    val tradeGateCallbacks = new ArrayBuffer[ITradeGateCallback]()
+class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
+    val tradeGateCallbacks = new ArrayBuffer[TradeGateCallback]()
     val orders = new ArrayBuffer[OrderEntry]()
 
     var port: Int = _
@@ -28,7 +30,7 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
     private var symbolMapping: Map[String, String] = _
 
     private val ticker2contract = new mutable.HashMap[String, Contract]()
-    private var callbackExecutor: IThreadExecutor = _
+    private var callbackExecutor: ThreadExecutor = _
 
     private val orderIdQueue = new LinkedBlockingQueue[Integer]()
 
@@ -89,9 +91,9 @@ class IbTradeGate extends EWrapperImpl with ITradeGate with IMarketDataProvider 
         }
     }
 
-    def registerCallback(tgc: ITradeGateCallback) = tradeGateCallbacks += tgc
+    def registerCallback(tgc: TradeGateCallback) = tradeGateCallbacks += tgc
 
-    def configure(config: Map[String, String], symbolMapping: Map[String, String], callbackExecutor: IThreadExecutor) = {
+    def configure(config: Map[String, String], symbolMapping: Map[String, String], callbackExecutor: ThreadExecutor) = {
         this.symbolMapping = symbolMapping
         port = config("port").toInt
         clientId = config("client.id").toInt

@@ -1,12 +1,13 @@
 package firelib.execution
 
-import firelib.common.IThreadExecutor
+import firelib.common.threading.ThreadExecutor
+import firelib.execution.config.ModelRuntimeConfig
 
 object providersFactory {
-    def create(cfg: ModelRuntimeConfig, executor: IThreadExecutor): (ITradeGate, IMarketDataProvider) = {
+    def create(cfg: ModelRuntimeConfig, executor: ThreadExecutor): (TradeGate, MarketDataProvider) = {
         if (cfg.gatewayType == "IB") {
-            val gate = Class.forName("firelib.ibadapter.IbTradeGate").newInstance().asInstanceOf[ITradeGate]
-            val marketDataProvider = gate.asInstanceOf[IMarketDataProvider]
+            val gate = Class.forName("firelib.ibadapter.IbTradeGate").newInstance().asInstanceOf[TradeGate]
+            val marketDataProvider = gate.asInstanceOf[MarketDataProvider]
             gate.configure(cfg.gatewayConfig, cfg.ibContractMapping, executor)
             gate.start()
             return (gate, marketDataProvider)

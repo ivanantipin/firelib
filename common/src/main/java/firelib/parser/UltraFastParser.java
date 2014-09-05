@@ -1,6 +1,6 @@
 package firelib.parser;
 
-import firelib.common.ISimpleReader;
+import firelib.common.reader.SimpleReader;
 import firelib.domain.Timed;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -18,10 +18,10 @@ import java.util.*;
  * @param <T>
  */
 
-public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
+public class UltraFastParser<T extends Timed> implements SimpleReader<T> {
     private static Instant maxDateTime = Instant.MAX;
     private static Instant minDateTime = Instant.MIN;
-    private ISimpleReader<T> csvParser = null;
+    private SimpleReader<T> csvParser = null;
     private SymbolCsvFileInfo[] symbolCsvFileInfo = null;
     private int fileIdx = -1;
 
@@ -42,7 +42,7 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
         CurrentTz = symbolCsvFileInfo[fileIdx].commonIniSettings.TIMEZONE;
     }
 
-    ISimpleReader<T> create(String fileName, CommonIniSettings settings) {
+    SimpleReader<T> create(String fileName, CommonIniSettings settings) {
         return null;
     }
 
@@ -289,7 +289,7 @@ public class UltraFastParser<T extends Timed> implements ISimpleReader<T> {
                 ParseAndMergeCommonIni(strIndividualIniFile, entry.commonIniSettings);
             }
 
-            ISimpleReader<T> reader = create(filename, entry.commonIniSettings);
+            SimpleReader<T> reader = create(filename, entry.commonIniSettings);
 
             entry.utcStartDT = reader.startTime();
             entry.utcEndDT = reader.endTime();

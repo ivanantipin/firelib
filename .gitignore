@@ -2,3 +2,4 @@
 /.idea/
 /**/*.iml
 /**/scalastyle-output.xml
+/**/*.out

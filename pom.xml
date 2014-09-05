@@ -10,6 +10,7 @@
         <module>ibgate</module>
         <module>execution</module>
         <module>ibadapter</module>
+        <module>dukaadapter</module>
     </modules>
 
     <packaging>pom</packaging>

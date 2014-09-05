@@ -4,6 +4,10 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util
 
+import firelib.common.MarketDataListener
+import firelib.common.interval.Interval
+import firelib.common.model.BasketModel
+import firelib.common.timeseries.TimeSeries
 import firelib.domain.{Ohlc, Tick}
 
 import scala.collection.mutable.ArrayBuffer
@@ -11,13 +15,13 @@ import scala.collection.mutable.ArrayBuffer
 
 
 
-class TickTestModel extends BasketModel with IMarketDataListener {
+class TickTestModel extends BasketModel with MarketDataListener {
 
     var endTime = Instant.MIN
 
     val daysStarts = new ArrayBuffer[Instant]()
 
-    private var hist: ITimeSeries[Ohlc] = _
+    private var hist: TimeSeries[Ohlc] = _
 
     val uniqTimes = new util.HashSet[Instant]()
 
@@ -34,7 +38,7 @@ class TickTestModel extends BasketModel with IMarketDataListener {
 
     val bars = new ArrayBuffer[Ohlc]()
 
-    private def On5Min(hh: ITimeSeries[Ohlc]): Unit = {
+    private def On5Min(hh: TimeSeries[Ohlc]): Unit = {
         bars += new Ohlc(hh(0))
         //System.out.println(hh(0))
     }

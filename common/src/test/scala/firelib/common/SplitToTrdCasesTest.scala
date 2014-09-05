@@ -2,6 +2,7 @@ package firelib.common
 
 import java.time.Instant
 
+import firelib.common.misc.utils
 import org.junit.{Assert, Test}
 
 
