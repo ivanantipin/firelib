@@ -8,7 +8,6 @@ import firelib.common.config.{ModelConfig, TickerConfig}
 import firelib.common.core.SimpleRunCtx
 import firelib.common.marketstub.{MarketStub, MarketStubImpl}
 import firelib.common.misc.jsonHelper
-import firelib.common.model.Model
 import firelib.common.reader.{ReadersFactory, SimpleReader}
 import firelib.common.threading.ThreadExecutorImpl
 import firelib.common.timeboundscalc.TimeBoundsCalculator
@@ -80,7 +79,7 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
     /**
      * dummy reader used when no backtest required just model initialization
      */
-    val dummyReader: SimpleReader[Timed] = new SimpleReader[Timed] {
+    object dummyReader extends SimpleReader[Timed] {
 
         override def seek(time: Instant): Boolean = true
 

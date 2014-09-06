@@ -2,16 +2,17 @@ package firelib.ibadapter
 
 import java.time.Instant
 import java.util
+import java.util.Properties
 import java.util.concurrent.{Executors, LinkedBlockingQueue, TimeUnit}
 
 import com.ib.client
 import com.ib.client.{Contract, Execution, TagValue}
-import firelib.common.TradeGateCallback
+import firelib.common.{TradeGateCallback, _}
 import firelib.common.threading.ThreadExecutor
-import firelib.common._
 import firelib.domain.{Ohlc, Tick}
 import firelib.execution.{MarketDataProvider, TradeGate}
 
+import scala.collection.JavaConversions._
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
@@ -67,15 +68,15 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
     def sendOrder(order: Order): Unit = {
         log.info("sending order " + order)
         nextOrderId match{
-            case None =>{
-                log.error("failed to get next available order id, rejecting order " + order)
-                callbackExecutor.execute(() => tradeGateCallbacks.foreach(_.onOrderStatus(order, OrderStatus.Rejected)))
-            }
             case Some(orderId) =>{
                 val ibOrder = convertOrder(order)
                 orders += new OrderEntry(order, ibOrder, orderId)
                 clientSocket.placeOrder(orderId, parse(order.security), ibOrder)
                 log.info("order placed to socket  " + order + " order id is " + orderId)
+            }
+            case None =>{
+                log.error("failed to get next available order id, rejecting order " + order)
+                callbackExecutor.execute(() => tradeGateCallbacks.foreach(_.onOrderStatus(order, OrderStatus.Rejected)))
             }
         }
     }
@@ -93,8 +94,10 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
 
     def registerCallback(tgc: TradeGateCallback) = tradeGateCallbacks += tgc
 
-    def configure(config: Map[String, String], symbolMapping: Map[String, String], callbackExecutor: ThreadExecutor) = {
-        this.symbolMapping = symbolMapping
+    def configure(config: Map[String, String],callbackExecutor: ThreadExecutor) = {
+        val props = new Properties();
+        props.load(getClass().getResourceAsStream("/contract.properties"))
+        this.symbolMapping = props.toMap
         port = config("port").toInt
         clientId = config("client.id").toInt
         this.callbackExecutor = callbackExecutor

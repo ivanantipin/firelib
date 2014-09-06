@@ -20,7 +20,7 @@ class Tick() extends Comparable[Tick] with Timed {
     }
 
     override def toString: String = {
-        return s"Tick(B:$bid A:$ask L:$last V:$vol T$dtGmt"
+        return s"Tick(last=$last bid=$bid ask=$ask vol=:$vol time=$dtGmt)"
     }
 
     def compareTo(o: Tick): Int = {
@@ -42,9 +42,9 @@ class Tick() extends Comparable[Tick] with Timed {
     @BeanProperty
     var vol: Int = 0
     @BeanProperty
-    var side: Side = null
+    var side: Side = Side.None
     @BeanProperty
     var tickNumber: Int = 0
     @BeanProperty
-    var dtGmt: Instant = null
+    var dtGmt: Instant = Instant.now()
 }

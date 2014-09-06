@@ -12,11 +12,19 @@
     <artifactId>dukaadapter</artifactId>
 
     <dependencies>
+<!--
         <dependency>
             <groupId>com.dukascopy.api</groupId>
             <artifactId>JForex-API</artifactId>
             <version>2.9.7.1</version>
         </dependency>
+-->
+        <dependency>
+            <groupId>com.dukascopy.dds2</groupId>
+            <artifactId>DDS2-jClient-JForex</artifactId>
+            <version>2.39</version>
+        </dependency>
+
         <dependency>
             <groupId>com.firelib</groupId>
             <artifactId>common</artifactId>

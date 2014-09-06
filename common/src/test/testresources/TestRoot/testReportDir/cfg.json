@@ -1,16 +1,16 @@
 {
   "tickerConfigs" : [ {
     "ticker" : "XG",
-    "path" : "MINS/XG_#.csv",
+    "path" : "TICKS/XG_#.csv",
     "mdType" : {
-      "name" : "Ohlc"
+      "name" : "Tick"
     }
   } ],
   "startDateGmt" : "08.03.2013 05:00:00",
   "endDate" : null,
   "dataServerRoot" : "/home/ivan/IdeaProjects/firelib/common/./src/test/testresources/TestRoot/testDsRoot",
   "reportTargetPath" : "/home/ivan/IdeaProjects/firelib/common/./src/test/testresources/TestRoot/testReportDir",
-  "modelClassName" : "firelib.common.OhlcTestModel",
+  "modelClassName" : "firelib.common.TickTestModel",
   "customParams" : { },
   "optParams" : [ ],
   "optBatchSize" : 500,

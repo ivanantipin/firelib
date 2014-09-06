@@ -1,8 +1,7 @@
 package firelib.execution
 
-import firelib.common.TradeGateCallback
+import firelib.common.{TradeGateCallback, _}
 import firelib.common.threading.ThreadExecutor
-import firelib.common._
 
 trait TradeGate {
 
@@ -12,7 +11,7 @@ trait TradeGate {
 
     def registerCallback(tgc: TradeGateCallback)
 
-    def configure(config: Map[String, String], symbolMapping: Map[String, String], callbackExecutor: ThreadExecutor)
+    def configure(config: Map[String, String], callbackExecutor: ThreadExecutor)
 
     def start()
 }
