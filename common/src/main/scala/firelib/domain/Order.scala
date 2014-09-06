@@ -16,5 +16,5 @@ class Order(val orderType: OrderType, val price: Double, val qty: Int, val side:
     var validUntil: Instant  = _
     var status: OrderStatus = _
 
-    override def toString: String = s"Order(%$price@$qty/$side/$orderType/Id:$id/$security)"
+    override def toString: String = s"Order(price=$price qty=$qty side=$side type=$orderType orderId=$id sec=$security)"
 }

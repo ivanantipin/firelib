@@ -69,7 +69,7 @@ class Trade(val qty: Int, val price: Double, val side: Side, val order: Order, v
     }
 
     override def toString: String = {
-        "T(%s@%s/%s/%s/Id:%s/%s/%s)" format(utils.dbl2Str(price, 2), qty, side, dtGmt, reason, if (order != null) order.id else "NA", security)
+        s"Trade(price=${utils.dbl2Str(price, 2)} qty=$qty side=$side dtGmt=$dtGmt orderId=${order.id} sec=$security)"
     }
 
 }

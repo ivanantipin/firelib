@@ -2,9 +2,8 @@ package firelib.execution
 
 import java.time.Instant
 
-import firelib.common.TradeGateCallback
+import firelib.common.{TradeGateCallback, _}
 import firelib.common.marketstub.MarketStub
-import firelib.common._
 import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.ArrayBuffer
@@ -132,11 +131,11 @@ class ExecutionMarketStub(val tradeGate: TradeGate, val security_ : String, val 
         log.info(s"on trade $trd")
         trades_ += trd
         position_ = trd.adjustPositionByThisTrade(position_)
-        trd.positionAfter = position
+        trd.positionAfter = position_
         log.info(s"position after $position")
         tradeGateCallbacks.foreach(tgc => tgc.onTrade(trd))
     }
 
-    override val position: Int = position_
+    override def position: Int = position_
     override val security: String = security_
 }
