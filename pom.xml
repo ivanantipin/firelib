@@ -71,6 +71,11 @@
             <name>Scala-tools Maven2 Repository</name>
             <url>http://scala-tools.org/repo-releases</url>
         </repository>
+        <repository>
+            <id>dukasRepo</id>
+            <url>http://www.dukascopy.com/client/jforexlib/publicrepo/</url>
+            <layout>default</layout>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -78,6 +83,7 @@
             <name>Scala-tools Maven2 Repository</name>
             <url>http://scala-tools.org/repo-releases</url>
         </pluginRepository>
+
     </pluginRepositories>
 
     <profiles>
