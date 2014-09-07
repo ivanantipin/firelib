@@ -17,7 +17,7 @@ firelib is simple framework written in scala/java/python
     * [maven 3.](http://maven.apache.org/download.cgi)
     * [java 8](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html)
     * [Python 2.7](https://www.python.org/download/releases/2.7/)
-    * [Pandas 1.4] (http://pandas.pydata.org)    
+    * [Pandas 1.4](http://pandas.pydata.org)    
  
 
 * Deployment instructions
@@ -25,4 +25,3 @@ firelib is simple framework written in scala/java/python
     * git clone https://ivan_antipin@bitbucket.org/ivan_antipin/firelib.git
     * cd firelib
     * mvn clean install
-
