@@ -7,8 +7,8 @@ import java.util.concurrent.{Executors, LinkedBlockingQueue, TimeUnit}
 
 import com.ib.client
 import com.ib.client.{Contract, Execution, TagValue}
-import firelib.common.{TradeGateCallback, _}
 import firelib.common.threading.ThreadExecutor
+import firelib.common.{TradeGateCallback, _}
 import firelib.domain.{Ohlc, Tick}
 import firelib.execution.{MarketDataProvider, TradeGate}
 
@@ -98,6 +98,7 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
         val props = new Properties();
         props.load(getClass().getResourceAsStream("/contract.properties"))
         this.symbolMapping = props.toMap
+        log.info(s"contracts loaded : $symbolMapping")
         port = config("port").toInt
         clientId = config("client.id").toInt
         this.callbackExecutor = callbackExecutor
@@ -243,10 +244,18 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
 
     override def tickSize(tickerId: Int, field: Int, size: Int) = {
         callbackExecutor.execute(() => {
-            var pr = subscriptionByRequestId(tickerId).get.lastTick
-            //val dur: Long = System.currentTimeMillis() - pr.DtGmt.toEpochMilli
-            pr.vol = size
-            subscriptionByRequestId(tickerId).get.listeners.foreach(_.apply(pr))
+
+            subscriptionByRequestId(tickerId) match {
+                case Some(s) =>{
+                    var pr = s.lastTick
+                    pr.vol = size
+                    subscriptionByRequestId(tickerId).get.listeners.foreach(_.apply(pr))
+                }
+                case None => {
+                    log.error(s"no subscription found for tickerId=$tickerId")
+                }
+            }
+
         })
     }
 
