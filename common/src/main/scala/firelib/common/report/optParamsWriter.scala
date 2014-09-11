@@ -10,9 +10,9 @@ import scala.collection.immutable.StringOps
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * Created by ivan on 9/5/14.
+
  */
-object OptParamsWriter {
+object optParamsWriter {
 
     val decPlaces = 5
     val separator: StringOps = ";"

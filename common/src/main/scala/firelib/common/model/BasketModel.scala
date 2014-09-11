@@ -2,22 +2,34 @@ package firelib.common.model
 
 import java.time.Instant
 
+import firelib.common.Trade
 import firelib.common.interval.Interval
 import firelib.common.marketstub.MarketStub
 import firelib.common.mddistributor.MarketDataDistributor
 import firelib.common.timeseries.TimeSeries
-import firelib.common.{Order, OrderType, Side, Trade}
 import firelib.domain.Ohlc
 
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.immutable.IndexedSeq
 
-
-
+/**
+ * main base class for all strategies
+ */
 abstract class BasketModel extends Model {
+
+    /**
+     * variable holds model properties
+     */
     private var modelProperties: Map[String, String] = _
-    var mdDistributor: MarketDataDistributor = _
-    var dtGmt: Instant  = _
-    var marketStubs: Array[MarketStub] =_
+
+    protected var mdDistributor: MarketDataDistributor = _
+
+    /**
+     * this variable holds current time
+     */
+    protected var dtGmt: Instant  = _
+
+
+    private var marketStubs: Array[MarketStub] =_
 
     override def properties: Map[String, String] = modelProperties
 
@@ -29,11 +41,6 @@ abstract class BasketModel extends Model {
 
     override def hasValidProps() = true
 
-    protected def flattenAll(reason: Option[String] = None) = marketStubs.foreach(_.flattenAll(reason))
-
-    protected def cancelAllOrders() = marketStubs.foreach(_.cancelAllOrders)
-
-
     override def initModel(modelProps: Map[String, String], mktStubs: Seq[MarketStub], ctx: MarketDataDistributor) = {
         mdDistributor = ctx
         marketStubs = mktStubs.toArray
@@ -41,71 +48,32 @@ abstract class BasketModel extends Model {
         applyProperties(modelProps)
     }
 
-    def enableOhlcHistory(intr: Interval, lengthToMaintain: Int = -1): ArrayBuffer[TimeSeries[Ohlc]] = {
-        var rt = new ArrayBuffer[TimeSeries[Ohlc]]()
-        for (i <- 0 until marketStubs.length) {
-            rt += mdDistributor.activateOhlcTimeSeries(i, intr, lengthToMaintain)
-        }
-        return rt
+    /**
+     * @param intr - interval to generate ohlc
+     * @param lengthToMaintain length of enabled histories
+     * @return return sequence of TimeSeries objects
+     */
+    protected def enableOhlcHistory(intr: Interval, lengthToMaintain: Int = -1): IndexedSeq[TimeSeries[Ohlc]] = {
+        return (0 until marketStubs.length).map(mdDistributor.activateOhlcTimeSeries(_, intr, lengthToMaintain))
     }
 
-    def buyAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
-        marketStubs(idx).submitOrders(List(new Order(OrderType.Limit, price, vol, Side.Buy)))
-    }
-
-    def sellAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
-        marketStubs(idx).submitOrders(List(new Order(OrderType.Limit, price, vol, Side.Sell)))
-    }
-
-    def buyAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
-        marketStubs(idx).submitOrders(List(new Order(OrderType.Stop, price, vol, Side.Buy)))
-    }
-
-    def sellAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
-        marketStubs(idx).submitOrders(List(new Order(OrderType.Stop, price, vol, Side.Sell)))
-    }
-
-
-
-    def getTs(mdt: Interval, idx: Int = 0): TimeSeries[Ohlc] = {
+    protected def getTs(mdt: Interval, idx: Int = 0): TimeSeries[Ohlc] = {
         return mdDistributor.activateOhlcTimeSeries(idx, mdt, -1)
     }
 
-
-    def getOrderForDiff(currentPosition: Int, targetPos: Int): Option[Order] = {
-        val vol = targetPos - currentPosition
-        if (vol != 0) {
-            return Some(new Order(OrderType.Market, 0, math.abs(vol), if (vol > 0) Side.Buy else Side.Sell))
-        }
-        return None
-    }
-
-    /*
-     * override this method for proper logging
+    /**
+     * method to provide parameters to model
+     * @param mprops - configuration params to model
      */
-
-    protected def log(message: String) = {
-
-    }
-
-
-    protected def managePosTo(pos: Int, idx: Int = 0): Unit = {
-        getOrderForDiff(marketStubs(idx).position, pos) match {
-            case Some(ord) => marketStubs(idx).submitOrders(List(ord))
-            case _ =>
-        }
-    }
-
     protected def applyProperties(mprops: Map[String, String])
 
     protected def onIntervalEnd(dtGmt:Instant) = {}
 
     protected def position(idx: Int = 0) = marketStubs(idx).position
 
-    def onBacktestEnd()
+    override def onBacktestEnd() = {}
 
-
-    def onStep(dtGmt:Instant) = {
+    override final def onStep(dtGmt:Instant) = {
         this.dtGmt = dtGmt
         onIntervalEnd(dtGmt)
     }

@@ -3,14 +3,14 @@ package firelib.common.report
 import java.nio.file.{Files, Paths, StandardCopyOption}
 
 import firelib.common.config.ModelConfig
-import firelib.common.misc.{statFileDumper, jsonHelper}
+import firelib.common.misc.{jsonHelper, statFileDumper}
 import firelib.common.model.Model
 import org.apache.commons.io.FileUtils
 
 import scala.collection.immutable.HashMap
 
 /**
- * Created by ivan on 9/5/14.
+
  */
 object reportWriter {
 
@@ -32,7 +32,7 @@ object reportWriter {
 
         var factors = if (trades(0).factors == null) new HashMap[String, String] else trades(0).factors
 
-        TradesCsvWriter.write(model, Paths.get(targetDir, "trades.csv").toAbsolutePath.toString, factors.map(_._1))
+        tradesCsvWriter.write(model, Paths.get(targetDir, "trades.csv").toAbsolutePath.toString, factors.map(_._1))
 
         copyJarFileToReal("/StdReport.ipynb", Paths.get(targetDir,"StdReport.ipynb").toAbsolutePath.toString)
         copyJarFileToReal("/TradesReporter.py", Paths.get(targetDir,"TradesReporter.py").toAbsolutePath.toString)

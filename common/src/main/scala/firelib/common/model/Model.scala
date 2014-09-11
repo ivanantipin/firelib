@@ -1,12 +1,12 @@
 package firelib.common.model
 
+import firelib.common.Trade
 import firelib.common.interval.StepListener
 import firelib.common.marketstub.MarketStub
 import firelib.common.mddistributor.MarketDataDistributor
-import firelib.common.Trade
 
 /**
- * Created by ivan on 9/5/14.
+
  */
 trait Model extends StepListener {
 
@@ -18,6 +18,9 @@ trait Model extends StepListener {
 
     def trades: Seq[Trade]
 
+    /**
+     * init model method
+     */
     def initModel(modelProps: Map[String, String], marketStubs: Seq[MarketStub], distributor: MarketDataDistributor)
 
     /**
@@ -26,5 +29,8 @@ trait Model extends StepListener {
      */
     def hasValidProps(): Boolean
 
+    /**
+     * called after backtest end
+     */
     def onBacktestEnd()
 }

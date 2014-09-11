@@ -3,14 +3,13 @@ package firelib.common.mddistributor
 import firelib.common.MarketDataListener
 import firelib.common.core.BacktestEnvironmentComponent
 import firelib.common.interval.{Interval, IntervalServiceComponent}
-import firelib.common.mddistributor.MarketDataDistributor
 import firelib.common.timeseries.{HistoryCircular, TimeSeries, TimeSeriesImpl}
 import firelib.domain.{Ohlc, Tick}
 
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * Created by ivan on 9/5/14.
+
  */
 trait MarketDataDistributorComponent {
 

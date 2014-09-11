@@ -9,7 +9,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * Created by ivan on 9/5/14.
+
  */
 object utils extends DescriptiveStatsTrait {
 

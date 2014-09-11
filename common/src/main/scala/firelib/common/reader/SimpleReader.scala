@@ -5,7 +5,7 @@ import java.time.Instant
 import firelib.domain.Timed
 
 /**
- * Created by ivan on 9/5/14.
+
  */
 trait SimpleReader[+T <: Timed] extends AutoCloseable{
 

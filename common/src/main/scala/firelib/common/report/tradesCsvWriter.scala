@@ -1,16 +1,16 @@
 package firelib.common.report
 
-import firelib.common.misc.{statFileDumper, dateUtils, utils}
-import firelib.common.model.Model
 import firelib.common.Side
-import dateUtils._
+import firelib.common.misc.dateUtils._
+import firelib.common.misc.{dateUtils, statFileDumper, utils}
+import firelib.common.model.Model
 
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * Created by ivan on 9/5/14.
+
  */
-object TradesCsvWriter {
+object tradesCsvWriter {
 
     val decPlaces: Int = 5
 

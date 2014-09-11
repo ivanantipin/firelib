@@ -5,13 +5,14 @@ import java.nio.file.{Files, Path, Paths, StandardOpenOption}
 import java.time._
 import java.time.format.DateTimeFormatter
 import java.util.function.Supplier
-import firelib.common.config.{TickerConfig, ModelConfig}
+
+import firelib.common.config.{InstrumentConfig, ModelConfig}
 import firelib.common.core.backtestStarter
 import firelib.common.interval.Interval
 import firelib.common.misc.dateUtils
+import firelib.common.misc.dateUtils._
 import firelib.domain.Ohlc
 import firelib.parser.{CommonIniSettings, IHandler, Parser, ParserHandlersProducer}
-import dateUtils._
 import org.junit.{Assert, Test}
 
 import scala.collection.JavaConversions._
@@ -67,9 +68,9 @@ class BacktestIntegrationTest {
 
         cfg.dataServerRoot = getDsRoot()
         cfg.reportTargetPath = getReportDir()
-        cfg.tickerConfigs += new TickerConfig("XG", fileName, MarketDataType.Tick)
+        cfg.instruments += new InstrumentConfig("XG", fileName, MarketDataType.Tick)
         cfg.startDateGmt = "08.03.2013 05:00:00"
-        cfg.backtestStepInterval = Interval.Sec1
+        cfg.stepInterval = Interval.Sec1
         var startTime = cfg.startDateGmt.parseStandard
         cfg.modelClassName = "firelib.common.TickTestModel"
         backtestStarter.runBacktest(cfg)
@@ -165,11 +166,11 @@ class BacktestIntegrationTest {
         cfg.reportTargetPath = getReportDir()
 
 
-        cfg.tickerConfigs += new TickerConfig("XG", fileName, MarketDataType.Ohlc)
+        cfg.instruments += new InstrumentConfig("XG", fileName, MarketDataType.Ohlc)
 
         cfg.startDateGmt = "08.03.2013 05:00:00"
 
-        cfg.backtestStepInterval = Interval.Sec1
+        cfg.stepInterval = Interval.Sec1
 
         val startTime = cfg.startDateGmt.parseStandard
 

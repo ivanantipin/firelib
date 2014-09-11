@@ -4,13 +4,13 @@ import java.nio.file.{Path, Paths}
 import java.time.Instant
 import java.util.function.Supplier
 
-import firelib.common.config.TickerConfig
 import firelib.common.MarketDataType
+import firelib.common.config.InstrumentConfig
 import firelib.domain.{Ohlc, Tick, Timed}
 import firelib.parser.{CommonIniSettings, IHandler, Parser, ParserHandlersProducer}
 
 /**
- * Created by ivan on 9/4/14.
+
  */
 trait ReadersFactoryComponent {
 
@@ -30,14 +30,14 @@ trait ReadersFactoryComponent {
         }
 
 
-        private def createReader[T <: Timed](cfg : TickerConfig, factory : Supplier[T]) : SimpleReader[T] ={
+        private def createReader[T <: Timed](cfg : InstrumentConfig, factory : Supplier[T]) : SimpleReader[T] ={
             val path: Path = Paths.get(dsRoot, cfg.path)
             val iniFile: String = path.getParent.resolve("common.ini").toAbsolutePath.toString
             val generator: ParserHandlersProducer = new ParserHandlersProducer(new CommonIniSettings().loadFromFile(iniFile))
             return new Parser[T](path.toAbsolutePath.toString, generator.handlers.asInstanceOf[Array[IHandler[T]]], factory)
         }
 
-        override def apply(tickerIds: Seq[TickerConfig], startDtGmt: Instant): Seq[SimpleReader[Timed]] = {
+        override def apply(tickerIds: Seq[InstrumentConfig], startDtGmt: Instant): Seq[SimpleReader[Timed]] = {
             return tickerIds.map(t=>{
                 val parser =
                     if (t.mdType == MarketDataType.Tick)

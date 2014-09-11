@@ -47,7 +47,14 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     private val subs = new ArrayBuffer[Subscriptions]()
 
 
+    var cnt = System.currentTimeMillis();
+
     override def sendOrder(order: Order) = {
+        if(!client.isConnected){
+            executor.execute(() => tradeGateCallbacks.foreach(_.onOrderStatus(order, OrderStatus.Rejected)))
+        }
+        cnt+=1
+        order.id = "LBL" + cnt
         val task: Future[IOrder] = context.executeTask(new Callable[IOrder] {
             override def call(): IOrder = {
                 val cmd = if (order.side == Side.Sell) IEngine.OrderCommand.SELL else IEngine.OrderCommand.BUY
@@ -104,6 +111,7 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     override def onStart(p1: Long) = {}
 
     override def onConnect() = {
+        client.setSubscribedInstruments(new util.HashSet[Instrument](instruments.toList) )
         client.startStrategy(this)
         log.info("Connected")
         lightReconnects = 3
@@ -130,7 +138,6 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
         this.history = context.getHistory
         this.console = context.getConsole
         this.context = context
-        context.setSubscribedInstruments(new util.HashSet[Instrument](instruments.toList) )
     }
 
 
@@ -177,6 +184,7 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
             case Type.ORDER_CLOSE_REJECTED => fire(message.getOrder.getId, OrderStatus.CancelFailed)
             case Type.ORDER_CLOSE_OK => fire(message.getOrder.getId, OrderStatus.Cancelled)
             case Type.ORDER_FILL_OK => fire(message.getOrder.getId, OrderStatus.Done)
+            case Type.ORDER_CHANGED_OK => fire(message.getOrder.getId, OrderStatus.Accepted)
             case Type.MAIL =>
             case Type.NEWS =>
             case Type.CALENDAR =>
@@ -208,7 +216,17 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     def onStop {
     }
 
-    override def subscribeForTick(tickerId: String, lsn: (Tick) => Unit): Unit = {}
+    override def subscribeForTick(tickerId: String, lsn: (Tick) => Unit): Unit = {
+        subs.find(_.TickerId == tickerId) match {
+            case Some(s) =>{
+                s.listeners += lsn
+            }
+            case None =>{
+                subs += new Subscriptions(tickerId)
+                subscribeForTick(tickerId,lsn)
+            }
+        }
+    }
 
     override def subscribeForOhlc(tickerId: String, lsn: (Ohlc) => Unit): Unit = {}
 

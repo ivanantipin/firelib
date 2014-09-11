@@ -1,7 +1,5 @@
 package firelib.common
 
-import firelib.common._
-
 class TradeGateCallbackAdapter(val newTradeEvent: Trade => Unit = null, val newOrderEvent: Order => Unit = null) extends TradeGateCallback {
 
     def onTrade(trade: Trade) = {

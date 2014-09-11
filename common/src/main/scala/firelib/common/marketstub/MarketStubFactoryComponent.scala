@@ -1,10 +1,10 @@
 package firelib.common.marketstub
 
-import firelib.common.config.TickerConfig
+import firelib.common.config.InstrumentConfig
 
 /**
- * Created by ivan on 9/5/14.
+
  */
 trait MarketStubFactoryComponent {
-    val marketStubFactory : (TickerConfig=>MarketStub) = defaultMarketStubFactory
+    val marketStubFactory : (InstrumentConfig=>MarketStub) = defaultMarketStubFactory
 }

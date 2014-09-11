@@ -6,7 +6,7 @@ import firelib.common.timeseries.TimeSeries
 import firelib.domain.Ohlc
 
 /**
- * Created by ivan on 9/5/14.
+
  */
 trait MarketDataDistributor extends MarketDataListener {
     def activateOhlcTimeSeries(tickerId: Int, interval: Interval, len: Int): TimeSeries[Ohlc]

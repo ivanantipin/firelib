@@ -1,15 +1,15 @@
 package firelib.common.core
 
 import java.time.Instant
+
 import firelib.common.MarketDataListener
-import firelib.common.core.BacktestEnvironmentComponent
 import firelib.common.interval.{IntervalServiceComponent, StepListener}
 import firelib.common.mddistributor.MarketDataDistributorComponent
 
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * Created by ivan on 9/5/14.
+
  */
 trait MarketDataPlayerComponent{
 

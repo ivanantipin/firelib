@@ -3,14 +3,14 @@ package firelib.common.report
 import java.time.Duration
 
 import breeze.stats.{DescriptiveStatsTrait, MeanAndVariance}
-import firelib.common.misc.utils
 import firelib.common.Trade
+import firelib.common.misc.utils
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * Created by ivan on 9/5/14.
+
  */
 object backtestStatisticsCalculator  extends DescriptiveStatsTrait with MetricsCalculator{
 

@@ -1,12 +1,10 @@
 package firelib.common.opt
 
-import firelib.common._
-
 import scala.collection.mutable
 
 /**
  * iterator over all combinations of optimized variables
- * returns on iteration map [string,int] where key is name of parameter
+ * returns map [string,int] every iteration. Keys are parameter names.
  * @param optParams
  */
 class ParamsVariator(optParams: Seq[OptimizedParameter]) {

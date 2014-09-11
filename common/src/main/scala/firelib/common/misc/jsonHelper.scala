@@ -9,7 +9,7 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import scala.collection.JavaConversions._
 
 /**
- * Created by ivan on 9/5/14.
+
  */
 object jsonHelper {
 

@@ -4,18 +4,9 @@ import java.time.Instant
 
 import scala.collection.mutable.ArrayBuffer
 
-
-sealed case class Interval private (val name: String, val durationMs: Int) {
-
-    Interval.intervals += this
-
-    def roundTime(dt:Instant): Instant  = Instant.ofEpochMilli(  roundEpochMs((dt.toEpochMilli)))
-
-    def roundEpochMs(epochMs : Long): Long  =  (epochMs/ durationMs) * durationMs
-
-    override def toString: String = name
-}
-
+/**
+ * enumeration of all intervals
+ */
 object Interval {
 
     val intervals = new ArrayBuffer[Interval]()
@@ -36,5 +27,18 @@ object Interval {
     def resolveFromName(name: String) = intervals.find(_.name == name).get
 
 }
+
+
+sealed case class Interval private (val name: String, val durationMs: Int) {
+
+    Interval.intervals += this
+
+    def roundTime(dt:Instant): Instant  = Instant.ofEpochMilli(  roundEpochMs((dt.toEpochMilli)))
+
+    def roundEpochMs(epochMs : Long): Long  =  (epochMs/ durationMs) * durationMs
+
+    override def toString: String = name
+}
+
 
 

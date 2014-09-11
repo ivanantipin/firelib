@@ -3,14 +3,18 @@ package firelib.common.config
 import firelib.common.core.BacktestMode
 import firelib.common.interval.Interval
 import firelib.common.model.Model
-import firelib.common.opt.OptimizedParameter
 import firelib.common.report.StrategyMetric
 
 import scala.collection.mutable._
 
+/**
+ * keeps configuration for model backtest
+ */
 class ModelConfig {
-    
-    val tickerConfigs = ArrayBuffer[TickerConfig]()
+    /**
+     * instruments configuration
+     */
+    val instruments = ArrayBuffer[InstrumentConfig]()
 
     var startDateGmt: String = _
 
@@ -26,31 +30,9 @@ class ModelConfig {
      * params passed to model apply method
      * can not be optimized
      */
-    val customParams = HashMap[String, String]()
+    val modelParams = HashMap[String, String]()
 
-
-    /**
-     * params passed to model applyProperties method
-     * for InOutSample mode only
-     */
-    val optParams = new ArrayBuffer[OptimizedParameter]
-
-    /**
-     * number of model instances that backtested on one thread / one market data play in one go
-     *
-     */
-    var optBatchSize = 500
-
-    /**
-     * number of threads used for optimization
-     * make sense to do <= number of cores
-     * for InOutSample mode only
-     */
-    var optThreadNumber = 1
-
-    var optMinNumberOfTrades = 1
-
-    var optimizedPeriodDays = -1
+    val optConfig : OptimizationConfig= new OptimizationConfig
 
     var backtestMode = BacktestMode.SimpleRun
 
@@ -60,12 +42,8 @@ class ModelConfig {
      * can affect performance if interval is small
      * for example for minutes market data does not make sense to do less than 1 Min interval
      */
-    var backtestStepInterval = Interval.Sec1
+    var stepInterval = Interval.Sec1
 
-    /**
-     * optimization metrics for InOutSample mode only
-     */
-    var optimizedMetric = StrategyMetric.Sharpe
 
     val calculatedMetrics = List(
         StrategyMetric.Pf,
@@ -73,12 +51,6 @@ class ModelConfig {
         StrategyMetric.Sharpe,
         StrategyMetric.AvgPnl
     )
-
-
-    def addCustomParam(param: String, value: String): ModelConfig = {
-        customParams(param) = value
-        this
-    }
 
     def newModelInstance() : Model ={
         return Class.forName(modelClassName).newInstance().asInstanceOf[Model]

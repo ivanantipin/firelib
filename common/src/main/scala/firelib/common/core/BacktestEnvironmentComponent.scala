@@ -11,7 +11,7 @@ import firelib.common.reader.ReaderToListenerAdapter
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * Created by ivan on 9/4/14.
+
  */
 trait BacktestEnvironmentComponent{
 
@@ -29,7 +29,7 @@ trait BacktestEnvironmentComponent{
 
         val models = new ArrayBuffer[Model]()
 
-        def mdDistr : MarketDataDistributor = marketDataDistributor
+        def distributor : MarketDataDistributor = marketDataDistributor
 
         override def stepListeners: Seq[StepListener] = marketDataPlayer.getStepListeners
 

@@ -5,7 +5,7 @@ import java.time.Instant
 import org.junit.{Assert, Test}
 
 /**
- * Created by ivan on 9/6/14.
+
  */
 class MiscTest {
 

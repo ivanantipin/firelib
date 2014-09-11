@@ -1,8 +1,8 @@
 package firelib.common.marketstub
 
-import firelib.common.config.TickerConfig
+import firelib.common.config.InstrumentConfig
 
 /**
- * Created by ivan on 9/4/14.
+
  */
-trait MarketStubFactory extends (TickerConfig => MarketStub)
+trait MarketStubFactory extends (InstrumentConfig => MarketStub)

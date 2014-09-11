@@ -7,7 +7,7 @@ import firelib.common.misc.dateUtils._
 import firelib.common.reader.ReadersFactoryComponent
 
 /**
- * Created by ivan on 9/4/14.
+
  */
 trait TimeBoundsCalculatorComponent {
     this : ReadersFactoryComponent =>
@@ -19,7 +19,7 @@ trait TimeBoundsCalculatorComponent {
         def calcStartDate(cfg: ModelConfig): Instant = {
             var startDtGmt = if (cfg.startDateGmt == null) Instant.EPOCH else cfg.startDateGmt.parseStandard
 
-            val readers = readersFactory.apply(cfg.tickerConfigs, startDtGmt)
+            val readers = readersFactory.apply(cfg.instruments, startDtGmt)
 
             val maxReadersStartDate = readers.maxBy(r =>r.current.DtGmt.getEpochSecond).current.DtGmt
 
@@ -27,7 +27,7 @@ trait TimeBoundsCalculatorComponent {
 
             val ret = if (maxReadersStartDate.isAfter(startDtGmt)) maxReadersStartDate else startDtGmt
 
-            return cfg.backtestStepInterval.roundTime(ret)
+            return cfg.stepInterval.roundTime(ret)
 
         }
 
@@ -37,5 +37,4 @@ trait TimeBoundsCalculatorComponent {
             return (startDt, endDt)
         }
     }
-
 }

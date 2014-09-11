@@ -1,10 +1,9 @@
 package firelib.common.core
 
 import firelib.common.config.ModelConfig
-import firelib.common.core.{BacktestMode, OptRunCtx, SimpleRunCtx}
 
 /**
- * Created by ivan on 9/5/14.
+
  */
 object backtestStarter {
     def runBacktest(mc: ModelConfig) {

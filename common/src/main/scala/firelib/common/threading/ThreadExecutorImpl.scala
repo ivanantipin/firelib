@@ -6,12 +6,11 @@ import org.slf4j.LoggerFactory
 
 class ThreadExecutorImpl(val threadsNumber: Int = 1, val maxLengthOfQueue: Int = 10000, var threadName: String = "pipeline_") extends ThreadExecutor with ThreadFactory {
 
-    val executor = new ThreadPoolExecutor(threadsNumber, threadsNumber, 1, TimeUnit.SECONDS, new ArrayBlockingQueue[Runnable](maxLengthOfQueue), this)
+    private val executor = new ThreadPoolExecutor(threadsNumber, threadsNumber, 1, TimeUnit.SECONDS, new ArrayBlockingQueue[Runnable](maxLengthOfQueue), this)
 
+    private var threadcounter = 0
 
     val log = LoggerFactory.getLogger(threadName)
-
-    var threadcounter = 0
 
     def execute(act: () => Unit) = {
         executor.execute(new Runnable {
@@ -38,7 +37,7 @@ class ThreadExecutorImpl(val threadsNumber: Int = 1, val maxLengthOfQueue: Int =
     override def newThread(r: Runnable): Thread = {
         val ret: Thread = Executors.defaultThreadFactory().newThread(r)
         threadcounter += 1
-        ret.setName(threadName + threadcounter)
+        ret.setName(s"${threadName}_$threadcounter")
         return ret
     }
 }

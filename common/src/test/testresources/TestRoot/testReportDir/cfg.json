@@ -1,5 +1,5 @@
 {
-  "tickerConfigs" : [ {
+  "instruments" : [ {
     "ticker" : "XG",
     "path" : "TICKS/XG_#.csv",
     "mdType" : {
@@ -11,21 +11,23 @@
   "dataServerRoot" : "/home/ivan/IdeaProjects/firelib/common/./src/test/testresources/TestRoot/testDsRoot",
   "reportTargetPath" : "/home/ivan/IdeaProjects/firelib/common/./src/test/testresources/TestRoot/testReportDir",
   "modelClassName" : "firelib.common.TickTestModel",
-  "customParams" : { },
-  "optParams" : [ ],
-  "optBatchSize" : 500,
-  "optThreadNumber" : 1,
-  "optMinNumberOfTrades" : 1,
-  "optimizedPeriodDays" : -1,
+  "modelParams" : { },
+  "optConfig" : {
+    "params" : [ ],
+    "batchSize" : 500,
+    "threadsNumber" : 1,
+    "minNumberOfTrades" : 1,
+    "optimizedPeriodDays" : -1,
+    "optimizedMetric" : {
+      "name" : "Sharpe"
+    }
+  },
   "backtestMode" : {
     "name" : "SimpleRun"
   },
-  "backtestStepInterval" : {
+  "stepInterval" : {
     "name" : "Sec1",
     "durationMs" : 1000
-  },
-  "optimizedMetric" : {
-    "name" : "Sharpe"
   },
   "calculatedMetrics" : [ {
     "name" : "Pf"

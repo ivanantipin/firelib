@@ -4,7 +4,7 @@ import java.nio.file.Paths
 import java.time.Instant
 
 import firelib.common._
-import firelib.common.config.{ModelConfig, TickerConfig}
+import firelib.common.config.{InstrumentConfig, ModelConfig}
 import firelib.common.core.SimpleRunCtx
 import firelib.common.marketstub.{MarketStub, MarketStubImpl}
 import firelib.common.misc.jsonHelper
@@ -30,7 +30,7 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
     val (tradeGate, marketDataProvider) = providersFactory.create(modelRuntimeConfig, executor)
 
-    val marketStubSwitcherFactory : (TickerConfig=>MarketStub) = (cfg: TickerConfig) => new MarketStubSwitcher(new MarketStubImpl(cfg.ticker), new ExecutionMarketStub(tradeGate, cfg.ticker))
+    val marketStubSwitcherFactory : (InstrumentConfig=>MarketStub) = (cfg: InstrumentConfig) => new MarketStubSwitcher(new MarketStubImpl(cfg.ticker), new ExecutionMarketStub(tradeGate, cfg.ticker))
 
     var backTestCtx : SimpleRunCtx=_
 
@@ -49,7 +49,7 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
     private val model = env.models(0)
 
-    private val frequencer = new Frequencer(modelConfig.backtestStepInterval, env.stepListeners, executor)
+    private val frequencer = new Frequencer(modelConfig.stepInterval, env.stepListeners, executor)
 
     for (switcher <- model.stubs.map(ms => ms.asInstanceOf[MarketStubSwitcher])) {
         switcher.switchStubs()
@@ -60,16 +60,16 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
     log.info("Started ")
 
     def start() = {
-        for (k <- 0 until modelConfig.tickerConfigs.length) {
+        for (k <- 0 until modelConfig.instruments.length) {
             val k1 = k
             //!!!! assumed that market data provider works in the same thread
-            marketDataProvider.subscribeForTick(modelConfig.tickerConfigs(k).ticker, (q: Tick) => env.mdDistr.onTick(k1, q, null))
+            marketDataProvider.subscribeForTick(modelConfig.instruments(k).ticker, (q: Tick) => env.distributor.onTick(k1, q, null))
         }
         frequencer.start()
     }
 
     object dummyReaderFactory extends ReadersFactory{
-        override def apply(cfgs: Seq[TickerConfig], startTime: Instant): Seq[SimpleReader[Timed]] =  cfgs.map(_=>dummyReader)
+        override def apply(cfgs: Seq[InstrumentConfig], startTime: Instant): Seq[SimpleReader[Timed]] =  cfgs.map(_=>dummyReader)
     }
 
     object dummyTimeBoundsCalculator extends TimeBoundsCalculator{

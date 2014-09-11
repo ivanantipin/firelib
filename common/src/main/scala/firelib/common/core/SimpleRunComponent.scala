@@ -24,9 +24,9 @@ trait SimpleRunComponent{
 
             val model = cfg.newModelInstance()
 
-            val stubs: ArrayBuffer[MarketStub] = cfg.tickerConfigs.map(marketStubFactory)
+            val stubs: ArrayBuffer[MarketStub] = cfg.instruments.map(marketStubFactory)
 
-            env.bindModel(model,stubs,cfg.customParams.toMap)
+            env.bindModel(model,stubs,cfg.modelParams.toMap)
 
             env.backtest()
 

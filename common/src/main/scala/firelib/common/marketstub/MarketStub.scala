@@ -2,21 +2,17 @@ package firelib.common.marketstub
 
 import java.time.Instant
 
-import firelib.common.TradeGateCallback
-import firelib.common.{Order, Trade}
+import firelib.common.{Order, Trade, TradeGateCallback}
 
 /**
- * Created by ivan on 9/5/14.
+
  */
 trait MarketStub {
 
-
-    def position: Int
-
-    /*
-     * this is confirmed position + position for pending market orders
+    /**
+     * position
      */
-    //val UnconfirmedPosition: Int
+    def position: Int
 
     /**
      * any market order on market or not accepted limit order
@@ -24,7 +20,7 @@ trait MarketStub {
     def hasPendingState(): Boolean
 
     /**
-     * name of security as configured in model config tickers list
+     * alias of security as configured in model config instruments list
      */
     val security: String
 

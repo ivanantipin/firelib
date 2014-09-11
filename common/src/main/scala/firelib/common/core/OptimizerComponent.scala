@@ -7,7 +7,7 @@ import firelib.common.config.ModelConfig
 import firelib.common.marketstub.{MarketStub, MarketStubFactoryComponent}
 import firelib.common.model.Model
 import firelib.common.opt.ParamsVariator
-import firelib.common.report.{OptParamsWriter, ReportProcessor, backtestStatisticsCalculator, reportWriter}
+import firelib.common.report.{ReportProcessor, backtestStatisticsCalculator, optParamsWriter, reportWriter}
 import firelib.common.threading.ThreadExecutorImpl
 import firelib.common.timeboundscalc.TimeBoundsCalculatorComponent
 
@@ -32,20 +32,20 @@ trait OptimizerComponent{
             val startTime = System.currentTimeMillis()
 
             val reportProcessor = new ReportProcessor(backtestStatisticsCalculator,
-                cfg.optimizedMetric,
-                cfg.optParams.map(op => op.name),
-                minNumberOfTrades = cfg.optMinNumberOfTrades)
+                cfg.optConfig.optimizedMetric,
+                cfg.optConfig.params.map(op => op.name),
+                minNumberOfTrades = cfg.optConfig.minNumberOfTrades)
 
-            val executor = new ThreadExecutorImpl(cfg.optThreadNumber, maxLengthOfQueue = 1).start()
+            val executor = new ThreadExecutorImpl(cfg.optConfig.threadsNumber, maxLengthOfQueue = 1).start()
             val reportExecutor = new ThreadExecutorImpl(1).start()
-            val variator = new ParamsVariator(cfg.optParams)
+            val variator = new ParamsVariator(cfg.optConfig.params)
 
 
             val (startDtGmt, endDtGmt) = timeBoundsCalculator.apply(cfg)
 
-            assert(cfg.optimizedPeriodDays > 0 , "optimized days count not set!!")
+            assert(cfg.optConfig.optimizedPeriodDays > 0 , "optimized days count not set!!")
 
-            val endOfOptimize = startDtGmt.plus(cfg.optimizedPeriodDays, ChronoUnit.DAYS)
+            val endOfOptimize = startDtGmt.plus(cfg.optConfig.optimizedPeriodDays, ChronoUnit.DAYS)
 
             System.out.println("number of models " + variator.combinations)
 
@@ -70,7 +70,7 @@ trait OptimizerComponent{
             val bm = reportProcessor.bestModels.last
             val env = envFactory.apply(cfg)
             val model = cfg.newModelInstance()
-            val stubs: ArrayBuffer[MarketStub] = cfg.tickerConfigs.map(marketStubFactory)
+            val stubs: ArrayBuffer[MarketStub] = cfg.instruments.map(marketStubFactory)
             env.bindModel(model,stubs,bm.properties)
             env.backtest()
 
@@ -83,11 +83,11 @@ trait OptimizerComponent{
 
 
         private def writeOptimizedReport(cfg: ModelConfig, reportProcessor: ReportProcessor, endOfOptimize:Instant) = {
-            OptParamsWriter.write(
+            optParamsWriter.write(
                 cfg.reportTargetPath,
                 optEnd = endOfOptimize,
                 estimates = reportProcessor.estimates,
-                optParams = cfg.optParams,
+                optParams = cfg.optConfig.params,
                 metrics = cfg.calculatedMetrics)
         }
 
@@ -97,10 +97,10 @@ trait OptimizerComponent{
             while (variator.hasNext()) {
                 var opts = variator.next
                 val model: Model = cfg.newModelInstance()
-                val stubs: Seq[MarketStub] = cfg.tickerConfigs.map(marketStubFactory)
-                env.bindModel(model,stubs,cfg.customParams.toMap ++ opts.map(t => (t._1, t._2.toString)))
+                val stubs: Seq[MarketStub] = cfg.instruments.map(marketStubFactory)
+                env.bindModel(model,stubs,cfg.modelParams.toMap ++ opts.map(t => (t._1, t._2.toString)))
 
-                if (env.models.length >= cfg.optBatchSize) {
+                if (env.models.length >= cfg.optConfig.batchSize) {
                     return env
                 }
             }

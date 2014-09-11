@@ -6,7 +6,7 @@ import org.junit.{Assert, Test}
 import scala.collection.mutable
 
 /**
- * Created by ivan on 7/29/14.
+
  */
 class VariatorTest {
 

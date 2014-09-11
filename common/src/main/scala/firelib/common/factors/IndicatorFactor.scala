@@ -4,7 +4,7 @@ import firelib.common.misc.utils
 import firelib.indicators.Indicator
 
 /**
- * Created by ivan on 8/15/14.
+
  */
 class IndicatorFactor(indicator: Indicator[Double], val name: String, decimalPlaces: Int = 10) extends Factor {
 
