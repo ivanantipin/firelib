@@ -14,7 +14,7 @@ import scala.collection.immutable.IndexedSeq
 /**
  * main base class for all strategies
  */
-abstract class BasketModel extends Model {
+abstract class BasketModel extends Model with WithTradeUtils{
 
     /**
      * variable holds model properties
