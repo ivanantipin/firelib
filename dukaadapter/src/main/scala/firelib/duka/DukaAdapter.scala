@@ -37,6 +37,7 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
 
     var instruments: Array[Instrument] =_
 
+    @volatile
     var lightReconnects = 3
 
     private var engine: IEngine = null
@@ -54,6 +55,7 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
             executor.execute(() => tradeGateCallbacks.foreach(_.onOrderStatus(order, OrderStatus.Rejected)))
         }
         cnt+=1
+        //FIXME hack
         order.id = "LBL" + cnt
         val task: Future[IOrder] = context.executeTask(new Callable[IOrder] {
             override def call(): IOrder = {
@@ -111,6 +113,7 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     override def onStart(p1: Long) = {}
 
     override def onConnect() = {
+        log.info(s"setting subscribed instruments ${instruments.toList}")
         client.setSubscribedInstruments(new util.HashSet[Instrument](instruments.toList) )
         client.startStrategy(this)
         log.info("Connected")
@@ -154,6 +157,9 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
 
 
     def onTick(instrument: Instrument, iTick: ITick) = {
+        if(log.isDebugEnabled){
+            log.debug(s"tick received $iTick")
+        }
         executor.execute(()=>{
             subs.find(_.TickerId == instrument.name()) match {
                 case Some(s) =>{
@@ -176,6 +182,8 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     }
 
     def onMessage(message: IMessage) {
+
+        log.info(s"message received $message")
 
         message.getType match {
             case Type.ORDER_SUBMIT_REJECTED => fire(message.getOrder.getId, OrderStatus.Rejected)
@@ -210,7 +218,8 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
 
     }
 
-    def onAccount(iAccount: IAccount) {
+    def onAccount(iAccount: IAccount): Unit = {
+        log.info(s"account received $iAccount")
     }
 
     def onStop {
