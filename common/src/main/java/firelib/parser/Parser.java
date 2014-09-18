@@ -61,7 +61,7 @@ public class Parser<T extends Timed> implements SimpleReader<T> {
         MappedByteBuffer mem = null;
         try {
             long len = Math.min(fileChannel.size() - pos, capacity);
-            if (len == 0) {
+            if (len <= 0) {
                 return len;
             }
             mem = fileChannel.map(FileChannel.MapMode.READ_ONLY, pos, len);
@@ -109,6 +109,7 @@ public class Parser<T extends Timed> implements SimpleReader<T> {
 
     @Override
     public boolean seek(Instant time) {
+        roughSeekApprox(time);
         while (read()) {
             if (time.compareTo(current().DtGmt()) <= 0) {
                 return true;
@@ -116,6 +117,28 @@ public class Parser<T extends Timed> implements SimpleReader<T> {
         }
         return false;
     }
+
+
+    private void roughSeekApprox(Instant time) {
+        long ppos = 0;
+        int inc = 10000000;
+        charBuffer.clear();
+        while (true){
+            buffer(ppos,500);
+            if (!align(charBuffer)) {
+                throw new RuntimeException("cant find time");
+            }
+            T first = readFromBuffer();
+            if (time.compareTo(first.DtGmt()) <= 0) {
+                endReadPosition = Math.max(0,ppos - inc);
+                charBuffer.limit(0);
+                return;
+
+            }
+            ppos += inc;
+        }
+    }
+
 
     @Override
     public T current() {
