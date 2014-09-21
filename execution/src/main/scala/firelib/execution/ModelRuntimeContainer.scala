@@ -35,14 +35,15 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
     var backTestCtx : SimpleRunCtx=_
 
     if (modelRuntimeConfig.runBacktest)
-        backTestCtx = new SimpleRunCtx(modelConfig.dataServerRoot) {
+        backTestCtx = new SimpleRunCtx(modelConfig) {
             override val marketStubFactory = marketStubSwitcherFactory
         }
     else
-        backTestCtx = new SimpleRunCtx(modelConfig.dataServerRoot) {
+        backTestCtx = new SimpleRunCtx(modelConfig) {
             override val timeBoundsCalculator = dummyTimeBoundsCalculator
             override val readersFactory = dummyReaderFactory
             override val marketStubFactory = marketStubSwitcherFactory
+            override val tickToPriceConverterFactory : (InstrumentConfig=>(Tick=>Double)) = (instr=>(t=>t.last))
         }
 
     val env = backTestCtx.backtesterSimple.run(modelConfig)

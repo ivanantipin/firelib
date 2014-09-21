@@ -14,7 +14,7 @@ public class ParserHandlersProducer {
 
     private CommonIniSettings commonIniSettings;
 
-    boolean isOhlc(CommonIniSettings commonIniSettings){
+    public boolean isOhlc(){
         return new ArrayList<String>(Arrays.asList(commonIniSettings.COLUMNFORMAT)).contains("O");
     }
 
@@ -89,7 +89,7 @@ public class ParserHandlersProducer {
             switch (token)
             {
                 case "D":
-                    if(isOhlc(commonIniSettings)){
+                    if(isOhlc()){
                         microcode.add(new DateTimeHandler<Ohlc>((oh,dt)->oh.setDtGmtEnd(dt), zoneId, dateformat));
                     }else{
                         microcode.add(new DateTimeHandler<Tick>((oh,dt)->oh.setDtGmt(dt), zoneId, dateformat));
@@ -127,7 +127,7 @@ public class ParserHandlersProducer {
                     break;
 
                 case "V":
-                    if(isOhlc(commonIniSettings)){
+                    if(isOhlc()){
                         microcode.add(new StdHandler<Ohlc,Integer>((oh,v)->oh.setVolume(v), (chs)->TypeFormat.parseInt(chs)));
                     }else{
                         microcode.add(new StdHandler<Tick,Integer>((oh,v)->oh.setVol(v), (chs)->(int)TypeFormat.parseDouble(chs)));

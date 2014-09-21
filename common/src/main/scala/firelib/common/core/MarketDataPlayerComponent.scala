@@ -13,7 +13,7 @@ import scala.collection.mutable.ArrayBuffer
  */
 trait MarketDataPlayerComponent{
 
-    this : BacktestEnvironmentComponent with IntervalServiceComponent with MarketDataDistributorComponent =>
+    this : BacktestEnvironmentComponent with IntervalServiceComponent with MarketDataDistributorComponent with ModelConfigContext =>
 
     val marketDataPlayer = new MarketDataPlayer
 
@@ -38,6 +38,8 @@ trait MarketDataPlayerComponent{
             return true
         }
 
+
+
         def getStepListeners(): Seq[StepListener] = stepListeners
 
         def close() = tickerPlayers.foreach(_.close())
@@ -47,7 +49,7 @@ trait MarketDataPlayerComponent{
             addListener(marketDataDistributor)
             var dtGmtcur = bounds._1
             while (dtGmtcur.isBefore(bounds._2) && step(dtGmtcur)) {
-                dtGmtcur = dtGmtcur.plusMillis(stepMs)
+                dtGmtcur = dtGmtcur.plusMillis(modelConfig.stepInterval.durationMs)
             }
         }
 

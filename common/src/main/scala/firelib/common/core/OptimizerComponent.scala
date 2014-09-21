@@ -68,7 +68,7 @@ trait OptimizerComponent{
             assert(reportProcessor.bestModels.length > 0, "no models get produced!!")
 
             val bm = reportProcessor.bestModels.last
-            val env = envFactory.apply(cfg)
+            val env = envFactory.apply()
             val model = cfg.newModelInstance()
             val stubs: ArrayBuffer[MarketStub] = cfg.instruments.map(marketStubFactory)
             env.bindModel(model,stubs,bm.properties)
@@ -93,7 +93,7 @@ trait OptimizerComponent{
 
 
         private def nextModelVariationsChunk(cfg: ModelConfig, variator: ParamsVariator): BacktestEnvironment = {
-            val env: BacktestEnvironment = envFactory.apply(cfg)
+            val env: BacktestEnvironment = envFactory.apply()
             while (variator.hasNext()) {
                 var opts = variator.next
                 val model: Model = cfg.newModelInstance()

@@ -20,7 +20,7 @@ trait SimpleRunComponent{
 
         def run(cfg: ModelConfig) : BacktestEnvironment = {
 
-            val env : BacktestEnvironment = envFactory.apply(cfg)
+            val env : BacktestEnvironment = envFactory()
 
             val model = cfg.newModelInstance()
 

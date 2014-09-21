@@ -19,8 +19,6 @@ trait BacktestEnvironmentComponent{
 
     val bounds : (Instant,Instant)
 
-    val stepMs : Int
-
     val tickerPlayers: Seq[ReaderToListenerAdapter]
 
     val env = new BacktestEnvironmentImpl

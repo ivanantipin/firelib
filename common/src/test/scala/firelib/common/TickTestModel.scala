@@ -4,8 +4,8 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util
 
-import firelib.common.MarketDataListener
 import firelib.common.interval.Interval
+import firelib.common.misc.ohlcUtils
 import firelib.common.model.BasketModel
 import firelib.common.timeseries.TimeSeries
 import firelib.domain.{Ohlc, Tick}
@@ -39,7 +39,7 @@ class TickTestModel extends BasketModel with MarketDataListener {
     val bars = new ArrayBuffer[Ohlc]()
 
     private def On5Min(hh: TimeSeries[Ohlc]): Unit = {
-        bars += new Ohlc(hh(0))
+        bars += ohlcUtils.copy(hh(0))
         //System.out.println(hh(0))
     }
 

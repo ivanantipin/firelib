@@ -5,6 +5,7 @@ import java.time.temporal.ChronoUnit
 import java.util
 
 import firelib.common.interval.Interval
+import firelib.common.misc.ohlcUtils
 import firelib.common.model.BasketModel
 import firelib.common.timeseries.TimeSeries
 import firelib.domain.Ohlc
@@ -48,14 +49,14 @@ class OhlcTestModel extends BasketModel {
         if (dtGmt != hh(0).getDtGmtEnd) {
             throw new Exception("time is not equal");
         }
-        bars += new Ohlc(hh(0));
+        bars +=  ohlcUtils.copy(hh(0))
 
         if (bars.size > 1) {
             if ((hh(0).getDtGmtEnd.toEpochMilli - hh(-1).getDtGmtEnd.toEpochMilli) != 5*60*1000) {
                 throw new Exception("not 5 min diff " + hh(0).getDtGmtEnd + " -- " + hh(-1).getDtGmtEnd);
             }
         }
-        AddOhlc(new Ohlc(hh(0)));
+        AddOhlc(ohlcUtils.copy(hh(0)));
     }
 
     def AddOhlc(pQuote: Ohlc) = {

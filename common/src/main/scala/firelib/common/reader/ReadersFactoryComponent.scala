@@ -6,6 +6,7 @@ import java.util.function.Supplier
 
 import firelib.common.MarketDataType
 import firelib.common.config.InstrumentConfig
+import firelib.common.core.ModelConfigContext
 import firelib.domain.{Ohlc, Tick, Timed}
 import firelib.parser.{CommonIniSettings, IHandler, Parser, ParserHandlersProducer}
 
@@ -14,7 +15,7 @@ import firelib.parser.{CommonIniSettings, IHandler, Parser, ParserHandlersProduc
  */
 trait ReadersFactoryComponent {
 
-    val dsRoot : String
+    this : ModelConfigContext =>
 
     val readersFactory : ReadersFactory = new ReaderFactoryImpl()
 
@@ -31,9 +32,10 @@ trait ReadersFactoryComponent {
 
 
         private def createReader[T <: Timed](cfg : InstrumentConfig, factory : Supplier[T]) : SimpleReader[T] ={
-            val path: Path = Paths.get(dsRoot, cfg.path)
+            val path: Path = Paths.get(modelConfig.dataServerRoot, cfg.path)
             val iniFile: String = path.getParent.resolve("common.ini").toAbsolutePath.toString
-            val generator: ParserHandlersProducer = new ParserHandlersProducer(new CommonIniSettings().loadFromFile(iniFile))
+            val parseSettings: CommonIniSettings = new CommonIniSettings().loadFromFile(iniFile)
+            val generator: ParserHandlersProducer = new ParserHandlersProducer(parseSettings)
             return new Parser[T](path.toAbsolutePath.toString, generator.handlers.asInstanceOf[Array[IHandler[T]]], factory)
         }
 

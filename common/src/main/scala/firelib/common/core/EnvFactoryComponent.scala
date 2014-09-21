@@ -1,35 +1,43 @@
 package firelib.common.core
 
-import firelib.common.{MarketDataListener, MarketDataType}
 import firelib.common.config.{InstrumentConfig, ModelConfig}
 import firelib.common.interval.IntervalServiceComponent
 import firelib.common.mddistributor.MarketDataDistributorComponent
+import firelib.common.misc.TickToPriceConverterComponent
 import firelib.common.reader.{ReaderToListenerAdapter, ReaderToListenerAdapterImpl, ReadersFactoryComponent, SimpleReader}
 import firelib.common.timeboundscalc.TimeBoundsCalculatorComponent
+import firelib.common.{MarketDataListener, MarketDataType}
 import firelib.domain.{Ohlc, Tick, Timed}
 
 /**
  * component of BacktestEnvironment factory for dependency injection
  */
+
+trait ModelConfigContext{
+    val modelConfig : ModelConfig
+}
+
 trait EnvFactoryComponent {
 
-    this : ReadersFactoryComponent with TimeBoundsCalculatorComponent =>
+    this : ReadersFactoryComponent with TimeBoundsCalculatorComponent with ModelConfigContext=>
 
-    val envFactory : (ModelConfig=>BacktestEnvironment) = new EnvFactory
+    val envFactory : (()=>BacktestEnvironment) = new EnvFactory
 
-    private class EnvFactory extends (ModelConfig=>BacktestEnvironment) {
+    private class EnvFactory extends (()=>BacktestEnvironment) {
 
-
-        override def apply(cfg: ModelConfig): BacktestEnvironment = {
-            val bound = timeBoundsCalculator.apply(cfg)
-            val readers: Seq[SimpleReader[Timed]] = readersFactory.apply(cfg.instruments, bound._1)
+        override def apply(): BacktestEnvironment = {
+            val config = modelConfig
+            val bound = timeBoundsCalculator.apply(config)
+            val readers: Seq[SimpleReader[Timed]] = readersFactory.apply(modelConfig.instruments, bound._1)
             class BacktestEnvironmentCtx extends BacktestEnvironmentComponent
             with MarketDataPlayerComponent
             with MarketDataDistributorComponent
+            with ModelConfigContext
+            with TickToPriceConverterComponent
             with IntervalServiceComponent{
+                override val modelConfig = config
                 override val bounds = bound
-                override val tickerPlayers = wrapReadersWithAdapters(readers, cfg.instruments)
-                override val stepMs = cfg.stepInterval.durationMs
+                override val tickerPlayers = wrapReadersWithAdapters(readers, config.instruments)
             }
             return new BacktestEnvironmentCtx().env
 
