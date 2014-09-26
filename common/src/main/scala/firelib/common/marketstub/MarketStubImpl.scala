@@ -2,8 +2,7 @@ package firelib.common.marketstub
 
 import java.time.Instant
 
-import firelib.common.TradeGateCallback
-import firelib.common._
+import firelib.common.{TradeGateCallback, _}
 
 import scala.collection.mutable
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
@@ -68,35 +67,27 @@ class MarketStubImpl(val security: String, val maxOrderCount: Int = 20) extends 
     def submitOrders(orders: Seq[Order]) : Unit = {
 
         assert(this.orders_.size + orders.length <= maxOrderCount, "max order count exceeded")
+        assert(!orders.exists(o=>orders_.contains(o.id)), "duplicate order id - order id must be uniq")
 
         orders.foreach(order => {
-            order.id = nextOrderId()
             order.placementTime = dtGmt
-            order.security = security
-            if (order.minutesToHold != -1) {
-                order.validUntil = dtGmt.plusSeconds(order.minutesToHold*60)
-            }
             this.orders_(order.id) = order
             fireOrderState(order, OrderStatus.New)
         })
         checkOrders()
     }
 
-    private def nextOrderId() : String = {
+    override def nextOrderId : String = {
         orderIdCnt+= 1
         security + orderIdCnt
     }
-
 
     def closePosition(reason: Option[String]): Unit = {
         if (position_ == 0)
             return
 
-        val ord = new Order(OrderType.Market, 0, math.abs(position_), Side.sideForAmt(-position_)) {
-            security = security
-        }
-        val trd = new Trade(math.abs(position_), checkOrderAndGetTradePrice(ord).get, ord.side, ord, dtGmt,
-            security) {
+        val ord = new Order(OrderType.Market, 0, math.abs(position_), Side.sideForAmt(-position_),security, nextOrderId);
+        val trd = new Trade(math.abs(position_), checkOrderAndGetTradePrice(ord).get, ord.side, ord, dtGmt) {
             reason = reason
         }
         onTrade(trd)
@@ -126,11 +117,6 @@ class MarketStubImpl(val security: String, val maxOrderCount: Int = 20) extends 
             }
             case None => {
                 assert(ord.orderType != OrderType.Market, "market order should cause position change!!")
-                if (ord.validUntil != null && ord.validUntil.isBefore(dtGmt)) {
-                    fireOrderState(ord, OrderStatus.Cancelled)
-                    return OrderStatus.Cancelled
-                }
-
                 //FIXME
                 return OrderStatus.Accepted
             }
@@ -145,7 +131,7 @@ class MarketStubImpl(val security: String, val maxOrderCount: Int = 20) extends 
         checkOrderAndGetTradePrice(ord) match {
             case None => None
             case Some(price)=>{
-                val trd = new Trade(ord.qty, price, ord.side, ord, dtGmt, security)
+                val trd = new Trade(ord.qty, price, ord.side, ord, dtGmt)
                 onTrade(trd)
                 Some(trd);
             }

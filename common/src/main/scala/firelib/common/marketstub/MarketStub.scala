@@ -41,4 +41,6 @@ trait MarketStub {
     def moveCallbacksTo(marketStub: MarketStub)
 
     def updateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant)
+
+    def nextOrderId : String
 }

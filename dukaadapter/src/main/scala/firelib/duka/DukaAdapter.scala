@@ -2,13 +2,13 @@ package firelib.duka
 
 import java.time.Instant
 import java.util
-import java.util.concurrent.{Callable, Future}
+import java.util.concurrent.{Callable, ConcurrentHashMap, Future}
 
 import com.dukascopy.api.IMessage.Type
 import com.dukascopy.api.system.{ClientFactory, IClient, ISystemListener}
-import com.dukascopy.api.{IAccount, IBar, IConsole, IContext, IEngine, IHistory, IMessage, IOrder, IStrategy, ITick, Instrument, Period}
+import com.dukascopy.api.{IAccount, IBar, IConsole, IContext, IEngine, IFillOrder, IHistory, IMessage, IOrder, IStrategy, ITick, Instrument, Period}
 import firelib.common.threading.ThreadExecutor
-import firelib.common.{Order, OrderStatus, Side, TradeGateCallback}
+import firelib.common.{Order, OrderStatus, Side, Trade, TradeGateCallback}
 import firelib.domain.{Ohlc, Tick}
 import firelib.execution.{MarketDataProvider, TradeGate}
 import org.slf4j.{Logger, LoggerFactory}
@@ -29,7 +29,8 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
 
     var password : String =_
 
-    val orders = new ArrayBuffer[(IOrder, Order)]()
+
+    val orders = new ConcurrentHashMap[String, (IOrder, Order, Seq[IFillOrder])]()
 
     val tradeGateCallbacks = new ArrayBuffer[TradeGateCallback]()
 
@@ -48,27 +49,26 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     private val subs = new ArrayBuffer[Subscriptions]()
 
 
-    var cnt = System.currentTimeMillis();
-
     override def sendOrder(order: Order) = {
         if(!client.isConnected){
             executor.execute(() => tradeGateCallbacks.foreach(_.onOrderStatus(order, OrderStatus.Rejected)))
         }
-        cnt+=1
-        //FIXME hack
-        order.id = "LBL" + cnt
-        val task: Future[IOrder] = context.executeTask(new Callable[IOrder] {
-            override def call(): IOrder = {
+        val task: Future[Option[AnyRef]] = context.executeTask(new Callable[Option[AnyRef]] {
+            override def call(): Option[AnyRef] = {
                 val cmd = if (order.side == Side.Sell) IEngine.OrderCommand.SELL else IEngine.OrderCommand.BUY
-                engine.submitOrder(order.id, Instrument.valueOf(order.security), cmd, order.qty.toDouble, 0, 20)
+                val dorder: IOrder = engine.submitOrder(order.id, Instrument.valueOf(order.security), cmd, order.qty.toDouble, 0, 20)
+                orders(order.id) = (dorder, order, List[IFillOrder]())
+                return None
             }
         })
-        orders += ((task.get,order))
-
     }
 
     override def registerCallback(tgc: TradeGateCallback) = {
         tradeGateCallbacks += tgc
+    }
+
+    def toFireSide(cmd : IEngine.OrderCommand): Side ={
+        if(cmd == IEngine.OrderCommand.SELL) Side.Sell else Side.Buy
     }
 
 
@@ -83,7 +83,7 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     }
 
     override def cancelOrder(orderId: String) = {
-        orders.find(_._2.id == orderId) match {
+        Option(orders (orderId)) match {
             case Some(ord)  =>{
                 cancelOrderInDuka(ord._1)
             }
@@ -181,6 +181,48 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     def onBar(instrument: Instrument, period: Period, iBar: IBar, iBar2: IBar) {
     }
 
+    def diff (prevFills : Seq[IFillOrder],incomingFills : Seq[IFillOrder]): Seq[IFillOrder] ={
+        val prevSorted: Seq[IFillOrder] = prevFills.sortBy(o=>o.getTime)
+        val inSorted: Seq[IFillOrder] = incomingFills.sortBy(o=>o.getTime)
+        inSorted.slice(prevSorted.length,inSorted.length)
+    }
+
+    def adjustAmt(amt : Double) : Int = (amt * 1000000).toInt
+
+    def fireTrades(message: IMessage): Unit = {
+
+        if(message.getReasons.contains(IMessage.Reason.ORDER_FULLY_FILLED) || message.getReasons.contains(IMessage.Reason.ORDER_CHANGED_AMOUNT)){
+
+            val order: IOrder = message.getOrder
+
+            orders.values().find(t=>t._1.getId == order.getId) match {
+
+                case Some(tuple) =>{
+                    val df: Seq[IFillOrder] = diff(tuple._3,order.getFillHistory)
+                    executor.execute(()=>{
+                        for(f <- df){
+                            val trade: Trade = new Trade(adjustAmt(f.getAmount), f.getPrice,
+                                toFireSide(order.getOrderCommand), tuple._2, Instant.now())
+                            tradeGateCallbacks.foreach(_.onTrade(trade))
+                        }
+
+                        orders.replace(tuple._2.id,tuple.copy(_3 = (tuple._3 ++ df)))
+
+                    });
+
+
+
+                }
+                case None =>{
+                    log.error(s"nothng found for message $message")
+
+                }
+
+            }
+
+        }
+    }
+
     def onMessage(message: IMessage) {
 
         log.info(s"message received $message")
@@ -188,11 +230,10 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
         message.getType match {
             case Type.ORDER_SUBMIT_REJECTED => fire(message.getOrder.getId, OrderStatus.Rejected)
             case Type.ORDER_SUBMIT_OK => fire(message.getOrder.getId, OrderStatus.Accepted)
-            case Type.ORDER_FILL_REJECTED => fire(message.getOrder.getId, OrderStatus.Rejected)
+            case Type.ORDER_FILL_REJECTED => fire(message.getOrder.getId, OrderStatus.Cancelled)
             case Type.ORDER_CLOSE_REJECTED => fire(message.getOrder.getId, OrderStatus.CancelFailed)
             case Type.ORDER_CLOSE_OK => fire(message.getOrder.getId, OrderStatus.Cancelled)
-            case Type.ORDER_FILL_OK => fire(message.getOrder.getId, OrderStatus.Done)
-            case Type.ORDER_CHANGED_OK => fire(message.getOrder.getId, OrderStatus.Accepted)
+            case Type.ORDER_FILL_OK | Type.ORDER_CHANGED_OK => fireTrades(message)
             case Type.MAIL =>
             case Type.NEWS =>
             case Type.CALENDAR =>
@@ -206,12 +247,12 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
         }
     }
 
-    def fire(orderId : String, status : OrderStatus) ={
+    def fire(dukaId : String, status : OrderStatus) ={
         executor.execute(()=>{
             tradeGateCallbacks.foreach(tgc=>{
-                orders.find(_._1.getId == orderId) match {
+                orders.values().find(_._1.getId == dukaId) match {
                     case Some(t) => tgc.onOrderStatus(t._2,status)
-                    case None => log.error(s"order not found for id ${orderId}")
+                    case None => log.error(s"order not found for id ${dukaId}")
                 }
             })
         })

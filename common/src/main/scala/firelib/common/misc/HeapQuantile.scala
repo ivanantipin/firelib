@@ -3,7 +3,7 @@ package firelib.common.misc
 import scala.collection.mutable
 
 
-class HeapQuantile(val quantile: Double, val length: Int) {
+class  HeapQuantile(val quantile: Double, val length: Int) {
 
     class Node(val value: Double, var isLeft: Boolean) {}
 
@@ -54,18 +54,6 @@ class HeapQuantile(val quantile: Double, val length: Int) {
             left += n
         }
         balance()
-
-        if (false) {
-            if (left.size > 2) {
-                assert(left.firstKey.value <= left.lastKey.value)
-            }
-            if (right.size > 2) {
-                assert(right.firstKey.value <= right.lastKey.value)
-            }
-            if (left.size > 2 && right.size > 2) {
-                assert(left.lastKey.value <= right.firstKey.value)
-            }
-        }
     }
 
     private def balance() {

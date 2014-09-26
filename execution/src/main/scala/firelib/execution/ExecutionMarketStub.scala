@@ -2,8 +2,8 @@ package firelib.execution
 
 import java.time.Instant
 
-import firelib.common.{TradeGateCallback, _}
 import firelib.common.marketstub.MarketStub
+import firelib.common.{TradeGateCallback, _}
 import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.ArrayBuffer
@@ -73,21 +73,18 @@ class ExecutionMarketStub(val tradeGate: TradeGate, val security_ : String, val 
 
 
     def submitOrders(orders: Seq[Order]) = {
+        if(this.orders_.length > maxOrderCount){
+            fireOrderState(orders, OrderStatus.Rejected)
+        }else{
+            orders.foreach(order => {
+                order.placementTime = dtGmt
+                fireOrderState(List(order), OrderStatus.New)
+                this.orders_ += order
+                log.info(s"submitting order $order")
+                tradeGate.sendOrder(order)
+            })
 
-        assert(this.orders_.length <= maxOrderCount, "max order count exceeded")
-
-        orders.foreach(order => {
-            order.id = security_ + "" + (orderIdCnt += 1)
-            order.placementTime = dtGmt
-            order.security = security_
-            fireOrderState(List(order), OrderStatus.New)
-            if (order.minutesToHold != -1) {
-                order.validUntil = dtGmt.plusSeconds(order.minutesToHold * 60)
-            }
-            this.orders_ += order
-            log.info(s"submitting order $order")
-            tradeGate.sendOrder(order)
-        })
+        }
     }
 
     def fireOrderState(list: Traversable[Order], orderStatus: OrderStatus) = {
@@ -99,9 +96,7 @@ class ExecutionMarketStub(val tradeGate: TradeGate, val security_ : String, val 
         if (position_ == 0 || hasPendingState)
             return
 
-        val order: Order = new Order(OrderType.Market, 0, math.abs(position_), Side.sideForAmt(-position_)) {
-            security = security_
-        }
+        val order: Order = new Order(OrderType.Market, 0, math.abs(position_), Side.sideForAmt(-position_), security, nextOrderId)
         submitOrders(List(order))
     }
 
@@ -138,4 +133,11 @@ class ExecutionMarketStub(val tradeGate: TradeGate, val security_ : String, val 
 
     override def position: Int = position_
     override val security: String = security_
+
+    var idCounter = System.currentTimeMillis()
+
+    override def nextOrderId: String = {
+        idCounter+= 1
+        return s"${security}_${idCounter}"
+    }
 }

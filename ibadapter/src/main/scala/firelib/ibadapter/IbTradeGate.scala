@@ -36,7 +36,7 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
     private val orderIdQueue = new LinkedBlockingQueue[Integer]()
 
 
-    case class OrderEntry(ClientOrder: Order, IbOrder: com.ib.client.Order, IbId: Int)
+    case class OrderEntry(fireLibOrder: Order, ibOrder: com.ib.client.Order, ibId: Int)
 
     private def nextOrderId: Option[Int] = {
         log.info("requesting order for client id " + clientId)
@@ -83,9 +83,9 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
 
     def cancelOrder(orderId: String): Unit = {
         log.info("cancelling order " + orderId)
-        orders.find(_.ClientOrder.id == orderId) match {
+        orders.find(_.fireLibOrder.id == orderId) match {
             case Some(e) => {
-                clientSocket.cancelOrder(e.IbId)
+                clientSocket.cancelOrder(e.ibId)
                 log.info("order cancel placed to socket  " + e)
             }
             case None => log.error("failed to find order for id " + orderId)
@@ -141,10 +141,10 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
 
             super.execDetails(reqId, contract, execution)
 
-            orders.find(_.IbId == execution.m_orderId) match {
+            orders.find(_.ibId == execution.m_orderId) match {
                 case None => log.error("execution, no order found for ib order id " + execution.m_orderId)
-                case Some(entr) => tradeGateCallbacks.foreach(_.onTrade(new Trade(execution.m_shares, execution.m_price, entr.ClientOrder.side, entr.ClientOrder,
-                    Instant.now(), entr.ClientOrder.security)))
+                case Some(entr) => tradeGateCallbacks.foreach(_.onTrade(new Trade(execution.m_shares, execution.m_price, entr.fireLibOrder.side, entr.fireLibOrder,
+                    Instant.now())))
 
             }
         })
@@ -160,7 +160,7 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
               "WhyHeld: " + whyHeld + "\n")
 
 
-            val entrOpt = orders.find(_.IbId == orderId)
+            val entrOpt = orders.find(_.ibId == orderId)
 
             if (entrOpt.isEmpty) {
                 log.error("no order found for ib id " + orderId)
@@ -184,13 +184,13 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
 
                 case ("PendingSubmit" | "PendingCancel") =>
 
-                case "Inactive" => tradeGateCallbacks.foreach(_.onOrderStatus(entr.ClientOrder, OrderStatus.Rejected))
+                case "Inactive" => tradeGateCallbacks.foreach(_.onOrderStatus(entr.fireLibOrder, OrderStatus.Rejected))
 
-                case ("PreSubmitted" | "Submitted") => tradeGateCallbacks.foreach(_.onOrderStatus(entr.ClientOrder, OrderStatus.Accepted))
+                case ("PreSubmitted" | "Submitted") => tradeGateCallbacks.foreach(_.onOrderStatus(entr.fireLibOrder, OrderStatus.Accepted))
 
-                case ("Cancelled" | "ApiCancelled" | "ApiCanceled") => tradeGateCallbacks.foreach(_.onOrderStatus(entr.ClientOrder, OrderStatus.Cancelled))
+                case ("Cancelled" | "ApiCancelled" | "ApiCanceled") => tradeGateCallbacks.foreach(_.onOrderStatus(entr.fireLibOrder, OrderStatus.Cancelled))
 
-                case "Filled" => tradeGateCallbacks.foreach(_.onOrderStatus(entr.ClientOrder, OrderStatus.Done))
+                case "Filled" => tradeGateCallbacks.foreach(_.onOrderStatus(entr.fireLibOrder, OrderStatus.Done))
 
             }
         })
