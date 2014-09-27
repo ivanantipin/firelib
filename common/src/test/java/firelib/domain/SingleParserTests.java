@@ -1,5 +1,6 @@
 package firelib.domain;
 
+import firelib.common.misc.dateUtils;
 import firelib.parser.CommonIniSettings;
 import firelib.parser.Parser;
 import firelib.parser.ParserHandlersProducer;
@@ -10,7 +11,6 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-
 
 
 public class SingleParserTests {
@@ -153,7 +153,6 @@ public class SingleParserTests {
     @Test
     public void testLongFileTicks() {
         ParserHandlersProducer parserHandlersProducer = new ParserHandlersProducer(new CommonIniSettings().loadFromFile(getfile("LongFile/common.ini")));
-
         Parser<Tick> parser = new Parser<>(getfile("LongFile/XG_#.csv"), parserHandlersProducer.handlers, () -> new Tick());
         int cnt = 0;
         while (parser.read()){
@@ -161,6 +160,18 @@ public class SingleParserTests {
         }
         Assert.assertEquals(345600,cnt);
     }
+
+    @Test
+    public void testSearch() {
+        ParserHandlersProducer parserHandlersProducer = new ParserHandlersProducer(new CommonIniSettings().loadFromFile(getfile("LongFile/common.ini")));
+        Parser<Tick> parser = new Parser<>(getfile("LongFile/XG_#.csv"), parserHandlersProducer.handlers, () -> new Tick());
+
+        Instant instant = dateUtils.parseAtZone("11.03.2013 23:59:59", dateUtils.nyZoneId());
+        parser.seek(instant);
+        Assert.assertEquals(instant,parser.current().dtGmt());
+
+    }
+
 
     @Test
     public void testDukasFileTicks() {

@@ -14,8 +14,14 @@ object dateUtils {
     val londonZoneId = ZoneId.of("Europe/London")
     val moscowZoneId = ZoneId.of("Europe/Moscow")
 
+
+
     implicit class parseStandard(str : String ) {
         def parseStandard : Instant  = LocalDateTime.parse(str,dateStringFormat).toInstant(ZoneOffset.UTC)
+    }
+
+    def parseAtZone(str : String, zone : ZoneId) : Instant = {
+        LocalDateTime.parse(str,dateStringFormat).atZone(zone).toInstant
     }
 
 

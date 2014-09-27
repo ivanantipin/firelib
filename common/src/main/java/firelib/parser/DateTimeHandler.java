@@ -27,17 +27,16 @@ class DateTimeHandler<T> extends BaseHandler<T> {
         }
     }
 
-    public boolean handle(CharBuffer buffer, T md) {
+    public int handle(CharBuffer buffer, T md) {
         int i = buffer.position();
         i = skipper.skip(buffer, i);
         if (i >= buffer.limit()) {
-            return false;
+            return -1;
         }
 
         Instant instant = LocalDateTime.parse(buffer.subSequence(0, i - buffer.position()), formatter).atZone(zoneId).toInstant();
         consumer.apply(md,instant);
-        buffer.position(i);
-        return true;
+        return i;
     }
 
     private int skipTwo(CharBuffer buffer, int i) {

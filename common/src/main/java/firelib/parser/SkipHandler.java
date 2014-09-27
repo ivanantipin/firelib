@@ -7,14 +7,13 @@ import java.nio.CharBuffer;
  */
 public class SkipHandler extends BaseHandler{
     @Override
-    public boolean handle(CharBuffer buffer, Object md) {
+    public int handle(CharBuffer buffer, Object md) {
         int i = buffer.position();
         i = skipTillEolOrSep(buffer, i);
         if (i == buffer.limit()) {
-            return false;
+            return -1;
         }
-        buffer.position(i);
-        return true;
+        return i;
     }
 }
 

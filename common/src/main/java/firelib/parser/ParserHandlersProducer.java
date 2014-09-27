@@ -159,7 +159,6 @@ public class ParserHandlersProducer {
                 withIncs.add(new IncHandler<>());
             }
         }
-        withIncs.add(new EndHandler());
         return withIncs.toArray(new IHandler[0]);
     }
 

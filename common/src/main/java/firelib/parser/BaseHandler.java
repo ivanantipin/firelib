@@ -27,7 +27,7 @@ abstract class BaseHandler<T> implements IHandler<T> {
     }
 
 
-    protected int skippTillEol(CharBuffer buffer, int i) {
+    public static int skipTillEol(CharBuffer buffer, int i) {
         while (i < buffer.limit() && !eol(buffer.get(i))) {
             i++;
         }

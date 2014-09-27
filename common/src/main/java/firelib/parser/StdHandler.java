@@ -14,16 +14,15 @@ class StdHandler<T,V> extends BaseHandler<T> {
     }
 
     @Override
-    public boolean handle(CharBuffer buffer, T md) {
+    public int handle(CharBuffer buffer, T md) {
         int i = buffer.position();
         i = skipTillEolOrSep(buffer, i);
         if (i == buffer.limit()) {
-            return false;
+            return -1;
         }
         CharBuffer seq = buffer.subSequence(0, i - buffer.position());
         consumer.apply(md, parser.apply(seq));
-        buffer.position(i);
-        return true;
+        return i;
     }
 
 }

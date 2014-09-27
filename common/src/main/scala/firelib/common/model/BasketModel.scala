@@ -26,7 +26,7 @@ abstract class BasketModel extends Model with WithTradeUtils{
     /**
      * this variable holds current time
      */
-    protected var dtGmt: Instant  = _
+    protected var dtGmt: Instant  = Instant.MIN
 
 
     private var marketStubs: Array[MarketStub] =_

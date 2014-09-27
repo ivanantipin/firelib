@@ -2,6 +2,7 @@ package firelib.parser;
 
 import firelib.common.reader.SimpleReader;
 import firelib.domain.Timed;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +35,11 @@ public class Parser<T extends Timed> implements SimpleReader<T> {
     private final CharsetDecoder charsetDecoder;
     private String fileName;
 
+    int maxFailedRows = 5;
+    int failedRows = 0;
+
+    MutableInt poss = new MutableInt(0);
+
 
     public Parser(String fileName, IHandler<T>[] handlers, Supplier<T> factory) {
         this(fileName, handlers, factory, 20000000);
@@ -51,22 +57,23 @@ public class Parser<T extends Timed> implements SimpleReader<T> {
             charSet = Charset.forName("US-ASCII");
             charsetDecoder = charSet.newDecoder();
             initStartEndTimes();
+            endReadPosition = buffer(0,capacity,charBuffer);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
 
-    private long buffer(long pos, int capacity) {
+    private long buffer(long pos, int capacity, CharBuffer buffer) {
         MappedByteBuffer mem = null;
         try {
             long len = Math.min(fileChannel.size() - pos, capacity);
-            if (len <= 0) {
-                return len;
+            len = Math.max(0,len);
+            if(len > 0){
+                mem = fileChannel.map(FileChannel.MapMode.READ_ONLY, pos, len);
+                charsetDecoder.decode(mem, buffer, false);
             }
-            mem = fileChannel.map(FileChannel.MapMode.READ_ONLY, pos, len);
-            charsetDecoder.decode(mem, charBuffer, false);
-            charBuffer.flip();
+            buffer.flip();
             return len;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -75,43 +82,56 @@ public class Parser<T extends Timed> implements SimpleReader<T> {
 
 
     private void initStartEndTimes() throws IOException {
-        buffer(0,1000);
-        T first = readFromBuffer();
-        startDt = first.DtGmt();
-        charBuffer.clear();
-        long lastPos = fileChannel.size() - 400;
-        if (lastPos < 0) {
-            buffer(0,1000);
-        } else {
-            buffer(lastPos,1000);
-            if (!align(charBuffer)) {
-                throw new RuntimeException("cant read end");
-            }
-        }
+        readFirst();
+        readLast();
+    }
 
-        T last = readFromBuffer();
+    private void readLast() throws IOException {
+        CharBuffer buffer = CharBuffer.allocate(2000);
+        long lastPos = fileChannel.size() - 400;
+        long startPos = Math.max(0, lastPos);
+        buffer(startPos,1000,buffer);
+        T last = null;
+
+        if(startPos != 0){
+            readLine(buffer);
+        }
+        last = parseLine(readLine(buffer));
         while (last != null) {
             endDt = last.DtGmt();
-            last = readFromBuffer();
+            last = parseLine(readLine(buffer));
         }
-        charBuffer.limit(0);
+    }
+
+    private CharBuffer readLine(CharBuffer buffer) {
+        int pos = BaseHandler.skipTillEol(buffer, buffer.position());
+        pos = BaseHandler.skippEolOrEmpty(buffer, pos);
+        CharBuffer ret = buffer.subSequence(0, pos - buffer.position());
+        buffer.position(pos);
+        return ret;
+    }
+
+    private void readFirst() {
+        CharBuffer buffer = CharBuffer.allocate(2000);
+        buffer(0,1000,buffer);
+        T first = parseLine(readLine(buffer));
+        startDt = first.DtGmt();
     }
 
 
-    boolean align(CharBuffer charBuffer) {
-        while (charBuffer.position() < charBuffer.limit() && charBuffer.get() != '\n') {
-        }
-        while (charBuffer.position() < charBuffer.limit() && BaseHandler.eolOrEmpty(charBuffer.charAt(0))) {
-            charBuffer.get();
-        }
-        return charBuffer.position() < charBuffer.limit();
-    }
 
     @Override
     public boolean seek(Instant time) {
-        roughSeekApprox(time);
+        long pos = roughSeekApprox(time);
+        charBuffer.clear();
+        endReadPosition = pos + buffer(pos,capacity,charBuffer);
+        if(pos != 0){
+            readLine(charBuffer);
+        }
+
         while (read()) {
-            if (time.compareTo(current().DtGmt()) <= 0) {
+            if (time.compareTo(current().DtGmt()
+            ) <= 0) {
                 return true;
             }
         }
@@ -119,26 +139,23 @@ public class Parser<T extends Timed> implements SimpleReader<T> {
     }
 
 
-    private void roughSeekApprox(Instant time) {
+    private long roughSeekApprox(Instant time) {
         long ppos = 0;
         int inc = 10000000;
-        charBuffer.clear();
         while (true){
-            buffer(ppos,500);
-            if (!align(charBuffer)) {
-                throw new RuntimeException("cant find time");
+            CharBuffer buffer = CharBuffer.allocate(1000);
+            long len = buffer(ppos,500,buffer);
+            if(len < 500){
+                return Math.max(0,ppos - inc);
             }
-            T first = readFromBuffer();
+            readLine(buffer);
+            T first = parseLine(readLine(buffer));
             if (time.compareTo(first.DtGmt()) <= 0) {
-                endReadPosition = Math.max(0,ppos - inc);
-                charBuffer.limit(0);
-                return;
-
+                return Math.max(0,ppos - inc);
             }
             ppos += inc;
         }
     }
-
 
     @Override
     public T current() {
@@ -147,30 +164,28 @@ public class Parser<T extends Timed> implements SimpleReader<T> {
 
     @Override
     public boolean read() {
-        currentRecord = readFromBuffer();
-        if (currentRecord == null) {
+        if(closeToEnd(200)){
             charBuffer.compact();
             System.out.println("buffering " + fileName);
-            long len = buffer(endReadPosition,capacity);
-            endReadPosition += len;
-            if (len == 0) {
-                return false;
-            }
-            int pos = BaseHandler.skippEolOrEmpty(charBuffer,charBuffer.position());
-            charBuffer.position(Math.min(pos,charBuffer.limit()));
-            currentRecord = readFromBuffer();
+            endReadPosition += buffer(endReadPosition,capacity,charBuffer);
         }
+        currentRecord = parseLine(readLine(charBuffer));
         return currentRecord != null;
     }
 
-    private T readFromBuffer() {
+
+    boolean closeToEnd(int safeBuffer){
+        return charBuffer.limit() - safeBuffer < charBuffer.position();
+    }
+
+    private T parseLine(CharBuffer line) {
         T q = factory.get();
-        int oldPos = charBuffer.position();
         for (int i = 0; i < handlers.length; i++) {
-            if (!handlers[i].handle(charBuffer, q)) {
-                charBuffer.position(oldPos);
+            int ep = handlers[i].handle(line, q);
+            if(ep < 0){
                 return null;
             }
+            line.position(ep);
         }
         return q;
     }
