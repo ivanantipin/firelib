@@ -2,7 +2,6 @@ package firelib.domain
 
 import java.time.Instant
 
-import firelib.common.misc.dateUtils
 import firelib.common.misc.dateUtils._
 
 import scala.beans.BeanProperty
@@ -40,7 +39,7 @@ class Ohlc() extends Timed {
     @BeanProperty
     var C: Double = .0
     @BeanProperty
-    var dtGmtEnd: Instant = Instant.MIN
+    var dtGmtEnd: Instant = Instant.ofEpochSecond(0)
     @BeanProperty
     var H: Double = Integer.MIN_VALUE
     @BeanProperty
