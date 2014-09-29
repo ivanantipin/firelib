@@ -20,7 +20,7 @@ class Tick() extends Comparable[Tick] with Timed {
     }
 
     override def toString: String = {
-        return s"Tick(last=$last bid=$bid ask=$ask vol=:$vol time=$dtGmt)"
+        return s"Tick(last=$last bid=$bid ask=$ask vol=$vol time=$dtGmt)"
     }
 
     def compareTo(o: Tick): Int = {
