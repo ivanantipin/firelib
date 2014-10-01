@@ -12,7 +12,7 @@ trait TickToPriceConverterComponent {
 
     this : ModelConfigContext =>
 
-    val tickToPriceConverterFactory : InstrumentConfig=>(Tick=>Double) = new TickToPriceConverterFactory
+    def tickToPriceConverterFactory : InstrumentConfig=>(Tick=>Double) = new TickToPriceConverterFactory
 
     class TickToPriceConverterFactory extends (InstrumentConfig=>(Tick=>Double)){
 

@@ -1,7 +1,7 @@
 package firelib.common.mddistributor
 
 import firelib.common.MarketDataListener
-import firelib.common.core.ModelConfigContext
+import firelib.common.core.{ModelConfigContext, OnContextInited}
 import firelib.common.interval.{Interval, IntervalServiceComponent}
 import firelib.common.misc.{OhlcBuilderFromTick, TickToPriceConverterComponent, ohlcUtils}
 import firelib.common.timeseries.{HistoryCircular, TimeSeries, TimeSeriesImpl}
@@ -15,7 +15,7 @@ import scala.collection.mutable.ArrayBuffer
 trait MarketDataDistributorComponent {
 
 
-    this : IntervalServiceComponent with TickToPriceConverterComponent with ModelConfigContext=>
+    this : IntervalServiceComponent with TickToPriceConverterComponent with ModelConfigContext with OnContextInited =>
 
     val marketDataDistributor = new MarketDataDistributorImpl()
 
@@ -25,9 +25,16 @@ trait MarketDataDistributorComponent {
 
         val DEFAULT_TIME_SERIES_HISTORY_LENGTH = 100
 
-        private lazy val tsContainers = modelConfig.instruments.map(inst=>{
-            new TsContainer(new OhlcBuilderFromTick(tickToPriceConverterFactory(inst)))
-        });
+        private var tsContainers : Seq[TsContainer] =_;
+
+        initMethods += init
+
+        def init(): Unit ={
+            tsContainers = modelConfig.instruments.map(inst=>{
+                new TsContainer(new OhlcBuilderFromTick(tickToPriceConverterFactory(inst)))
+            })
+        }
+
 
         def appendOhlc(currOhlc : Ohlc, ohlc: Ohlc) {
             if (currOhlc.interpolated) {

@@ -8,7 +8,7 @@ import com.dukascopy.api.IMessage.Type
 import com.dukascopy.api.system.{ClientFactory, IClient, ISystemListener}
 import com.dukascopy.api.{IAccount, IBar, IConsole, IContext, IEngine, IFillOrder, IHistory, IMessage, IOrder, IStrategy, ITick, Instrument, Period}
 import firelib.common.threading.ThreadExecutor
-import firelib.common.{Order, OrderStatus, Side, Trade, TradeGateCallback}
+import firelib.common.{Order, OrderStatus, OrderType, Side, Trade, TradeGateCallback}
 import firelib.domain.{Ohlc, Tick}
 import firelib.execution.{MarketDataProvider, TradeGate}
 import org.slf4j.{Logger, LoggerFactory}
@@ -55,12 +55,22 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
         }
         val task: Future[Option[AnyRef]] = context.executeTask(new Callable[Option[AnyRef]] {
             override def call(): Option[AnyRef] = {
-                val cmd = if (order.side == Side.Sell) IEngine.OrderCommand.SELL else IEngine.OrderCommand.BUY
-                val dorder: IOrder = engine.submitOrder(order.id, Instrument.valueOf(order.security), cmd, order.qty.toDouble, 0, 20)
+                val dorder: IOrder = engine.submitOrder(order.id, Instrument.valueOf(order.security), orderCommand(order), order.qty.toDouble, 0, 20)
                 orders(order.id) = (dorder, order, List[IFillOrder]())
                 return None
             }
         })
+    }
+
+    def orderCommand (order : Order) : IEngine.OrderCommand ={
+        (order.orderType, order.side) match {
+            case (OrderType.Limit,Side.Buy) => IEngine.OrderCommand.BUYLIMIT
+            case (OrderType.Limit,Side.Sell) => IEngine.OrderCommand.SELLLIMIT
+            case (OrderType.Market,Side.Buy) => IEngine.OrderCommand.BUY
+            case (OrderType.Market,Side.Sell) => IEngine.OrderCommand.SELL
+            case (OrderType.Stop,Side.Buy) => IEngine.OrderCommand.BUYSTOP
+            case (OrderType.Stop,Side.Sell) => IEngine.OrderCommand.SELLSTOP
+        }
     }
 
     override def registerCallback(tgc: TradeGateCallback) = {
@@ -105,6 +115,10 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
         val listeners = new ArrayBuffer[Tick => Unit]()
         var lastTick: Tick = _
         var requestId: Int = -1
+
+        override def toString() : String ={
+            s"tickerId=${TickerId}"
+        }
     }
 
 
@@ -172,7 +186,9 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
                     tick.setVol(vol)
                     s.listeners.foreach(_.apply(tick))
                 }
-                case None =>
+                case None => {
+
+                }
             }
 
         })

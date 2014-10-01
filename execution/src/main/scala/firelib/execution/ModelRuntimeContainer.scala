@@ -5,9 +5,12 @@ import java.time.Instant
 
 import firelib.common._
 import firelib.common.config.{InstrumentConfig, ModelConfig}
-import firelib.common.core.SimpleRunCtx
-import firelib.common.marketstub.{MarketStub, MarketStubImpl}
-import firelib.common.misc.jsonHelper
+import firelib.common.core.{BindModelComponent, ModelConfigContext, OnContextInited, SimpleRunCtx, StepService, StepServiceComponent}
+import firelib.common.interval.IntervalServiceComponent
+import firelib.common.marketstub.{MarketStub, MarketStubFactoryComponent, MarketStubImpl}
+import firelib.common.mddistributor.{MarketDataDistributor, MarketDataDistributorComponent}
+import firelib.common.misc.{TickToPriceConverterComponent, jsonHelper}
+import firelib.common.model.Model
 import firelib.common.reader.{ReadersFactory, SimpleReader}
 import firelib.common.threading.ThreadExecutorImpl
 import firelib.common.timeboundscalc.TimeBoundsCalculator
@@ -15,6 +18,17 @@ import firelib.domain.{Tick, Timed}
 import firelib.execution.config.ModelRuntimeConfig
 import org.slf4j.LoggerFactory
 
+
+class BindCtx(val modelConfig : ModelConfig) extends OnContextInited
+with BindModelComponent
+with ModelConfigContext
+with MarketDataDistributorComponent
+with MarketStubFactoryComponent
+with StepServiceComponent
+with IntervalServiceComponent
+with TickToPriceConverterComponent{
+
+}
 
 class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
@@ -32,25 +46,39 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
     val marketStubSwitcherFactory : (InstrumentConfig=>MarketStub) = (cfg: InstrumentConfig) => new MarketStubSwitcher(new MarketStubImpl(cfg.ticker), new ExecutionMarketStub(tradeGate, cfg.ticker))
 
-    var backTestCtx : SimpleRunCtx=_
+    var backTestCtx : BindModelComponent=_
 
-    if (modelRuntimeConfig.runBacktest)
-        backTestCtx = new SimpleRunCtx(modelConfig) {
-            override val marketStubFactory = marketStubSwitcherFactory
+    private var model : Model =_
+    private var marketDataDistributor : MarketDataDistributor =_
+    private var stepService : StepService =_
+
+    if (modelRuntimeConfig.runBacktest){
+
+        val bctx: SimpleRunCtx = new SimpleRunCtx(modelConfig)
+        bctx.init();
+        bctx.bindModelForParams(modelConfig.modelParams.toMap)
+        bctx.backtest.backtest()
+        model = bctx.models(0)
+        marketDataDistributor = bctx.marketDataDistributor
+        stepService = bctx.stepService
+
+
+    }else{
+        val bindCtx: BindCtx = new BindCtx(modelConfig){
+            override def tickToPriceConverterFactory = (cfg)=>(t)=>(t.getBid + t.getAsk)/2
+            override val marketStubFactory : (InstrumentConfig=>MarketStub) = marketStubSwitcherFactory
         }
-    else
-        backTestCtx = new SimpleRunCtx(modelConfig) {
-            override val timeBoundsCalculator = dummyTimeBoundsCalculator
-            override val readersFactory = dummyReaderFactory
-            override val marketStubFactory = marketStubSwitcherFactory
-            override val tickToPriceConverterFactory : (InstrumentConfig=>(Tick=>Double)) = (instr=>(t=>t.last))
-        }
+        bindCtx.init()
+        bindCtx.bindModelForParams(modelConfig.modelParams.toMap)
+        model = bindCtx.models(0)
+        marketDataDistributor = bindCtx.marketDataDistributor
+        stepService = bindCtx.stepService
 
-    val env = backTestCtx.backtesterSimple.run(modelConfig)
+    }
 
-    private val model = env.models(0)
 
-    private val frequencer = new Frequencer(modelConfig.stepInterval, env.stepListeners, executor)
+
+    private val frequencer = new Frequencer(modelConfig.stepInterval, (dtGmt)=>stepService.onStep(dtGmt), executor)
 
     for (switcher <- model.stubs.map(ms => ms.asInstanceOf[MarketStubSwitcher])) {
         switcher.switchStubs()
@@ -64,7 +92,7 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
         for (k <- 0 until modelConfig.instruments.length) {
             val k1 = k
             //!!!! assumed that market data provider works in the same thread
-            marketDataProvider.subscribeForTick(modelConfig.instruments(k).ticker, (q: Tick) => env.distributor.onTick(k1, q, null))
+            marketDataProvider.subscribeForTick(modelConfig.instruments(k).ticker, (q: Tick) => marketDataDistributor.onTick(k1, q, null))
         }
         frequencer.start()
     }

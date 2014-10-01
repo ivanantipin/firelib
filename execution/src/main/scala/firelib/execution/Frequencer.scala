@@ -3,11 +3,10 @@ package firelib.execution
 import java.time.Instant
 import java.util.concurrent.{Executors, TimeUnit}
 
-import firelib.common.interval.{Interval, StepListener}
+import firelib.common.interval.Interval
 import firelib.common.threading.ThreadExecutor
-import firelib.common._
 
-class Frequencer(val interval: Interval, val listeners : Seq[StepListener], val callbackExecutor : ThreadExecutor,  val precisionMs: Long = 100) extends Runnable {
+class Frequencer(val interval: Interval, val listener : Instant=>Unit, val callbackExecutor : ThreadExecutor,  val precisionMs: Long = 100) extends Runnable {
 
     private var lastTimeTrigger: Instant = _
 
@@ -21,7 +20,7 @@ class Frequencer(val interval: Interval, val listeners : Seq[StepListener], val 
         val rounded = Instant.ofEpochMilli(interval.roundEpochMs(System.currentTimeMillis))
         if (lastTimeTrigger != rounded) {
             lastTimeTrigger = rounded
-            callbackExecutor.execute(()=>listeners.foreach(_.onStep(rounded)))
+            callbackExecutor.execute(()=>listener(rounded))
         }
     }
 }
