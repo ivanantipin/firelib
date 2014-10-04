@@ -54,7 +54,10 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
     if (modelRuntimeConfig.runBacktest){
 
-        val bctx: SimpleRunCtx = new SimpleRunCtx(modelConfig)
+        val bctx: SimpleRunCtx = new SimpleRunCtx(modelConfig){
+            override def tickToPriceConverterFactory = (cfg)=>(t)=>(t.getBid + t.getAsk)/2
+            override val marketStubFactory : (InstrumentConfig=>MarketStub) = marketStubSwitcherFactory
+        }
         bctx.init();
         bctx.bindModelForParams(modelConfig.modelParams.toMap)
         val endDtGmt: Instant = bctx.backtest.backtest()
