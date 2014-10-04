@@ -125,6 +125,8 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
 
     val executor = Executors.newSingleThreadScheduledExecutor()
 
+
+
     def start() = {
         executor.scheduleAtFixedRate(new Runnable {
             override def run(): Unit = heartBeat()
@@ -134,6 +136,14 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
 
     private def connect() = {
         clientSocket.eConnect("127.0.0.1", port, clientId)
+        var cnt = 0
+        while(!clientSocket.isConnected && cnt < 10){
+            Thread.sleep(100)
+            cnt+= 1
+        }
+        if(!clientSocket.isConnected){
+            throw new RuntimeException("failed to connect")
+        }
     }
 
     override def execDetails(reqId: Int, contract: Contract, execution: Execution) = {
