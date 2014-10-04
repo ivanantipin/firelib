@@ -67,8 +67,9 @@ object utils extends DescriptiveStatsTrait {
 
 
     private def filterTradingCases(tradingCases: Seq[(Trade, Trade)]): Seq[(Trade, Trade)] = {
-        val std = variance(tradingCases.map(pnlForCase))
-        return tradingCases.filter(tc => math.abs(pnlForCase(tc)) < filterThresholdInVariance * std)
+        return tradingCases
+        //val std = variance(tradingCases.map(pnlForCase))
+        //return tradingCases.filter(tc => math.abs(pnlForCase(tc)) < filterThresholdInVariance * std)
     }
 
     def toTradingCases(trades: Seq[Trade], positionTrades: ArrayBuffer[Trade] = null): ArrayBuffer[(Trade, Trade)] = {

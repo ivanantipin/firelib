@@ -21,7 +21,7 @@ trait BacktestComponent{
     val backtest = new Backtest
 
     class Backtest{
-        def backtest() {
+        def backtest() : Instant = {
             val bounds = timeBoundsCalculator.apply(modelConfig)
             val readers: Seq[SimpleReader[Timed]] = readersFactory.apply(modelConfig.instruments, bounds._1)
             var tickerPlayers: Seq[ReaderToListenerAdapter]= wrapReadersWithAdapters(readers, modelConfig.instruments)
@@ -32,6 +32,15 @@ trait BacktestComponent{
             }
             models.foreach(_.onBacktestEnd())
             tickerPlayers.foreach(_.close())
+            dtGmtcur
+        }
+
+        def stepTill(startDtGmt : Instant, endDtGmt : Instant): Unit = {
+            var dtGmtcur = startDtGmt
+            while (dtGmtcur.isBefore(endDtGmt)) {
+                stepService.onStep(dtGmtcur)
+                dtGmtcur = dtGmtcur.plusMillis(modelConfig.stepInterval.durationMs)
+            }
         }
 
         def step(tickerPlayers: Seq[ReaderToListenerAdapter], chunkEndGmt: Instant): Boolean = {

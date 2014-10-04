@@ -57,12 +57,11 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
         val bctx: SimpleRunCtx = new SimpleRunCtx(modelConfig)
         bctx.init();
         bctx.bindModelForParams(modelConfig.modelParams.toMap)
-        bctx.backtest.backtest()
+        val endDtGmt: Instant = bctx.backtest.backtest()
+        bctx.backtest.stepTill(endDtGmt, modelConfig.stepInterval.roundTime(Instant.now()))
         model = bctx.models(0)
         marketDataDistributor = bctx.marketDataDistributor
         stepService = bctx.stepService
-
-
     }else{
         val bindCtx: BindCtx = new BindCtx(modelConfig){
             override def tickToPriceConverterFactory = (cfg)=>(t)=>(t.getBid + t.getAsk)/2
@@ -75,8 +74,6 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
         stepService = bindCtx.stepService
 
     }
-
-
 
     private val frequencer = new Frequencer(modelConfig.stepInterval, (dtGmt)=>stepService.onStep(dtGmt), executor)
 
