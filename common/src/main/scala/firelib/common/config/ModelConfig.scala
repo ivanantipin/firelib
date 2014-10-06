@@ -2,8 +2,10 @@ package firelib.common.config
 
 import firelib.common.core.BacktestMode
 import firelib.common.interval.Interval
+import firelib.common.misc.utils
 import firelib.common.model.Model
 import firelib.common.report.StrategyMetric
+import firelib.common.ticknorm.NoOpTickToTick
 
 import scala.collection.mutable._
 
@@ -25,6 +27,8 @@ class ModelConfig {
     var reportTargetPath: String = _
     
     var modelClassName: String = _
+
+    var tickToTickFuncClass : String = classOf[NoOpTickToTick].getName
 
     /**
      * params passed to model apply method
@@ -53,7 +57,7 @@ class ModelConfig {
     )
 
     def newModelInstance() : Model ={
-        return Class.forName(modelClassName).newInstance().asInstanceOf[Model]
+        return utils.instanceOfClass[Model](modelClassName)
     }
 
 }

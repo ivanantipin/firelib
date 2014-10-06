@@ -271,7 +271,7 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
 
     override def tickPrice(tickerId: Int, field: Int, price: Double, canAutoExecute: Int) = {
         callbackExecutor.execute(() => {
-            if (price > 0) {
+            if (price > 0 && !price.isNaN && !price.isInfinity) {
                 subscriptionByRequestId(tickerId).get.lastTick = new Tick() {
                     last = price;
                     dtGmt = Instant.now()

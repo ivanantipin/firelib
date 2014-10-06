@@ -83,4 +83,8 @@ object utils extends DescriptiveStatsTrait {
         return ret
     }
 
+    def instanceOfClass[T](className : String) : T = {
+        return Class.forName(className).newInstance().asInstanceOf[T]
+    }
+
 }

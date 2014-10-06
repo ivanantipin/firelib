@@ -14,7 +14,15 @@ trait StepServiceComponent{
 
         private val listeners = new ArrayBuffer[StepListener]
 
-        override def onStep(dtGmt: Instant): Unit = listeners.foreach(_.onStep(dtGmt))
+        var prevStep = Instant.MIN;
+
+
+        override def onStep(dtGmt: Instant): Unit = {
+            if(dtGmt.isAfter(prevStep)){
+                listeners.foreach(_.onStep(dtGmt))
+                prevStep = dtGmt
+            }
+        }
 
         override def listen(lsn: StepListener): Unit = listeners += lsn
 

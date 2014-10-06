@@ -5,30 +5,17 @@ import java.time.Instant
 
 import firelib.common._
 import firelib.common.config.{InstrumentConfig, ModelConfig}
-import firelib.common.core.{BindModelComponent, ModelConfigContext, OnContextInited, SimpleRunCtx, StepService, StepServiceComponent}
-import firelib.common.interval.IntervalServiceComponent
-import firelib.common.marketstub.{MarketStub, MarketStubFactoryComponent, MarketStubImpl}
-import firelib.common.mddistributor.{MarketDataDistributor, MarketDataDistributorComponent}
-import firelib.common.misc.{TickToPriceConverterComponent, jsonHelper}
+import firelib.common.core.{BindModelComponent, SimpleRunCtx, StepService}
+import firelib.common.marketstub.{MarketStub, MarketStubImpl}
+import firelib.common.mddistributor.MarketDataDistributor
+import firelib.common.misc.{jsonHelper, utils}
 import firelib.common.model.Model
-import firelib.common.reader.{ReadersFactory, SimpleReader}
 import firelib.common.threading.ThreadExecutorImpl
-import firelib.common.timeboundscalc.TimeBoundsCalculator
-import firelib.domain.{Tick, Timed}
+import firelib.domain.Tick
 import firelib.execution.config.ModelRuntimeConfig
 import org.slf4j.LoggerFactory
 
 
-class BindCtx(val modelConfig : ModelConfig) extends OnContextInited
-with BindModelComponent
-with ModelConfigContext
-with MarketDataDistributorComponent
-with MarketStubFactoryComponent
-with StepServiceComponent
-with IntervalServiceComponent
-with TickToPriceConverterComponent{
-
-}
 
 class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
@@ -55,7 +42,6 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
     if (modelRuntimeConfig.runBacktest){
 
         val bctx: SimpleRunCtx = new SimpleRunCtx(modelConfig){
-            override def tickToPriceConverterFactory = (cfg)=>(t)=>(t.getBid + t.getAsk)/2
             override val marketStubFactory : (InstrumentConfig=>MarketStub) = marketStubSwitcherFactory
         }
         bctx.init();
@@ -67,7 +53,6 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
         stepService = bctx.stepService
     }else{
         val bindCtx: BindCtx = new BindCtx(modelConfig){
-            override def tickToPriceConverterFactory = (cfg)=>(t)=>(t.getBid + t.getAsk)/2
             override val marketStubFactory : (InstrumentConfig=>MarketStub) = marketStubSwitcherFactory
         }
         bindCtx.init()
@@ -77,6 +62,9 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
         stepService = bindCtx.stepService
 
     }
+
+    marketDataDistributor.setTickToTickFunc(utils.instanceOfClass(modelRuntimeConfig.tickToTickFuncClass))
+
 
     private val frequencer = new Frequencer(modelConfig.stepInterval, (dtGmt)=>stepService.onStep(dtGmt), executor)
 
@@ -95,32 +83,6 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
             marketDataProvider.subscribeForTick(modelConfig.instruments(k).ticker, (q: Tick) => marketDataDistributor.onTick(k1, q, null))
         }
         frequencer.start()
-    }
-
-    object dummyReaderFactory extends ReadersFactory{
-        override def apply(cfgs: Seq[InstrumentConfig], startTime: Instant): Seq[SimpleReader[Timed]] =  cfgs.map(_=>dummyReader)
-    }
-
-    object dummyTimeBoundsCalculator extends TimeBoundsCalculator{
-        override def apply(cfg: ModelConfig): (Instant, Instant) = (Instant.MAX,Instant.MIN)
-    }
-
-    /**
-     * dummy reader used when no backtest required just model initialization
-     */
-    object dummyReader extends SimpleReader[Timed] {
-
-        override def seek(time: Instant): Boolean = true
-
-        override def endTime(): Instant = Instant.MAX
-
-        override def read(): Boolean = false
-
-        override def startTime(): Instant = Instant.MAX
-
-        override def current: Timed = null
-
-        override def close(): Unit = {}
     }
 
 }

@@ -3,7 +3,7 @@ package firelib.common.mddistributor
 import firelib.common.MarketDataListener
 import firelib.common.core.{ModelConfigContext, OnContextInited}
 import firelib.common.interval.{Interval, IntervalServiceComponent}
-import firelib.common.misc.{OhlcBuilderFromTick, TickToPriceConverterComponent, ohlcUtils}
+import firelib.common.misc.{OhlcBuilderFromOhlc, OhlcBuilderFromTick, ohlcUtils, utils}
 import firelib.common.timeseries.{HistoryCircular, TimeSeries, TimeSeriesImpl}
 import firelib.domain.{Ohlc, Tick}
 
@@ -15,7 +15,7 @@ import scala.collection.mutable.ArrayBuffer
 trait MarketDataDistributorComponent {
 
 
-    this : IntervalServiceComponent with TickToPriceConverterComponent with ModelConfigContext with OnContextInited =>
+    this : IntervalServiceComponent with ModelConfigContext with OnContextInited =>
 
     val marketDataDistributor = new MarketDataDistributorImpl()
 
@@ -25,44 +25,40 @@ trait MarketDataDistributorComponent {
 
         val DEFAULT_TIME_SERIES_HISTORY_LENGTH = 100
 
-        private var tsContainers : Seq[TsContainer] =_;
+        private var instrumentToTimeSeries : Seq[TsContainer] =_;
 
         initMethods += init
 
-        def init(): Unit ={
-            tsContainers = modelConfig.instruments.map(inst=>{
-                new TsContainer(new OhlcBuilderFromTick(tickToPriceConverterFactory(inst)))
-            })
+        var tickToTick : (Tick) => Tick =_
+
+        def setTickToTickFunc(fun : (Tick) => Tick) : Unit = {
+            tickToTick = fun
         }
 
-
-        def appendOhlc(currOhlc : Ohlc, ohlc: Ohlc) {
-            if (currOhlc.interpolated) {
-                ohlcUtils.interpolate(ohlc,currOhlc)
-                currOhlc.interpolated = false
-            }else{
-                currOhlc.H = math.max(ohlc.H, currOhlc.H)
-                currOhlc.L = math.min(ohlc.L, currOhlc.L)
-                currOhlc.C = ohlc.C
-                currOhlc.Volume += ohlc.Volume
-                currOhlc.Oi += ohlc.Oi
-            }
+        def init(): Unit ={
+            instrumentToTimeSeries = modelConfig.instruments.map(inst=>{
+                new TsContainer()
+            })
+            tickToTick = utils.instanceOfClass[Tick=>Tick](modelConfig.tickToTickFuncClass)
         }
 
 
 
         private val listeners = new ArrayBuffer[MarketDataListener]()
 
-        class TsContainer(val ohlcBuilder : OhlcBuilderFromTick) {
+        class TsContainer() {
 
             val timeSeries = new ArrayBuffer[(Interval, TimeSeries[Ohlc])]()
 
+            val ohlcFromTick = new OhlcBuilderFromTick
+            val ohlcFromOhlc = new OhlcBuilderFromOhlc
+
             def addOhlc(ohlc: Ohlc) = {
-                timeSeries.foreach(ts=>appendOhlc(ts._2(0), ohlc))
+                timeSeries.foreach(ts=>ohlcFromOhlc.appendOhlc(ts._2(0), ohlc))
             }
 
             def addTick(tick: Tick) = {
-                timeSeries.foreach(ts=>ohlcBuilder.addTick(ts._2(0), tick))
+                timeSeries.foreach(ts=>ohlcFromTick.addTick(ts._2(0), tick))
             }
 
             def hasTsForInterval(interval: Interval) = timeSeries.exists(_._1 == interval)
@@ -72,21 +68,23 @@ trait MarketDataDistributorComponent {
         }
 
         override def onOhlc(idx: Int, ohlc: Ohlc, next: Ohlc): Unit = {
-            tsContainers(idx).addOhlc(ohlc)
+            instrumentToTimeSeries(idx).addOhlc(ohlc)
             listeners.foreach(_.onOhlc(idx, ohlc, next))
         }
 
         override def onTick(idx: Int, tick: Tick, next: Tick): Unit = {
-            tsContainers(idx).addTick(tick)
-            listeners.foreach(_.onTick(idx, tick, next))
+            val ntick = tickToTick(tick)
+            val nnexttick = if(next == null) null else tickToTick(next)
+            instrumentToTimeSeries(idx).addTick(ntick)
+            listeners.foreach(_.onTick(idx, ntick, nnexttick))
         }
 
 
         def activateOhlcTimeSeries(idx: Int, interval: Interval, len: Int): TimeSeries[Ohlc] = {
-            if (!tsContainers(idx).hasTsForInterval(interval)) {
+            if (!instrumentToTimeSeries(idx).hasTsForInterval(interval)) {
                 createTimeSeries(idx, interval, len)
             }
-            var hist = tsContainers(idx).getTsForInterval(interval)
+            var hist = instrumentToTimeSeries(idx).getTsForInterval(interval)
             hist.adjustSizeIfNeeded(len)
             return hist
         }
@@ -99,7 +97,7 @@ trait MarketDataDistributorComponent {
 
             val series = (interval, timeSeries)
 
-            tsContainers(tickerId).timeSeries += series
+            instrumentToTimeSeries(tickerId).timeSeries += series
 
             intervalService.addListener(interval, (dt) => {
                 val prev = timeSeries(0)
