@@ -24,7 +24,7 @@ trait MarketStub {
      */
     val security: String
 
-    def submitOrders(orders: Seq[Order])
+    def submitOrders(orders: Order*)
 
     def flattenAll(reason: Option[String])
 
@@ -32,9 +32,9 @@ trait MarketStub {
 
     def cancelAllOrders()
 
-    def orders: Seq[Order]
+    def orders: Iterable[Order]
 
-    def cancelOrderByIds(orderIds: Seq[String])
+    def cancelOrderByIds(orderIds : String*)
 
     def addCallback(callback: TradeGateCallback)
 

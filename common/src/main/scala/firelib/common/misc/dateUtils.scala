@@ -24,6 +24,8 @@ object dateUtils {
         LocalDateTime.parse(str,dateStringFormat).atZone(zone).toInstant
     }
 
+    def toStandardString(that : Instant) : String = dateStringFormat.format(that.atZone(ZoneOffset.UTC))
+
 
     implicit class instantUtils(that : Instant) {
         def toNyTime : ZonedDateTime = that.atZone(nyZoneId)

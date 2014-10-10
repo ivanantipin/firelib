@@ -7,7 +7,7 @@ import firelib.common.{TradeGateCallback, _}
 import scala.collection.mutable
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
-class MarketStubImpl(val security: String, val maxOrderCount: Int = 20) extends MarketStub {
+class MarketStubImpl(val security: String, val maxOrderCount: Int = 40) extends MarketStub {
 
     var bid = Double.NaN
 
@@ -15,9 +15,9 @@ class MarketStubImpl(val security: String, val maxOrderCount: Int = 20) extends 
 
     var dtGmt: Instant  =_
 
-    val orders_ = new mutable.HashMap[String, Order]()
+    val id2Order = new mutable.HashMap[String, Order]()
 
-    def orders = orders_.values.toArray[Order]
+    def orders = id2Order.values.toArray[Order]
 
     val tradeGateCallbacks = ArrayBuffer[TradeGateCallback]()
 
@@ -29,10 +29,14 @@ class MarketStubImpl(val security: String, val maxOrderCount: Int = 20) extends 
 
     var lastPositionTrade: Trade = _
 
-    val hasPendingState = false
+    private val delayedEvents = new ArrayBuffer[()=>Unit]()
+
+    override def hasPendingState() : Boolean = !delayedEvents.isEmpty
 
 
     private def middlePrice: Double = (bid + ask) / 2
+
+
 
 
     def addCallback(callback: TradeGateCallback) = tradeGateCallbacks += callback
@@ -49,29 +53,43 @@ class MarketStubImpl(val security: String, val maxOrderCount: Int = 20) extends 
     }
 
     def cancelAllOrders()  : Unit = {
-        val ords = orders_.values.toArray
-        orders_.clear()
-        ords.foreach(o=>fireOrderState(o,OrderStatus.Cancelled))
+        val ords = id2Order.values.toArray
+        id2Order.clear()
+        ords.foreach(o=>fireOrderStateDelayed(o,OrderStatus.Cancelled))
+
     }
 
-    def cancelOrderByIds(orderIds: Seq[String])  : Unit = {
+    def cancelOrderByIds(orderIds: String*)  : Unit = {
         orderIds.foreach(orderId => {
-            val ord = orders_.remove(orderId)
+            val ord = id2Order.remove(orderId)
             assert(ord.isDefined,"no order with id " + orderId)
-            fireOrderState(ord.get, OrderStatus.Cancelled)
+            fireOrderStateDelayed(ord.get, OrderStatus.Cancelled)
         })
     }
 
-    private def fireTradeEvent(trade: Trade) = tradeGateCallbacks.foreach(tgc => tgc.onTrade(trade))
 
-    def submitOrders(orders: Seq[Order]) : Unit = {
+    private def fireTradeEventDelayed(trade: Trade) = {
+        delayedEvents += (()=>tradeGateCallbacks.foreach(tgc => tgc.onTrade(trade)))
+    }
 
-        assert(this.orders_.size + orders.length <= maxOrderCount, "max order count exceeded")
-        assert(!orders.exists(o=>orders_.contains(o.id)), "duplicate order id - order id must be uniq")
+    private def fireOrderStateDelayed(order : Order, orderStatus: OrderStatus) = {
+        delayedEvents += (()=>fireOrderState(order, orderStatus))
+    }
+
+    private def fireOrderState(order : Order, orderStatus: OrderStatus) = {
+        order.statuses += orderStatus
+        tradeGateCallbacks.foreach(_.onOrderStatus(order, orderStatus))
+    }
+
+
+    def submitOrders(orders: Order*) : Unit = {
+
+        assert(this.id2Order.size + orders.length <= maxOrderCount, "max order count exceeded")
+        assert(!orders.exists(o=>id2Order.contains(o.id)), "duplicate order id - order id must be uniq")
 
         orders.foreach(order => {
             order.placementTime = dtGmt
-            this.orders_(order.id) = order
+            this.id2Order(order.id) = order
             fireOrderState(order, OrderStatus.New)
         })
         checkOrders()
@@ -103,16 +121,23 @@ class MarketStubImpl(val security: String, val maxOrderCount: Int = 20) extends 
         }
         this.dtGmt = dtGmt
         checkOrders()
+        playEvents()
     }
 
     def checkOrders() : Unit = {
-        orders_ retain ((id, ord) => !checkExecutionWithStateTrigger(ord).isFinal)
+        id2Order retain ((id, ord) => !checkExecutionWithStateTrigger(ord).isFinal)
     }
 
-    def checkExecutionWithStateTrigger(ord: Order) : OrderStatus = {
+    private def playEvents() = {
+        val funcs: Array[() => Unit] = delayedEvents.toArray
+        delayedEvents.clear()
+        funcs.foreach(_())
+    }
+
+    private def checkExecutionWithStateTrigger(ord: Order) : OrderStatus = {
         chkOrderExecution(ord) match {
             case Some(trd) => {
-                fireOrderState(ord, OrderStatus.Done)
+                fireOrderStateDelayed(ord, OrderStatus.Done)
                 return OrderStatus.Done
             }
             case None => {
@@ -123,9 +148,6 @@ class MarketStubImpl(val security: String, val maxOrderCount: Int = 20) extends 
         }
     }
 
-    private def fireOrderState(order : Order, orderStatus: OrderStatus) = {
-        tradeGateCallbacks.foreach(_.onOrderStatus(order, orderStatus))
-    }
 
     private def chkOrderExecution(ord: Order): Option[Trade] = {
         checkOrderAndGetTradePrice(ord) match {
@@ -139,11 +161,12 @@ class MarketStubImpl(val security: String, val maxOrderCount: Int = 20) extends 
     }
 
 
-    def onTrade(trd: Trade) = {
+    private def onTrade(trd: Trade) = {
         trades += trd
         val posBefore = position_
         position_ = trd.adjustPositionByThisTrade(position_)
         trd.positionAfter = position
+        trd.order.trades += trd
 
         if (math.signum(posBefore) != math.signum(position)) {
             if (position == 0) {
@@ -153,7 +176,7 @@ class MarketStubImpl(val security: String, val maxOrderCount: Int = 20) extends 
                 lastPositionTrade = trd
             }
         }
-        fireTradeEvent(trd)
+        fireTradeEventDelayed(trd)
     }
 
     def checkOrderAndGetTradePrice(ord: Order): Option[Double] = {
@@ -173,4 +196,6 @@ class MarketStubImpl(val security: String, val maxOrderCount: Int = 20) extends 
     }
 
     override def position: Int = position_
+
+
 }

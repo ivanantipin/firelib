@@ -14,7 +14,7 @@ class TimeSeriesImpl[T](val history: HistoryCircular[T]) extends TimeSeries[T] {
 
     def shiftAndGetLast: T = {
         listeners.foreach(_(this))
-        history.shiftAndGetLast
+        history.shift
     }
 
     override def listen(listener: (TimeSeries[T]) => Unit): Unit = {

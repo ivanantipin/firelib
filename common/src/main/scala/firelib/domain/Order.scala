@@ -2,6 +2,8 @@ package firelib.common
 
 import java.time.Instant
 
+import scala.collection.mutable.ArrayBuffer
+
 
 class Order(val orderType: OrderType, val price: Double, val qty: Int, val side: Side, val security : String, val id: String) {
     
@@ -12,7 +14,11 @@ class Order(val orderType: OrderType, val price: Double, val qty: Int, val side:
 
     var placementTime: Instant  = _
     var reason: String = _
-    var status: OrderStatus = _
+    def status = statuses.last
+    val trades = new ArrayBuffer[Trade]()
+    val statuses = new ArrayBuffer[OrderStatus]()
+
+    def remainingQty : Int = qty - trades.map(_.qty).sum
 
     override def toString: String = s"Order(price=$price qty=$qty side=$side type=$orderType orderId=$id sec=$security)"
 }

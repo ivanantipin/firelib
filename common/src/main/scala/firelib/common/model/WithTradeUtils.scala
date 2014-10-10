@@ -9,29 +9,29 @@ trait WithTradeUtils {
 
     protected def managePosTo(pos: Int, idx: Int = 0): Unit = {
         getOrderForDiff(stubs(idx).position, pos, idx) match {
-            case Some(ord) => stubs(idx).submitOrders(List(ord))
+            case Some(ord) => stubs(idx).submitOrders(ord)
             case _ =>
         }
     }
 
     def buyAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
         val stub : MarketStub = stubs(idx)
-        stub.submitOrders(List(new Order(OrderType.Limit, price, vol, Side.Buy,stub.security,stub.nextOrderId)))
+        stub.submitOrders(new Order(OrderType.Limit, price, vol, Side.Buy,stub.security,stub.nextOrderId))
     }
 
     def sellAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
         val stub : MarketStub = stubs(idx)
-        stubs(idx).submitOrders(List(new Order(OrderType.Limit, price, vol, Side.Sell,stub.security,stub.nextOrderId)))
+        stubs(idx).submitOrders(new Order(OrderType.Limit, price, vol, Side.Sell,stub.security,stub.nextOrderId))
     }
 
     def buyAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
         val stub : MarketStub = stubs(idx)
-        stubs(idx).submitOrders(List(new Order(OrderType.Stop, price, vol, Side.Buy,stub.security,stub.nextOrderId)))
+        stubs(idx).submitOrders(new Order(OrderType.Stop, price, vol, Side.Buy,stub.security,stub.nextOrderId))
     }
 
     def sellAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
         val stub : MarketStub = stubs(idx)
-        stubs(idx).submitOrders(List(new Order(OrderType.Stop, price, vol, Side.Sell,stub.security,stub.nextOrderId)))
+        stubs(idx).submitOrders(new Order(OrderType.Stop, price, vol, Side.Sell,stub.security,stub.nextOrderId))
     }
 
     def getOrderForDiff(currentPosition: Int, targetPos: Int, idx : Int): Option[Order] = {

@@ -13,7 +13,7 @@ object Side {
 
 }
 
-sealed class Side private(val Name: String, val sign: Int) {
+sealed case class Side private(val Name: String, val sign: Int) {
 
     def opposite: Side = {
         this match {

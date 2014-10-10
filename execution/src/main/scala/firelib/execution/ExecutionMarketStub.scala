@@ -6,7 +6,9 @@ import firelib.common.marketstub.MarketStub
 import firelib.common.{TradeGateCallback, _}
 import org.slf4j.LoggerFactory
 
+import scala.collection.{Map, mutable}
 import scala.collection.mutable.ArrayBuffer
+
 
 
 class ExecutionMarketStub(val tradeGate: TradeGate, val security_ : String, val maxOrderCount: Int = 20) extends MarketStub with TradeGateCallback {
@@ -16,7 +18,9 @@ class ExecutionMarketStub(val tradeGate: TradeGate, val security_ : String, val 
     private val bidAsk = Array(Double.NaN, Double.NaN)
     private var dtGmt: Instant = _
 
-    private val orders_ = new ArrayBuffer[Order]()
+    private val id2Order = new mutable.HashMap[String,Order]()
+
+    private val id2OrderFinalized = new mutable.HashMap[String,Order]()
 
     private val tradeGateCallbacks = new ArrayBuffer[TradeGateCallback]()
 
@@ -28,13 +32,18 @@ class ExecutionMarketStub(val tradeGate: TradeGate, val security_ : String, val 
 
     private val log = LoggerFactory.getLogger(getClass)
 
+    override def position: Int = position_
+    override val security: String = security_
+
+    var idCounter = System.currentTimeMillis()
+
 
     def trades: Seq[Trade] = trades_
 
-    def orders: Seq[Order] = orders_
+    def orders: Iterable[Order] = id2Order.values
 
     override def hasPendingState: Boolean = {
-        orders_.exists(o => (o.status.isPending || (o.orderType == OrderType.Market)))
+        id2Order.values.exists(o => (o.status.isPending || (o.orderType == OrderType.Market)))
     }
 
 
@@ -53,16 +62,15 @@ class ExecutionMarketStub(val tradeGate: TradeGate, val security_ : String, val 
     }
 
 
-    def cancelAllOrders(): Unit = cancelOrderByIds(orders_.map(_.id))
+    def cancelAllOrders(): Unit = cancelOrderByIds(id2Order.keys.toList: _*)
 
 
-    def cancelOrderByIds(orderIds: Seq[String]): Unit = {
-
+    def cancelOrderByIds(orderIds: String*): Unit = {
         for (orderId <- orderIds) {
-            orders_.find(_.id == orderId) match {
+            id2Order.get(orderId) match {
                 case Some(ord) => {
                     tradeGate.cancelOrder(orderId)
-                    ord.status = OrderStatus.PendingCancel
+                    ord.statuses += OrderStatus.PendingCancel
                     tradeGateCallbacks.foreach(_.onOrderStatus(ord, OrderStatus.PendingCancel))
 
                 }
@@ -72,14 +80,15 @@ class ExecutionMarketStub(val tradeGate: TradeGate, val security_ : String, val 
     }
 
 
-    def submitOrders(orders: Seq[Order]) = {
-        if(this.orders_.length > maxOrderCount){
+    def submitOrders(orders: Order*) = {
+        if(this.id2Order.size > maxOrderCount){
+            log.error(s"max order count reached rejecting orders $orders")
             fireOrderState(orders, OrderStatus.Rejected)
         }else{
             orders.foreach(order => {
                 order.placementTime = dtGmt
                 fireOrderState(List(order), OrderStatus.New)
-                this.orders_ += order
+                this.id2Order(order.id) = order
                 log.info(s"submitting order $order")
                 tradeGate.sendOrder(order)
             })
@@ -93,11 +102,15 @@ class ExecutionMarketStub(val tradeGate: TradeGate, val security_ : String, val 
 
 
     def closePosition(reason: Option[String]): Unit = {
-        if (position_ == 0 || hasPendingState)
+        if (position_ == 0){
             return
-
+        }
+        if (hasPendingState){
+            log.error("Ignoring closing position request as pending position exists")
+            return
+        }
         val order: Order = new Order(OrderType.Market, 0, math.abs(position_), Side.sideForAmt(-position_), security, nextOrderId)
-        submitOrders(List(order))
+        submitOrders(order)
     }
 
     def updateBidAskAndTime(bid: Double, ask: Double, dtGmt: Instant) {
@@ -108,33 +121,54 @@ class ExecutionMarketStub(val tradeGate: TradeGate, val security_ : String, val 
 
 
     def onOrderStatus(order: Order, status: OrderStatus): Unit = {
-        if (!orders_.exists(o => o.id == order.id)) {
+        if(id2OrderFinalized.contains(order.id)){
+            log.error(s"order status $status received for completed order $order ")
+            return
+        }
+        if (!id2Order.contains(order.id)) {
             return
         }
         log.info(s"order status $order status $status")
 
         if (status.isFinal) {
-            orders_.remove(orders_.indexWhere(o => o.id == order.id))
+            if(status == OrderStatus.Done && order.remainingQty > 0){
+                log.error(s"status is Done but order $order has non zero remaining amount ${order.remainingQty} ")
+            }
+            val finalOrder: Order = id2Order.remove(order.id).get
+            id2OrderFinalized(finalOrder.id) = finalOrder
         }
         tradeGateCallbacks.foreach(tg => tg.onOrderStatus(order, status))
     }
 
-    def onTrade(trd: Trade): Unit = {
-        if (!orders_.exists(_.id == trd.order.id)) {
-            return
+    private def procTrade(trd : Trade, ords : Map[String,Order]) : Boolean = {
+        ords.get(trd.order.id) match {
+            case Some(order) =>{
+                log.info(s"on trade $trd")
+                trades_ += trd
+                order.trades += trd
+                if(order.remainingQty < 0){
+                    log.error(s"negative remaining amount order $order")
+                }
+                val prevPos = position_
+                position_ = trd.adjustPositionByThisTrade(position_)
+                trd.positionAfter = position_
+                log.info(s"position adjusted for security $security :  $prevPos -> $position")
+                tradeGateCallbacks.foreach(tgc => tgc.onTrade(trd))
+                true
+            }
+            case None =>false
         }
-        log.info(s"on trade $trd")
-        trades_ += trd
-        position_ = trd.adjustPositionByThisTrade(position_)
-        trd.positionAfter = position_
-        log.info(s"position after $position")
-        tradeGateCallbacks.foreach(tgc => tgc.onTrade(trd))
     }
 
-    override def position: Int = position_
-    override val security: String = security_
+    def onTrade(trd: Trade): Unit = {
+        if(!procTrade(trd, id2Order)){
+            if(procTrade(trd,id2OrderFinalized)){
+                log.error(s"trades ")
+            }
+        }
 
-    var idCounter = System.currentTimeMillis()
+    }
+
 
     override def nextOrderId: String = {
         idCounter+= 1
