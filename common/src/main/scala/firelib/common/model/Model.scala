@@ -2,7 +2,7 @@ package firelib.common.model
 
 import firelib.common.Trade
 import firelib.common.interval.StepListener
-import firelib.common.marketstub.MarketStub
+import firelib.common.marketstub.OrderManager
 import firelib.common.mddistributor.MarketDataDistributor
 
 /**
@@ -14,14 +14,14 @@ trait Model extends StepListener {
 
     def name: String
 
-    def stubs: Seq[MarketStub]
+    def orderManagers: Seq[OrderManager]
 
     def trades: Seq[Trade]
 
     /**
      * init model method
      */
-    def initModel(modelProps: Map[String, String], marketStubs: Seq[MarketStub], distributor: MarketDataDistributor)
+    def initModel(modelProps: Map[String, String], marketStubs: Seq[OrderManager], distributor: MarketDataDistributor)
 
     /**
      * sometimes properties become invalid during optimization variations

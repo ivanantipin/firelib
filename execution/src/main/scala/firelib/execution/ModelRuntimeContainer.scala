@@ -3,10 +3,8 @@ package firelib.execution
 import java.nio.file.Paths
 import java.time.Instant
 
-import firelib.common._
-import firelib.common.config.{InstrumentConfig, ModelConfig}
+import firelib.common.config.ModelConfig
 import firelib.common.core.{BindModelComponent, SimpleRunCtx, StepService}
-import firelib.common.marketstub.{MarketStub, MarketStubImpl}
 import firelib.common.mddistributor.MarketDataDistributor
 import firelib.common.misc.{jsonHelper, utils}
 import firelib.common.model.Model
@@ -31,7 +29,6 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
     val (tradeGate, marketDataProvider) = providersFactory.create(modelRuntimeConfig, executor)
 
-    val marketStubSwitcherFactory : (InstrumentConfig=>MarketStub) = (cfg: InstrumentConfig) => new MarketStubSwitcher(new MarketStubImpl(cfg.ticker), new ExecutionMarketStub(tradeGate, cfg.ticker))
 
     var backTestCtx : BindModelComponent=_
 
@@ -41,9 +38,7 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
     if (modelRuntimeConfig.runBacktest){
 
-        val bctx: SimpleRunCtx = new SimpleRunCtx(modelConfig){
-            override val marketStubFactory : (InstrumentConfig=>MarketStub) = marketStubSwitcherFactory
-        }
+        val bctx: SimpleRunCtx = new SimpleRunCtx(modelConfig)
         bctx.init();
         bctx.bindModelForParams(modelConfig.modelParams.toMap)
         val endDtGmt: Instant = bctx.backtest.backtest()
@@ -52,9 +47,7 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
         marketDataDistributor = bctx.marketDataDistributor
         stepService = bctx.stepService
     }else{
-        val bindCtx: BindCtx = new BindCtx(modelConfig){
-            override val marketStubFactory : (InstrumentConfig=>MarketStub) = marketStubSwitcherFactory
-        }
+        val bindCtx: BindCtx = new BindCtx(modelConfig)
         bindCtx.init()
         bindCtx.bindModelForParams(modelConfig.modelParams.toMap)
         model = bindCtx.models(0)
@@ -68,11 +61,8 @@ class ModelRuntimeContainer(val modelRuntimeConfig: ModelRuntimeConfig) {
 
     private val frequencer = new Frequencer(modelConfig.stepInterval, (dtGmt)=>stepService.onStep(dtGmt), executor)
 
-    for (switcher <- model.stubs.map(ms => ms.asInstanceOf[MarketStubSwitcher])) {
-        switcher.switchStubs()
-        //to write trades to csv file
-        switcher.addCallback(new TradeGateCallbackAdapter((t) => runtimeTradeWriter.write(tradesPath, modelConfig.modelClassName, t)))
-    }
+    model.orderManagers.foreach(om=>om.replaceTradeGate(tradeGate))
+
 
     log.info("Started ")
 

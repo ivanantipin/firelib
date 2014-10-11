@@ -1,51 +1,52 @@
 package firelib.common.model
 
-import firelib.common.marketstub.MarketStub
+import firelib.common.marketstub.OrderManager
 import firelib.common.{Order, OrderType, Side}
 
-trait WithTradeUtils {
+object withTradeUtils {
 
-    this : Model=>
-
-    protected def managePosTo(pos: Int, idx: Int = 0): Unit = {
-        getOrderForDiff(stubs(idx).position, pos, idx) match {
-            case Some(ord) => stubs(idx).submitOrders(ord)
-            case _ =>
+    implicit class WithTradeUtils(val orderManager : OrderManager){
+        
+        def managePosTo(pos: Int): Unit = {
+            getOrderForDiff(orderManager.position, pos) match {
+                case Some(ord) => orderManager.submitOrders(ord)
+                case _ =>
+            }
         }
-    }
 
-    def buyAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
-        val stub : MarketStub = stubs(idx)
-        stub.submitOrders(new Order(OrderType.Limit, price, vol, Side.Buy,stub.security,stub.nextOrderId))
-    }
-
-    def sellAtLimit(price: Double, vol: Int = 1, idx: Int = 0) = {
-        val stub : MarketStub = stubs(idx)
-        stubs(idx).submitOrders(new Order(OrderType.Limit, price, vol, Side.Sell,stub.security,stub.nextOrderId))
-    }
-
-    def buyAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
-        val stub : MarketStub = stubs(idx)
-        stubs(idx).submitOrders(new Order(OrderType.Stop, price, vol, Side.Buy,stub.security,stub.nextOrderId))
-    }
-
-    def sellAtStop(price: Double, vol: Int = 1, idx: Int = 0) = {
-        val stub : MarketStub = stubs(idx)
-        stubs(idx).submitOrders(new Order(OrderType.Stop, price, vol, Side.Sell,stub.security,stub.nextOrderId))
-    }
-
-    def getOrderForDiff(currentPosition: Int, targetPos: Int, idx : Int): Option[Order] = {
-        val stub : MarketStub = stubs(idx)
-        val vol = targetPos - currentPosition
-        if (vol != 0) {
-            return Some(new Order(OrderType.Market, 0, math.abs(vol), if (vol > 0) Side.Buy else Side.Sell,stub.security,stub.nextOrderId))
+        def buyAtLimit(price: Double, vol: Int = 1) = {
+            orderManager.submitOrders(new Order(OrderType.Limit, price, vol, Side.Buy, orderManager.security, orderManager.nextOrderId))
         }
-        return None
-    }
 
-    protected def flattenAll(reason: Option[String] = None) = stubs.foreach(_.flattenAll(reason))
+        def sellAtLimit(price: Double, vol: Int = 1) = {
+            orderManager.submitOrders(new Order(OrderType.Limit, price, vol, Side.Sell, orderManager.security, orderManager.nextOrderId))
+        }
 
-    protected def cancelAllOrders() = stubs.foreach(_.cancelAllOrders)
+        def buyAtStop(price: Double, vol: Int = 1) = {
+            orderManager.submitOrders(new Order(OrderType.Stop, price, vol, Side.Buy, orderManager.security, orderManager.nextOrderId))
+        }
+
+        def sellAtStop(price: Double, vol: Int = 1) = {
+            orderManager.submitOrders(new Order(OrderType.Stop, price, vol, Side.Sell, orderManager.security, orderManager.nextOrderId))
+        }
+
+        def getOrderForDiff(currentPosition: Int, targetPos: Int): Option[Order] = {
+            val vol = targetPos - currentPosition
+            if (vol != 0) {
+                return Some(new Order(OrderType.Market, 0, math.abs(vol), if (vol > 0) Side.Buy else Side.Sell, orderManager.security, orderManager.nextOrderId))
+            }
+            return None
+        }
+
+        def flattenAll(reason: Option[String] = None) = {
+            cancelAllOrders()
+            managePosTo(0)
+        }
+
+        def cancelAllOrders() = {orderManager.cancelOrderByIds(orderManager.liveOrders.map(_.id) :_*)}
+        
+    } 
+
 
 
 }

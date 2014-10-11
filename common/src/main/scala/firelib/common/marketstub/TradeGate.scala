@@ -1,7 +1,7 @@
-package firelib.execution
+package firelib.common.marketstub
 
 import firelib.common.threading.ThreadExecutor
-import firelib.common.{TradeGateCallback, _}
+import firelib.common.{DisposableSubscription, Order, TradeGateCallback}
 
 /**
  * Main interface for execution to adapt broker api.
@@ -21,7 +21,7 @@ trait TradeGate {
     /**
      * register callback to receive notifications about trades and order statuses
      */
-    def registerCallback(tgc: TradeGateCallback)
+    def registerCallback(tgc: TradeGateCallback) : DisposableSubscription
 
     /**
      * pass configuration params to gate

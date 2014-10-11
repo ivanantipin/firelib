@@ -4,7 +4,7 @@ import java.time.Instant
 
 import firelib.common.Trade
 import firelib.common.interval.Interval
-import firelib.common.marketstub.MarketStub
+import firelib.common.marketstub.OrderManager
 import firelib.common.mddistributor.MarketDataDistributor
 import firelib.common.timeseries.TimeSeries
 import firelib.domain.Ohlc
@@ -14,7 +14,7 @@ import scala.collection.immutable.IndexedSeq
 /**
  * main base class for all strategies
  */
-abstract class BasketModel extends Model with WithTradeUtils{
+abstract class BasketModel extends Model{
 
     /**
      * variable holds model properties
@@ -29,19 +29,19 @@ abstract class BasketModel extends Model with WithTradeUtils{
     protected var dtGmt: Instant  = Instant.MIN
 
 
-    private var marketStubs: Array[MarketStub] =_
+    private var marketStubs: Array[OrderManager] =_
 
     override def properties: Map[String, String] = modelProperties
 
     override def name: String = getClass.getName
 
-    override def stubs: Seq[MarketStub] = marketStubs
+    override def orderManagers: Seq[OrderManager] = marketStubs
 
     override def trades: Seq[Trade] = marketStubs.flatMap(_.trades)
 
     override def hasValidProps() = true
 
-    override def initModel(modelProps: Map[String, String], mktStubs: Seq[MarketStub], ctx: MarketDataDistributor) = {
+    override def initModel(modelProps: Map[String, String], mktStubs: Seq[OrderManager], ctx: MarketDataDistributor) = {
         mdDistributor = ctx
         marketStubs = mktStubs.toArray
         modelProperties = modelProps

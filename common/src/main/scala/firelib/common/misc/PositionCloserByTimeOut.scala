@@ -2,12 +2,10 @@ package firelib.common.misc
 
 import java.time.Instant
 
-import firelib.common.TradeGateCallbackAdapter
-import firelib.common.marketstub.MarketStub
-import firelib.common._
-
-
-class PositionCloserByTimeOut(val stub: MarketStub, val holdingTimeSeconds: Int) {
+import firelib.common.{TradeGateCallbackAdapter, _}
+import firelib.common.marketstub.OrderManager
+import firelib.common.model.withTradeUtils.WithTradeUtils
+class PositionCloserByTimeOut(val stub: OrderManager, val holdingTimeSeconds: Int) {
 
     private var posOpenedDtGmt: Instant  = _
     stub.addCallback(new TradeGateCallbackAdapter(onTrade))
@@ -18,7 +16,7 @@ class PositionCloserByTimeOut(val stub: MarketStub, val holdingTimeSeconds: Int)
 
     def closePositionIfTimeOut(dtGmt: Instant) = {
         if (stub.position != 0 && dtGmt.getEpochSecond - posOpenedDtGmt.getEpochSecond > holdingTimeSeconds) {
-            stub.flattenAll(None)
+            stub.managePosTo(0)
         }
     }
 }

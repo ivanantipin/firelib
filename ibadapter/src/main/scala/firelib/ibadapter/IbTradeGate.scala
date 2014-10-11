@@ -7,10 +7,11 @@ import java.util.concurrent.{Executors, LinkedBlockingQueue, TimeUnit}
 
 import com.ib.client
 import com.ib.client.{Contract, Execution, TagValue}
+import firelib.common.marketstub.TradeGate
 import firelib.common.threading.ThreadExecutor
 import firelib.common.{TradeGateCallback, _}
 import firelib.domain.{Ohlc, Tick}
-import firelib.execution.{MarketDataProvider, TradeGate}
+import firelib.execution.MarketDataProvider
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
@@ -92,7 +93,12 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
         }
     }
 
-    def registerCallback(tgc: TradeGateCallback) = tradeGateCallbacks += tgc
+    def registerCallback(tgc: TradeGateCallback) = {
+        tradeGateCallbacks += tgc
+        new DisposableSubscription(){
+            override def unsubscribe(): Unit = tradeGateCallbacks -= tgc
+        }
+    }
 
     def configure(config: Map[String, String],callbackExecutor: ThreadExecutor) = {
         val props = new Properties();

@@ -166,8 +166,9 @@ public class Parser<T extends Timed> implements SimpleReader<T> {
     public boolean read() {
         if(closeToEnd(200)){
             charBuffer.compact();
-            System.out.println("buffering " + fileName);
+            long nt = System.nanoTime();
             endReadPosition += buffer(endReadPosition,capacity,charBuffer);
+            System.out.println("buffered in " + (System.nanoTime() - nt)/1000000.0 + " ms. " + fileName);
         }
         currentRecord = parseLine(readLine(charBuffer));
         return currentRecord != null;

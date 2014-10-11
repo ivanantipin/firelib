@@ -1,7 +1,7 @@
 package firelib.common.factors
 
+import firelib.common.marketstub.OrderManager
 import firelib.common.{TradeGateCallback, _}
-import firelib.common.marketstub.MarketStub
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -11,7 +11,7 @@ import scala.collection.mutable.ArrayBuffer
  * so once factor added to binder it will be added to all trades automatically
  * TODO need to implement instrument wise factor
  */
-class TradeFactorBinder(val stubs: MarketStub*) extends TradeGateCallback {
+class TradeFactorBinder(val stubs: OrderManager*) extends TradeGateCallback {
     private val tradeFactors = new ArrayBuffer[Factor]()
 
     stubs.foreach(_.addCallback(this))

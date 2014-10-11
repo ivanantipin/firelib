@@ -4,10 +4,15 @@ import java.time.Instant
 
 import firelib.common.{Order, Trade, TradeGateCallback}
 
+
+trait BidAskUpdatable{
+    def updateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant)
+}
+
 /**
 
  */
-trait MarketStub {
+trait OrderManager {
 
     /**
      * position
@@ -26,21 +31,15 @@ trait MarketStub {
 
     def submitOrders(orders: Order*)
 
-    def flattenAll(reason: Option[String])
-
     def trades: Seq[Trade]
 
-    def cancelAllOrders()
-
-    def orders: Iterable[Order]
+    def liveOrders: Seq[Order]
 
     def cancelOrderByIds(orderIds : String*)
 
     def addCallback(callback: TradeGateCallback)
 
-    def moveCallbacksTo(marketStub: MarketStub)
-
-    def updateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant)
-
     def nextOrderId : String
+
+    def replaceTradeGate(tg : TradeGate): Unit
 }

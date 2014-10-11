@@ -4,10 +4,9 @@ import java.time.Instant
 
 import firelib.common.MarketDataListener
 import firelib.common.interval.StepListener
-import firelib.common._
 import firelib.domain.{Ohlc, Tick}
 
-class BidAskUpdater(val stub: Seq[MarketStub]) extends MarketDataListener with StepListener {
+class BidAskUpdater(val stub: Seq[BidAskUpdatable]) extends MarketDataListener with StepListener {
 
     private val bid, ask = new Array[Double](stub.length)
 

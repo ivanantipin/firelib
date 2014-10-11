@@ -17,6 +17,7 @@ class Order(val orderType: OrderType, val price: Double, val qty: Int, val side:
     def status = statuses.last
     val trades = new ArrayBuffer[Trade]()
     val statuses = new ArrayBuffer[OrderStatus]()
+    statuses += OrderStatus.New
 
     def remainingQty : Int = qty - trades.map(_.qty).sum
 

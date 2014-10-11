@@ -1,5 +1,6 @@
 package firelib.execution
 
+import firelib.common.marketstub.TradeGate
 import firelib.common.threading.ThreadExecutor
 import firelib.execution.config.ModelRuntimeConfig
 
