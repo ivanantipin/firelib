@@ -18,7 +18,9 @@ class Ema(
     override def value: Double = ema
 
     override def apply(ts : TimeSeries[Ohlc]): Unit = {
-        val kk = koeffFunc()
-        ema = ema * (1 - kk) + func(ts(0)) * kk
+        if(!ts(0).interpolated){
+            val kk = koeffFunc()
+            ema = ema * (1 - kk) + func(ts(0)) * kk
+        }
     }
 }

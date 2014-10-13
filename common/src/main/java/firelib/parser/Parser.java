@@ -130,8 +130,7 @@ public class Parser<T extends Timed> implements SimpleReader<T> {
         }
 
         while (read()) {
-            if (time.compareTo(current().DtGmt()
-            ) <= 0) {
+            if (time.compareTo(current().DtGmt()) <= 0) {
                 return true;
             }
         }

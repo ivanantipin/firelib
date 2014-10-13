@@ -21,6 +21,8 @@ trait ReadersFactoryComponent {
 
     class ReaderFactoryImpl() extends ReadersFactory {
 
+        val cachedService = new CachedService(modelConfig.dataServerRoot + "/cache")
+
 
         private val ohlcFactory = new Supplier[Ohlc]{
             override def get(): Ohlc = return new Ohlc()
@@ -30,22 +32,34 @@ trait ReadersFactoryComponent {
             override def get(): Tick = return new Tick()
         }
 
+        private val tickDescr = new TickDesc
 
-        private def createReader[T <: Timed](cfg : InstrumentConfig, factory : Supplier[T]) : SimpleReader[T] ={
+        private val ohlcDescr = new OhlcDesc
+
+
+        private def createReader[T <: Timed](cfg : InstrumentConfig, factory : Supplier[T], cacheDesc : BinaryReaderRecordDescriptor[T]) : SimpleReader[T] ={
             val path: Path = Paths.get(modelConfig.dataServerRoot, cfg.path)
             val iniFile: String = path.getParent.resolve("common.ini").toAbsolutePath.toString
             val parseSettings: CommonIniSettings = new CommonIniSettings().loadFromFile(iniFile)
             val generator: ParserHandlersProducer = new ParserHandlersProducer(parseSettings)
-            return new Parser[T](path.toAbsolutePath.toString, generator.handlers.asInstanceOf[Array[IHandler[T]]], factory)
+            val ret: Parser[T] = new Parser[T](path.toAbsolutePath.toString, generator.handlers.asInstanceOf[Array[IHandler[T]]], factory)
+            ret
+
+            cachedService.checkPresent(path.toAbsolutePath.toString, ret.startTime(),ret.endTime(),cacheDesc) match{
+                case Some(reader)=>reader.asInstanceOf[SimpleReader[T]]
+                case None=>{
+                    cachedService.write(path.toAbsolutePath.toString,ret,cacheDesc)
+                }
+            }
         }
 
         override def apply(tickerIds: Seq[InstrumentConfig], startDtGmt: Instant): Seq[SimpleReader[Timed]] = {
             return tickerIds.map(t=>{
                 val parser =
                     if (t.mdType == MarketDataType.Tick)
-                        createReader[Tick](t, tickFactory)
+                        createReader[Tick](t, tickFactory, tickDescr)
                     else
-                        createReader[Ohlc](t, ohlcFactory)
+                        createReader[Ohlc](t, ohlcFactory, ohlcDescr)
                 assert(parser.seek(startDtGmt), "failed to find start date " + startDtGmt)
                 parser
             })
