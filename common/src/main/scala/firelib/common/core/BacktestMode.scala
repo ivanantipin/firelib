@@ -6,6 +6,6 @@ object BacktestMode {
     val InOutSample = new BacktestMode("InOutSample")
 }
 
-sealed class BacktestMode private (val name: String) {
+sealed case class BacktestMode private (val name: String) {
     override def toString: String = name
 }

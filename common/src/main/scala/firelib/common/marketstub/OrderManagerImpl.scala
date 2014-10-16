@@ -66,8 +66,8 @@ class OrderManagerImpl(var tradeGate: TradeGate, val security : String, val maxO
                     tradeGate.cancelOrder(orderId)
                     ord.statuses += OrderStatus.PendingCancel
                     tradeGateCallbacks.foreach(_.onOrderStatus(ord, OrderStatus.PendingCancel))
-
                 }
+
                 case None => if(logEnabled) log.error(s"cancelling non existing order $orderId")
             }
         }

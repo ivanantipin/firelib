@@ -1,12 +1,12 @@
 package firelib.common.core
 
-import firelib.common.config.ModelConfig
+import firelib.common.config.ModelBacktestConfig
 
 /**
 
  */
 object backtestStarter {
-    def runBacktest(mc: ModelConfig) {
+    def runBacktest(mc: ModelBacktestConfig) {
         try{
             val start: Long = System.currentTimeMillis()
             mc.backtestMode match {

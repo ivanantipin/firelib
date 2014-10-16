@@ -2,9 +2,9 @@ package firelib.common.timeboundscalc
 
 import java.time.Instant
 
-import firelib.common.config.ModelConfig
+import firelib.common.config.ModelBacktestConfig
 
 /**
 
  */
-trait TimeBoundsCalculator extends (ModelConfig=>(Instant,Instant))
+trait TimeBoundsCalculator extends (ModelBacktestConfig=>(Instant,Instant))

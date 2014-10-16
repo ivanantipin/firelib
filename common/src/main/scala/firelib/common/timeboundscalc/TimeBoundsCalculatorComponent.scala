@@ -2,7 +2,7 @@ package firelib.common.timeboundscalc
 
 import java.time.Instant
 
-import firelib.common.config.ModelConfig
+import firelib.common.config.ModelBacktestConfig
 import firelib.common.misc.dateUtils._
 import firelib.common.reader.ReadersFactoryComponent
 
@@ -16,7 +16,7 @@ trait TimeBoundsCalculatorComponent {
 
     class TimeBoundsCalculatorImpl extends TimeBoundsCalculator{
 
-        def calcStartDate(cfg: ModelConfig): Instant = {
+        def calcStartDate(cfg: ModelBacktestConfig): Instant = {
             var startDtGmt = if (cfg.startDateGmt == null) Instant.EPOCH else cfg.startDateGmt.parseStandard
 
             val readers = readersFactory.apply(cfg.instruments, startDtGmt)
@@ -31,7 +31,7 @@ trait TimeBoundsCalculatorComponent {
 
         }
 
-        override def apply(cfg : ModelConfig): (Instant, Instant) = {
+        override def apply(cfg : ModelBacktestConfig): (Instant, Instant) = {
             val startDt: Instant = calcStartDate(cfg)
             val endDt: Instant = if (cfg.endDate == null) Instant.now() else cfg.endDate.parseStandard
             return (startDt, endDt)

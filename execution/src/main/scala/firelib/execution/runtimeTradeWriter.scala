@@ -2,11 +2,11 @@ package firelib.execution
 
 import firelib.common._
 import firelib.common.misc.dateUtils._
-import firelib.common.misc.{dateUtils, statFileDumper, utils}
+import firelib.common.misc.{statFileDumper, utils}
 
 object runtimeTradeWriter {
 
-    def SerializeTrade(model: String, trade: Trade): String = {
+    def serializeTrade(model: String, trade: Trade): String = {
         var b = new StringBuilder()
         b.append(model)
         b.append(",")
@@ -25,7 +25,7 @@ object runtimeTradeWriter {
     }
 
     def write(fileName: String, model: String, trade: Trade) = {
-        statFileDumper.appendRow(fileName, SerializeTrade(model, trade))
+        statFileDumper.appendRow(fileName, serializeTrade(model, trade))
     }
 }
 

@@ -24,8 +24,8 @@ trait TradeGate {
     def registerCallback(tgc: TradeGateCallback) : DisposableSubscription
 
     /**
-     * pass configuration params to gate
-     * usually it is user/password, broker port and url etc
+     * @param config configuration params like user/password, broker port/url etc
+     * @param callbackExecutor all callbacks to tradegate must use callbackExecutor for thread safety
      */
     def configure(config: Map[String, String], callbackExecutor: ThreadExecutor)
 

@@ -1,7 +1,7 @@
 package firelib.common.misc
 
-import java.io.{File, StringWriter}
-import java.nio.file.{Files, Paths, StandardOpenOption}
+import java.io.StringWriter
+import java.nio.file.{Files, Path, StandardOpenOption}
 
 import com.fasterxml.jackson.databind.{ObjectMapper, SerializationFeature}
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
@@ -24,12 +24,12 @@ object jsonHelper {
     }
 
 
-    def serialize(value: Any, fileName : String): Unit = {
+    def serialize(value: Any, fileName : Path): Unit = {
         val writer = new StringWriter()
         mapper.writeValue(writer, value)
-        Files.write(Paths.get(fileName), List(writer.toString), StandardOpenOption.CREATE)
+        Files.write(fileName, List(writer.toString), StandardOpenOption.CREATE)
     }
 
-    def deserialize[T](fileName: String, clazz : Class[T]): T =
-        mapper.readValue(new File(fileName), clazz)
+    def deserialize[T](fileName: Path, clazz : Class[T]): T =
+        mapper.readValue(fileName.toFile, clazz)
 }

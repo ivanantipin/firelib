@@ -6,7 +6,7 @@ import java.time._
 import java.time.format.DateTimeFormatter
 import java.util.function.Supplier
 
-import firelib.common.config.{InstrumentConfig, ModelConfig}
+import firelib.common.config.{InstrumentConfig, ModelBacktestConfig}
 import firelib.common.core.backtestStarter
 import firelib.common.interval.Interval
 import firelib.common.misc.dateUtils._
@@ -63,7 +63,7 @@ class BacktestIntegrationTest {
         var totalTicksNumber = quotesNumbers._1 + quotesNumbers._2;
 
 
-        var cfg = new ModelConfig()
+        var cfg = new ModelBacktestConfig()
 
         cfg.dataServerRoot = getDsRoot()
         cfg.reportTargetPath = getReportDir()
@@ -159,7 +159,7 @@ class BacktestIntegrationTest {
         } while (pp.read())
 
 
-        val cfg = new ModelConfig()
+        val cfg = new ModelBacktestConfig()
 
 
         cfg.dataServerRoot = getDsRoot()

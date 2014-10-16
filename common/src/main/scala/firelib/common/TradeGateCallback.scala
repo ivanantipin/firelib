@@ -5,12 +5,8 @@ package firelib.common
  */
 trait TradeGateCallback {
 
-
     def onTrade(trade: Trade)
 
     def onOrderStatus(order: Order, status: OrderStatus)
 }
 
-trait DisposableSubscription{
-    def unsubscribe() : Unit
-}

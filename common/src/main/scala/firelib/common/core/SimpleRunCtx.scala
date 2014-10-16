@@ -1,13 +1,13 @@
 package firelib.common.core
 
-import firelib.common.config.ModelConfig
+import firelib.common.config.ModelBacktestConfig
 import firelib.common.interval.IntervalServiceComponent
 import firelib.common.mddistributor.MarketDataDistributorComponent
 import firelib.common.reader.ReadersFactoryComponent
 import firelib.common.timeboundscalc.TimeBoundsCalculatorComponent
 
 
-class SimpleRunCtx(val modelConfig: ModelConfig) extends  OnContextInited
+class SimpleRunCtx(val modelConfig: ModelBacktestConfig) extends  OnContextInited
 with BacktestComponent
 with TimeBoundsCalculatorComponent
 with ModelConfigContext

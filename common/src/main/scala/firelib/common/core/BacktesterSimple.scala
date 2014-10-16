@@ -1,6 +1,6 @@
 package firelib.common.core
 
-import firelib.common.config.ModelConfig
+import firelib.common.config.ModelBacktestConfig
 import firelib.common.report.reportWriter
 /**
  * simple backtest flow without optimizations backtest and dump report
@@ -8,7 +8,7 @@ import firelib.common.report.reportWriter
 
 class BacktesterSimple  {
 
-    def run(cfg: ModelConfig) : Unit = {
+    def run(cfg: ModelBacktestConfig) : Unit = {
 
         val ctx: SimpleRunCtx = new SimpleRunCtx(cfg)
 

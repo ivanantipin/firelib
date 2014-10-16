@@ -3,7 +3,7 @@ package firelib.common.core
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-import firelib.common.config.ModelConfig
+import firelib.common.config.ModelBacktestConfig
 import firelib.common.opt.ParamsVariator
 import firelib.common.report.{ReportProcessor, backtestStatisticsCalculator, optParamsWriter, reportWriter}
 import firelib.common.threading.ThreadExecutorImpl
@@ -16,7 +16,7 @@ import firelib.common.threading.ThreadExecutorImpl
 class BacktesterOptimized {
 
 
-    def run(cfg: ModelConfig): Unit = {
+    def run(cfg: ModelBacktestConfig): Unit = {
         System.out.println("Starting")
 
         val startTime = System.currentTimeMillis()
@@ -78,7 +78,7 @@ class BacktesterOptimized {
     }
 
 
-    private def writeOptimizedReport(cfg: ModelConfig, reportProcessor: ReportProcessor, endOfOptimize: Instant) = {
+    private def writeOptimizedReport(cfg: ModelBacktestConfig, reportProcessor: ReportProcessor, endOfOptimize: Instant) = {
         optParamsWriter.write(
             cfg.reportTargetPath,
             optEnd = endOfOptimize,
@@ -88,7 +88,7 @@ class BacktesterOptimized {
     }
 
 
-    private def nextModelVariationsChunk(cfg: ModelConfig, variator: ParamsVariator): SimpleRunCtx = {
+    private def nextModelVariationsChunk(cfg: ModelBacktestConfig, variator: ParamsVariator): SimpleRunCtx = {
         val env = new SimpleRunCtx(cfg)
         env.init()
         while (variator.hasNext()) {

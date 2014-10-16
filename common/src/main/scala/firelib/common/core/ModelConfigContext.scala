@@ -1,12 +1,12 @@
 package firelib.common.core
 
-import firelib.common.config.ModelConfig
+import firelib.common.config.ModelBacktestConfig
 
 /**
  * component of BacktestEnvironment factory for dependency injection
  */
 
 trait ModelConfigContext{
-    val modelConfig : ModelConfig
+    val modelConfig : ModelBacktestConfig
 }
 

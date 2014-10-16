@@ -2,7 +2,7 @@ package firelib.common.report
 
 import java.nio.file.{Files, Paths, StandardCopyOption}
 
-import firelib.common.config.ModelConfig
+import firelib.common.config.ModelBacktestConfig
 import firelib.common.misc.{jsonHelper, statFileDumper}
 import firelib.common.model.Model
 import org.apache.commons.io.FileUtils
@@ -15,13 +15,13 @@ import scala.collection.immutable.HashMap
 object reportWriter {
 
 
-    def write(model: Model, cfg: ModelConfig, targetDir: String) : Unit = {
+    def write(model: Model, cfg: ModelBacktestConfig, targetDir: String) : Unit = {
 
         FileUtils.deleteDirectory(Paths.get(targetDir).toFile)
 
         FileUtils.forceMkdir(Paths.get(targetDir).toFile)
 
-        jsonHelper.serialize(cfg,Paths.get(targetDir, "cfg.json").toString)
+        jsonHelper.serialize(cfg,Paths.get(targetDir, "cfg.json"))
 
         var trades = model.trades
 

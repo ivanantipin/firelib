@@ -12,7 +12,7 @@ import scala.collection.mutable._
 /**
  * keeps configuration for model backtest
  */
-class ModelConfig {
+class ModelBacktestConfig {
     /**
      * instruments configuration
      */
