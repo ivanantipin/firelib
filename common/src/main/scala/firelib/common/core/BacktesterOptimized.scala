@@ -26,7 +26,8 @@ class BacktesterOptimized {
             cfg.optConfig.params.map(op => op.name),
             minNumberOfTrades = cfg.optConfig.minNumberOfTrades)
 
-        val executor = new ThreadExecutorImpl(cfg.optConfig.threadsNumber, maxLengthOfQueue = 1).start()
+        //FIXME investigate rejected tasks
+        val executor = new ThreadExecutorImpl(cfg.optConfig.threadsNumber).start()
         val reportExecutor = new ThreadExecutorImpl(1).start()
         val variator = new ParamsVariator(cfg.optConfig.params)
 

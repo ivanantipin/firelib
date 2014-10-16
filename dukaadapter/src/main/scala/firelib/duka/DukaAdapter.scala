@@ -7,10 +7,11 @@ import java.util.concurrent.{Callable, ConcurrentHashMap, Future}
 import com.dukascopy.api.IMessage.Type
 import com.dukascopy.api.system.{ClientFactory, IClient, ISystemListener}
 import com.dukascopy.api.{IAccount, IBar, IConsole, IContext, IEngine, IFillOrder, IHistory, IMessage, IOrder, IStrategy, ITick, Instrument, Period}
+import firelib.common.marketstub.TradeGate
 import firelib.common.threading.ThreadExecutor
-import firelib.common.{Order, OrderStatus, OrderType, Side, Trade, TradeGateCallback}
+import firelib.common.{DisposableSubscription, Order, OrderStatus, OrderType, Side, Trade, TradeGateCallback}
 import firelib.domain.{Ohlc, Tick}
-import firelib.execution.{MarketDataProvider, TradeGate}
+import firelib.execution.MarketDataProvider
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.collection.JavaConversions._
@@ -99,8 +100,11 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
         }
     }
 
-    override def registerCallback(tgc: TradeGateCallback) = {
+    override def registerCallback(tgc: TradeGateCallback) : DisposableSubscription = {
         tradeGateCallbacks += tgc
+        return new DisposableSubscription(){
+            override def unsubscribe(): Unit = tradeGateCallbacks -= tgc
+        }
     }
 
     def toSide(cmd : IEngine.OrderCommand): Side ={

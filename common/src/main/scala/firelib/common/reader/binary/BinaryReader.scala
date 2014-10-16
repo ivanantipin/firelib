@@ -1,9 +1,10 @@
-package firelib.common.reader
+package firelib.common.reader.binary
 
 import java.io.RandomAccessFile
 import java.nio.ByteBuffer
 import java.time.Instant
 
+import firelib.common.reader.SimpleReader
 import firelib.domain.Timed
 
 class BinaryReader[T <: Timed](val fileName : String, desc : BinaryReaderRecordDescriptor[T]) extends SimpleReader[T]{
@@ -12,7 +13,7 @@ class BinaryReader[T <: Timed](val fileName : String, desc : BinaryReaderRecordD
 
     val recLen = {
         val tmpBuff: ByteBuffer = ByteBuffer.allocate(200)
-        desc.write(desc.sample, tmpBuff)
+        desc.write(desc.newInstance, tmpBuff)
         tmpBuff.position()
     }
 
@@ -46,10 +47,11 @@ class BinaryReader[T <: Timed](val fileName : String, desc : BinaryReaderRecordD
             fileChannel.position(ppos)
             val buffer = ByteBuffer.allocateDirect(recLen)
             val len: Long = fileChannel.read(buffer)
+            buffer.flip()
             val first = readBuff(buffer)
             ppos += inc
         }
-        ppos -= inc
+        ppos -= 2*inc
         ppos = Math.max(0,ppos)
         fileChannel.position(ppos)
     }

@@ -30,6 +30,8 @@ class ModelConfig {
 
     var tickToTickFuncClass : String = classOf[NoOpTickToTick].getName
 
+    var precacheMarketData : Boolean = false
+
     /**
      * params passed to model apply method
      * can not be optimized

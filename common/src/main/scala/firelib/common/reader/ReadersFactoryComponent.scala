@@ -7,6 +7,7 @@ import java.util.function.Supplier
 import firelib.common.MarketDataType
 import firelib.common.config.InstrumentConfig
 import firelib.common.core.ModelConfigContext
+import firelib.common.reader.binary.{BinaryReaderRecordDescriptor, OhlcDesc, TickDesc}
 import firelib.domain.{Ohlc, Tick, Timed}
 import firelib.parser.{CommonIniSettings, IHandler, Parser, ParserHandlersProducer}
 
@@ -43,13 +44,15 @@ trait ReadersFactoryComponent {
             val parseSettings: CommonIniSettings = new CommonIniSettings().loadFromFile(iniFile)
             val generator: ParserHandlersProducer = new ParserHandlersProducer(parseSettings)
             val ret: Parser[T] = new Parser[T](path.toAbsolutePath.toString, generator.handlers.asInstanceOf[Array[IHandler[T]]], factory)
-            ret
-
-            cachedService.checkPresent(path.toAbsolutePath.toString, ret.startTime(),ret.endTime(),cacheDesc) match{
-                case Some(reader)=>reader.asInstanceOf[SimpleReader[T]]
-                case None=>{
-                    cachedService.write(path.toAbsolutePath.toString,ret,cacheDesc)
+            if(modelConfig.precacheMarketData){
+                cachedService.checkPresent(path.toAbsolutePath.toString, ret.startTime(),ret.endTime(),cacheDesc) match{
+                    case Some(reader)=>reader.asInstanceOf[SimpleReader[T]]
+                    case None=>{
+                        cachedService.write(path.toAbsolutePath.toString,ret,cacheDesc)
+                    }
                 }
+            }else{
+                ret
             }
         }
 

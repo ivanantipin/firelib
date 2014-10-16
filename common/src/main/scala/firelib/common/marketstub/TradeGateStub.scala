@@ -5,8 +5,7 @@ import java.time.Instant
 import firelib.common.threading.ThreadExecutor
 import firelib.common.{DisposableSubscription, Order, OrderStatus, OrderType, Side, Trade, TradeGateCallback}
 
-import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.{ArrayBuffer, ListBuffer}
 
 class TradeGateStub extends TradeGate with BidAskUpdatable{
 
@@ -15,8 +14,7 @@ class TradeGateStub extends TradeGate with BidAskUpdatable{
 
     var dtGmt: Instant  =_
 
-    val id2Order
-    = new mutable.HashMap[String, Order]()
+    val orders = new ListBuffer[Order]()
 
     private val delayedEvents = new ArrayBuffer[()=>Unit]()
 
@@ -28,7 +26,7 @@ class TradeGateStub extends TradeGate with BidAskUpdatable{
      * just order send
      */
     override def sendOrder(order: Order): Unit = {
-        delayedEvents += (()=>{this.id2Order(order.id) = order})
+        delayedEvents += (()=>{this.orders += order})
     }
 
     /**
@@ -52,8 +50,9 @@ class TradeGateStub extends TradeGate with BidAskUpdatable{
      */
     override def cancelOrder(orderId: String): Unit = {
         delayedEvents += (()=>{
-            val ord = id2Order.remove(orderId)
+            val ord = orders.find(_.id == orderId)
             assert(ord.isDefined,"no order with id " + orderId)
+            orders -= ord.get
             tradeGateCallbacks.foreach(_.onOrderStatus(ord.get, OrderStatus.Cancelled))
         })
     }
@@ -74,7 +73,7 @@ class TradeGateStub extends TradeGate with BidAskUpdatable{
     }
 
     def checkOrders() : Unit = {
-        id2Order.values.foreach(chkOrderExecution(_))
+        orders.foreach(chkOrderExecution(_))
     }
 
     private def playEvents() = {
@@ -90,7 +89,7 @@ class TradeGateStub extends TradeGate with BidAskUpdatable{
             }
             case Some(price)=>{
                 tradeGateCallbacks.foreach(_.onTrade(new Trade(ord.qty, price, ord.side, ord, dtGmt)))
-                id2Order.remove(ord.id)
+                orders -= ord
                 tradeGateCallbacks.foreach(_.onOrderStatus(ord, OrderStatus.Done))
             }
         }

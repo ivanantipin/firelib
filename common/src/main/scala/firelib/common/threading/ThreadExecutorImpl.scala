@@ -4,9 +4,9 @@ import java.util.concurrent._
 
 import org.slf4j.LoggerFactory
 
-class ThreadExecutorImpl(val threadsNumber: Int = 1, val maxLengthOfQueue: Int = 10000, var threadName: String = "pipeline_") extends ThreadExecutor with ThreadFactory {
+class ThreadExecutorImpl(val threadsNumber: Int = 1, var threadName: String = "pipeline_") extends ThreadExecutor with ThreadFactory {
 
-    private val executor = new ThreadPoolExecutor(threadsNumber, threadsNumber, 1, TimeUnit.SECONDS, new ArrayBlockingQueue[Runnable](maxLengthOfQueue), this)
+    private val executor = new ThreadPoolExecutor(threadsNumber, threadsNumber, 1, TimeUnit.SECONDS, new LinkedBlockingQueue[Runnable](), this)
 
     private var threadcounter = 0
 

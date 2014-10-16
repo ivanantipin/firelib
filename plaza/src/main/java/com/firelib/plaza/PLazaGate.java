@@ -2,8 +2,9 @@ package com.firelib.plaza;
 
 import firelib.common.Order;
 import firelib.common.TradeGateCallback;
+import firelib.common.marketstub.TradeGate;
 import firelib.common.threading.ThreadExecutor;
-import firelib.execution.TradeGate;
+
 import scala.collection.immutable.Map;
 
 public class PLazaGate implements TradeGate {
@@ -18,8 +19,9 @@ public class PLazaGate implements TradeGate {
     }
 
     @Override
-    public void registerCallback(TradeGateCallback tgc) {
+    public firelib.common.DisposableSubscription registerCallback(TradeGateCallback tgc) {
 
+        return null;
     }
 
     @Override

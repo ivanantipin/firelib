@@ -1,4 +1,4 @@
-package firelib.common.reader
+package firelib.common.reader.binary
 
 import java.io._
 import java.nio.ByteBuffer

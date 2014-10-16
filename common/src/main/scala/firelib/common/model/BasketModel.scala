@@ -29,21 +29,21 @@ abstract class BasketModel extends Model{
     protected var dtGmt: Instant  = Instant.MIN
 
 
-    private var marketStubs: Array[OrderManager] =_
+    private var oms: Array[OrderManager] =_
 
     override def properties: Map[String, String] = modelProperties
 
     override def name: String = getClass.getName
 
-    override def orderManagers: Seq[OrderManager] = marketStubs
+    override def orderManagers: Seq[OrderManager] = oms
 
-    override def trades: Seq[Trade] = marketStubs.flatMap(_.trades)
+    override def trades: Seq[Trade] = oms.flatMap(_.trades)
 
     override def hasValidProps() = true
 
-    override def initModel(modelProps: Map[String, String], mktStubs: Seq[OrderManager], ctx: MarketDataDistributor) = {
-        mdDistributor = ctx
-        marketStubs = mktStubs.toArray
+    override def initModel(modelProps: Map[String, String], oms: Seq[OrderManager], distr: MarketDataDistributor) = {
+        mdDistributor = distr
+        this.oms = oms.toArray
         modelProperties = modelProps
         applyProperties(modelProps)
     }
@@ -54,11 +54,7 @@ abstract class BasketModel extends Model{
      * @return return sequence of TimeSeries objects
      */
     protected def enableOhlcHistory(intr: Interval, lengthToMaintain: Int = -1): IndexedSeq[TimeSeries[Ohlc]] = {
-        return (0 until marketStubs.length).map(mdDistributor.activateOhlcTimeSeries(_, intr, lengthToMaintain))
-    }
-
-    protected def getTs(mdt: Interval, idx: Int = 0): TimeSeries[Ohlc] = {
-        return mdDistributor.activateOhlcTimeSeries(idx, mdt, -1)
+        return (0 until oms.length).map(mdDistributor.activateOhlcTimeSeries(_, intr, lengthToMaintain))
     }
 
     /**
@@ -68,8 +64,6 @@ abstract class BasketModel extends Model{
     protected def applyProperties(mprops: Map[String, String])
 
     protected def onIntervalEnd(dtGmt:Instant) = {}
-
-    protected def position(idx: Int = 0) = marketStubs(idx).position
 
     override def onBacktestEnd() = {}
 

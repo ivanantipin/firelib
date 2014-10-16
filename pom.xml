@@ -11,7 +11,6 @@
         <module>execution</module>
         <module>ibadapter</module>
         <module>dukaadapter</module>
-        <module>plaza</module>
     </modules>
 
     <packaging>pom</packaging>

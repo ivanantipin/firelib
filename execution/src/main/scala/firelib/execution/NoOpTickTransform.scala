@@ -1,4 +1,4 @@
-package firelib.execution.config
+package firelib.execution
 
 import firelib.domain.Tick
 

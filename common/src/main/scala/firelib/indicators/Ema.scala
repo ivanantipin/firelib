@@ -9,7 +9,7 @@ class Ema(
           val func: Ohlc => Double = (oh)=>oh.C)
   extends Indicator[Double] with (TimeSeries[Ohlc] => Unit) {
 
-    var koeffFunc: () => Double = ()=> 2.0 / (period + 1)
+    var koeffFunc = ()=> 2.0 / (period + 1)
 
     ts.listen(this)
 

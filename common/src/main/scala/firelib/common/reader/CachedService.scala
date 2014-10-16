@@ -4,39 +4,53 @@ import java.nio.file.{Path, Paths}
 import java.time.Instant
 
 import firelib.common.misc.dateUtils
+import firelib.common.reader.binary.{BinaryReader, BinaryReaderRecordDescriptor, BinaryWriter}
 import firelib.domain.Timed
+import org.apache.commons.io.FileUtils
 
 
 class CachedService(val cacheDirectory : String){
 
     private val rootDir: Path = Paths.get(cacheDirectory)
 
-    private def makeKey(fn : String, startTime : Instant, endTime : Instant ): String ={
-
-        val st = dateUtils.toStandardString(startTime)
-        val et = dateUtils.toStandardString(endTime)
+    private def makeKeyFolder(fn : String): String ={
         val path: Path = Paths.get(fn).toAbsolutePath
-        s"${path.getParent.getFileName}_${path.getFileName}_$st-$et"
+        s"${path.getParent.getFileName}_${path.getFileName}"
     }
 
-
+    private def makeTimeKey(startTime : Instant, endTime : Instant ): String ={
+        val st = dateUtils.toStandardString(startTime)
+        val et = dateUtils.toStandardString(endTime)
+        s"$st-$et"
+    }
 
 
     def checkPresent[T <: Timed](fn : String, startTime : Instant, endTime : Instant, desc: BinaryReaderRecordDescriptor[T]): Option[SimpleReader[T]] ={
-        val key = makeKey(fn,startTime,endTime)
 
-        if(!rootDir.resolve(key).toFile.exists()){
+        val keyFolder: String = makeKeyFolder(fn)
+        val timeKey = makeTimeKey(startTime,endTime)
+
+
+        val resolve: Path = rootDir.resolve(keyFolder).resolve(timeKey)
+
+        if(!resolve.toFile.exists()){
             None
         }else{
-            Option(new BinaryReader[T](rootDir.resolve(key).toAbsolutePath.toString,desc))
+            Option(new BinaryReader[T](resolve.toString,desc))
         }
     }
 
-
-
     def write[T <: Timed](fn : String, reader : SimpleReader[T], tt : BinaryReaderRecordDescriptor[T]) : SimpleReader[T] = {
-        val key: String = makeKey(fn,reader.startTime(),reader.endTime())
-        val cachedFile: String = rootDir.resolve(key).toAbsolutePath.toString
+
+        val keyFolder: String = makeKeyFolder(fn)
+        val timeKey = makeTimeKey(reader.startTime(),reader.endTime())
+
+        FileUtils.deleteDirectory(rootDir.resolve(keyFolder).toFile)
+        FileUtils.forceMkdir(rootDir.resolve(keyFolder).toFile)
+
+        val resolve: Path = rootDir.resolve(keyFolder).resolve(timeKey)
+
+        val cachedFile: String = resolve.toAbsolutePath.toString
         System.out.println(s"caching $cachedFile")
         val writer: BinaryWriter[T] = new BinaryWriter[T](cachedFile,tt)
         while(reader.read()){
