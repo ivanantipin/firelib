@@ -6,11 +6,11 @@ import firelib.common.Trade
 import firelib.common.interval.Interval
 import firelib.common.marketstub.OrderManager
 import firelib.common.mddistributor.MarketDataDistributor
+import firelib.common.model.withTradeUtils.WithTradeUtils
 import firelib.common.timeseries.TimeSeries
 import firelib.domain.Ohlc
 
 import scala.collection.immutable.IndexedSeq
-
 /**
  * main base class for all strategies
  */
@@ -65,7 +65,9 @@ abstract class BasketModel extends Model{
 
     protected def onIntervalEnd(dtGmt:Instant) = {}
 
-    override def onBacktestEnd() = {}
+    override def onBacktestEnd() = {
+        orderManagers.foreach(_.flattenAll())
+    }
 
     override final def onStep(dtGmt:Instant) = {
         this.dtGmt = dtGmt
