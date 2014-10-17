@@ -2,6 +2,8 @@ package firelib.common
 
 import java.time.Instant
 
+import firelib.common.misc.utils
+
 import scala.collection.mutable.ArrayBuffer
 
 
@@ -19,7 +21,9 @@ class Order(val orderType: OrderType, val price: Double, val qty: Int, val side:
     val statuses = new ArrayBuffer[OrderStatus]()
     statuses += OrderStatus.New
 
+
+
     def remainingQty : Int = qty - trades.map(_.qty).sum
 
-    override def toString: String = s"Order(price=$price qty=$qty side=$side type=$orderType orderId=$id sec=$security)"
+    override def toString: String = s"Order(price=${utils.dbl2Str(price,6)} qty=$qty side=$side type=$orderType orderId=$id sec=$security)"
 }

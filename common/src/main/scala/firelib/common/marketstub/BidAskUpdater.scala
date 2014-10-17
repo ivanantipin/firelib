@@ -23,9 +23,8 @@ class BidAskUpdater(val stub: Seq[BidAskUpdatable]) extends MarketDataListener w
     }
 
     override def onTick(idx: Int, tick: Tick, next: Tick): Unit = {
-        val oh = if(next == null) tick else next
-        bid(idx) = oh.bid
-        ask(idx) = oh.ask
+        bid(idx) = tick.bid
+        ask(idx) = tick.ask
     }
 }
 

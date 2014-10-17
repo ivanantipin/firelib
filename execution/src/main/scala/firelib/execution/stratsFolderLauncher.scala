@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.ArrayBuffer
 
+/**
+ * launches all strats config with .json extension in folder
+ */
 
 object stratsFolderLauncher {
     val lst = new ArrayBuffer[ModelExecutionLauncher]()
