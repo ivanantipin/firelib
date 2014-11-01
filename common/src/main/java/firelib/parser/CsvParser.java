@@ -1,6 +1,6 @@
 package firelib.parser;
 
-import firelib.common.reader.SimpleReader;
+import firelib.common.reader.MarketDataReader;
 import firelib.domain.Timed;
 import org.apache.commons.lang3.mutable.MutableInt;
 
@@ -16,9 +16,9 @@ import java.time.Instant;
 import java.util.function.Supplier;
 
 
-public class Parser<T extends Timed> implements SimpleReader<T> {
+public class CsvParser<T extends Timed> implements MarketDataReader<T> {
 
-    private final IHandler[] handlers;
+    private final ParseHandler[] handlers;
     private final Supplier<T> factory;
     private final int capacity;
     private final FileChannel fileChannel;
@@ -41,11 +41,11 @@ public class Parser<T extends Timed> implements SimpleReader<T> {
     MutableInt poss = new MutableInt(0);
 
 
-    public Parser(String fileName, IHandler<T>[] handlers, Supplier<T> factory) {
+    public CsvParser(String fileName, ParseHandler<T>[] handlers, Supplier<T> factory) {
         this(fileName, handlers, factory, 20000000);
     }
 
-    public Parser(String fileName, IHandler<T>[] handlers, Supplier<T> factory, int capacityBytes) {
+    public CsvParser(String fileName, ParseHandler<T>[] handlers, Supplier<T> factory, int capacityBytes) {
         this.fileName = fileName;
         try {
             this.capacity = capacityBytes;

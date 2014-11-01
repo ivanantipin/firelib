@@ -15,7 +15,7 @@ COLUMNFORMAT=D_T_#_P_V_U_B_A_I
 TIMEZONE=NY
      */
 
-public class CommonIniSettings {
+public class LegacyMarketDataFormat {
     public String[] COLUMNFORMAT; // list of tokens: 'D', 'T', '#', 'P', 'V', 'I'.
     public String DATEFORMAT;
     public String NEXTFILE;
@@ -24,7 +24,7 @@ public class CommonIniSettings {
     public String TIMEZONE;
 
 
-    public CommonIniSettings loadFromFile(String fn) {
+    public LegacyMarketDataFormat loadFromFile(String fn) {
 
         try (FileInputStream inStream = new FileInputStream(fn)) {
             Properties properties = new Properties();
@@ -41,5 +41,6 @@ public class CommonIniSettings {
         }
         return this;
     }
-
 }
+
+

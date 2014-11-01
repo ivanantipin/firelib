@@ -4,9 +4,9 @@ import java.nio.file.{Files, Path, Paths}
 import java.util.function.Supplier
 
 import firelib.common.reader.binary.TickDesc
-import firelib.common.reader.{CachedService, SimpleReader}
+import firelib.common.reader.{CachedService, MarketDataReader}
 import firelib.domain.Tick
-import firelib.parser.{CommonIniSettings, IHandler, Parser, ParserHandlersProducer}
+import firelib.parser.{CsvParser, LegacyMarketDataFormatLoader, ParseHandler, ParserHandlersProducer}
 import org.apache.commons.io.FileUtils
 import org.junit.{Assert, Test}
 
@@ -35,21 +35,21 @@ class CachedServiceTest {
         val fname: String = getfile(s"${relDir}/ticks.csv")
 
 
-        val parserHandlersProducer: ParserHandlersProducer = new ParserHandlersProducer(new CommonIniSettings().loadFromFile(getfile(s"${relDir}/common.ini")))
+        val parserHandlersProducer: ParserHandlersProducer = new ParserHandlersProducer(LegacyMarketDataFormatLoader.load(getfile(s"${relDir}/common.ini")))
 
-        val parser: Parser[Tick] = new Parser[Tick](fname, parserHandlersProducer.handlers.asInstanceOf[Array[IHandler[Tick]]], new Supplier[Tick] {
+        val parser: CsvParser[Tick] = new CsvParser[Tick](fname, parserHandlersProducer.handlers.asInstanceOf[Array[ParseHandler[Tick]]], new Supplier[Tick] {
             override def get(): Tick = new Tick()
         })
 
         Assert.assertFalse(service.checkPresent(fname,parser.startTime(),parser.endTime(), new TickDesc).isDefined)
         service.write(fname,parser, new TickDesc)
-        val present: Option[SimpleReader[Tick]] = service.checkPresent(fname, parser.startTime(), parser.endTime(), new TickDesc)
+        val present: Option[MarketDataReader[Tick]] = service.checkPresent(fname, parser.startTime(), parser.endTime(), new TickDesc)
 
         Assert.assertTrue(present.isDefined)
 
-        val binReader: SimpleReader[Tick] = present.get
+        val binReader: MarketDataReader[Tick] = present.get
 
-        val parser1 : Parser[Tick] = new Parser[Tick](fname, parserHandlersProducer.handlers.asInstanceOf[Array[IHandler[Tick]]], new Supplier[Tick] {
+        val parser1 : CsvParser[Tick] = new CsvParser[Tick](fname, parserHandlersProducer.handlers.asInstanceOf[Array[ParseHandler[Tick]]], new Supplier[Tick] {
             override def get(): Tick = new Tick()
         })
 
@@ -73,7 +73,7 @@ class CachedServiceTest {
         }
     }
 
-    def cmpCurrent(binReader: SimpleReader[Tick], parser1: Parser[Tick]) {
+    def cmpCurrent(binReader: MarketDataReader[Tick], parser1: CsvParser[Tick]) {
         Assert.assertEquals(parser1.current().dtGmt, binReader.current.dtGmt)
         Assert.assertEquals(parser1.current().bid, binReader.current.bid, 0.0000001)
         Assert.assertEquals(parser1.current().ask, binReader.current.ask, 0.0000001)

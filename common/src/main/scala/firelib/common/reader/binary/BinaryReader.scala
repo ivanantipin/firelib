@@ -4,10 +4,10 @@ import java.io.RandomAccessFile
 import java.nio.ByteBuffer
 import java.time.Instant
 
-import firelib.common.reader.SimpleReader
+import firelib.common.reader.MarketDataReader
 import firelib.domain.Timed
 
-class BinaryReader[T <: Timed](val fileName : String, desc : BinaryReaderRecordDescriptor[T]) extends SimpleReader[T]{
+class BinaryReader[T <: Timed](val fileName : String, desc : BinaryReaderRecordDescriptor[T]) extends MarketDataReader[T]{
 
     val fileChannel = new RandomAccessFile(fileName, "r").getChannel
 

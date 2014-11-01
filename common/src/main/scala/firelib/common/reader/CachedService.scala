@@ -25,7 +25,7 @@ class CachedService(val cacheDirectory : String){
     }
 
 
-    def checkPresent[T <: Timed](fn : String, startTime : Instant, endTime : Instant, desc: BinaryReaderRecordDescriptor[T]): Option[SimpleReader[T]] ={
+    def checkPresent[T <: Timed](fn : String, startTime : Instant, endTime : Instant, desc: BinaryReaderRecordDescriptor[T]): Option[MarketDataReader[T]] ={
 
         val keyFolder: String = makeKeyFolder(fn)
         val timeKey = makeTimeKey(startTime,endTime)
@@ -40,7 +40,7 @@ class CachedService(val cacheDirectory : String){
         }
     }
 
-    def write[T <: Timed](fn : String, reader : SimpleReader[T], tt : BinaryReaderRecordDescriptor[T]) : SimpleReader[T] = {
+    def write[T <: Timed](fn : String, reader : MarketDataReader[T], tt : BinaryReaderRecordDescriptor[T]) : MarketDataReader[T] = {
 
         val keyFolder: String = makeKeyFolder(fn)
         val timeKey = makeTimeKey(reader.startTime(),reader.endTime())

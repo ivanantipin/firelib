@@ -1,13 +1,14 @@
 package firelib.common.reader
 
 import java.time.Instant
+
 import firelib.common.MarketDataListener
 import firelib.domain.Timed
 
 import scala.collection.mutable.ArrayBuffer
 
 
-class ReaderToListenerAdapterImpl[T <: Timed](val reader : SimpleReader[T],
+class ReaderToListenerAdapterImpl[T <: Timed](val reader : MarketDataReader[T],
                                      val idx : Int,
                                      val bridgeFunction : (MarketDataListener,Int, T, T)=>Unit ) extends ReaderToListenerAdapter{
 

@@ -4,7 +4,7 @@ import java.time.Instant
 
 import firelib.common.config.InstrumentConfig
 import firelib.common.mddistributor.MarketDataDistributorComponent
-import firelib.common.reader.{ReaderToListenerAdapter, ReaderToListenerAdapterImpl, ReadersFactoryComponent, SimpleReader}
+import firelib.common.reader.{MarketDataReader, ReaderToListenerAdapter, ReaderToListenerAdapterImpl, ReadersFactoryComponent}
 import firelib.common.timeboundscalc.TimeBoundsCalculatorComponent
 import firelib.common.{MarketDataListener, MarketDataType}
 import firelib.domain.{Ohlc, Tick, Timed}
@@ -23,7 +23,7 @@ trait BacktestComponent{
     class Backtest{
         def backtest() : Instant = {
             val bounds = timeBoundsCalculator.apply(modelConfig)
-            val readers: Seq[SimpleReader[Timed]] = readersFactory.apply(modelConfig.instruments, bounds._1)
+            val readers: Seq[MarketDataReader[Timed]] = readersFactory.apply(modelConfig.instruments, bounds._1)
             var tickerPlayers: Seq[ReaderToListenerAdapter]= wrapReadersWithAdapters(readers, modelConfig.instruments)
             tickerPlayers.foreach(_.addListener(marketDataDistributor))
             var dtGmtcur = bounds._1
@@ -59,13 +59,13 @@ trait BacktestComponent{
 
 
 
-        def wrapReadersWithAdapters(readers: Seq[SimpleReader[Timed]], tickerCfgs: Seq[InstrumentConfig]): Seq[ReaderToListenerAdapter] = {
+        def wrapReadersWithAdapters(readers: Seq[MarketDataReader[Timed]], tickerCfgs: Seq[InstrumentConfig]): Seq[ReaderToListenerAdapter] = {
             return readers.zipWithIndex.map(t => {
                 val cfg: InstrumentConfig = tickerCfgs(t._2)
                 if (cfg.mdType == MarketDataType.Ohlc)
-                    new ReaderToListenerAdapterImpl[Ohlc](t._1.asInstanceOf[SimpleReader[Ohlc]], t._2, appFuncOhlc)
+                    new ReaderToListenerAdapterImpl[Ohlc](t._1.asInstanceOf[MarketDataReader[Ohlc]], t._2, appFuncOhlc)
                 else
-                    new ReaderToListenerAdapterImpl[Tick](t._1.asInstanceOf[SimpleReader[Tick]], t._2, appFuncTick)
+                    new ReaderToListenerAdapterImpl[Tick](t._1.asInstanceOf[MarketDataReader[Tick]], t._2, appFuncTick)
             })
         }
 

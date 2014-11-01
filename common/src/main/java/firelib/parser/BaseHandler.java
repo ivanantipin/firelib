@@ -3,7 +3,7 @@ package firelib.parser;
 import java.nio.CharBuffer;
 
 
-abstract class BaseHandler<T> implements IHandler<T> {
+abstract class BaseHandler<T> implements ParseHandler<T> {
 
     final static char sep = ',';
 

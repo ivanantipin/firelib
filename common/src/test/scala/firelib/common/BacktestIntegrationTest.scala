@@ -11,7 +11,7 @@ import firelib.common.core.backtestStarter
 import firelib.common.interval.Interval
 import firelib.common.misc.dateUtils._
 import firelib.domain.Ohlc
-import firelib.parser.{CommonIniSettings, IHandler, Parser, ParserHandlersProducer}
+import firelib.parser.{CsvParser, LegacyMarketDataFormatLoader, ParseHandler, ParserHandlersProducer}
 import org.junit.{Assert, Test}
 
 import scala.collection.JavaConversions._
@@ -141,14 +141,14 @@ class BacktestIntegrationTest {
         var totalQuotesNumber = quotesNumbers._1 + quotesNumbers._2;
 
 
-        val generator: ParserHandlersProducer = new ParserHandlersProducer(new CommonIniSettings().loadFromFile(iniPath.toString))
+        val generator: ParserHandlersProducer = new ParserHandlersProducer(LegacyMarketDataFormatLoader. load(iniPath.toString))
 
         val ohlcFactory = new Supplier[Ohlc] {
             override def get(): Ohlc = return new Ohlc()
         }
 
 
-        val pp = new Parser[Ohlc](fullFileName.toString, generator.handlers.asInstanceOf[Array[IHandler[Ohlc]]], ohlcFactory)
+        val pp = new CsvParser[Ohlc](fullFileName.toString, generator.handlers.asInstanceOf[Array[ParseHandler[Ohlc]]], ohlcFactory)
 
         pp.seek(d0)
 

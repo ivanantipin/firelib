@@ -8,4 +8,4 @@ import firelib.domain.Timed
 /**
 
  */
-trait ReadersFactory extends ((Seq[InstrumentConfig], Instant) => Seq[SimpleReader[Timed]])
+trait ReadersFactory extends ((Seq[InstrumentConfig], Instant) => Seq[MarketDataReader[Timed]])

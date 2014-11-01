@@ -1,6 +1,6 @@
 package firelib.parser;
 
-import firelib.common.reader.SimpleReader;
+import firelib.common.reader.MarketDataReader;
 import firelib.domain.Timed;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -11,17 +11,21 @@ import java.io.FilenameFilter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * FIXME not completed parser to handle multiple files via prev/nextfile in common.ini
  * @param <T>
  */
 
-public class UltraFastParser<T extends Timed> implements SimpleReader<T> {
+public class UltraFastParser<T extends Timed> implements MarketDataReader<T> {
     private static Instant maxDateTime = Instant.MAX;
     private static Instant minDateTime = Instant.MIN;
-    private SimpleReader<T> csvParser = null;
+    private MarketDataReader<T> csvParser = null;
     private SymbolCsvFileInfo[] symbolCsvFileInfo = null;
     private int fileIdx = -1;
 
@@ -37,12 +41,12 @@ public class UltraFastParser<T extends Timed> implements SimpleReader<T> {
 
 
     private void OpenCurrentCsvFile() {
-        csvParser = create(symbolCsvFileInfo[fileIdx].fullFileName, symbolCsvFileInfo[fileIdx].commonIniSettings);
+        csvParser = create(symbolCsvFileInfo[fileIdx].fullFileName, symbolCsvFileInfo[fileIdx].legacyMarketDataFormat);
         csvParser.seek(csvParser.startTime());
-        CurrentTz = symbolCsvFileInfo[fileIdx].commonIniSettings.TIMEZONE;
+        CurrentTz = symbolCsvFileInfo[fileIdx].legacyMarketDataFormat.TIMEZONE;
     }
 
-    SimpleReader<T> create(String fileName, CommonIniSettings settings) {
+    MarketDataReader<T> create(String fileName, LegacyMarketDataFormat settings) {
         return null;
     }
 
@@ -147,35 +151,35 @@ public class UltraFastParser<T extends Timed> implements SimpleReader<T> {
     //
     // ??????? ??????? common.ini ????, ? ??????? ????????? ? ????, ??? ??? ?????????? ? commonIniSettings.
     //
-    public static void ParseAndMergeCommonIni(String strFileName, CommonIniSettings commonIniSettings) throws Exception {
+    public static void ParseAndMergeCommonIni(String strFileName, LegacyMarketDataFormat legacyMarketDataFormat) throws Exception {
         Properties settings = new Properties();
         settings.load(new FileInputStream(strFileName));
 
         if (settings.containsKey("NEXTFILE")) {
-            commonIniSettings.NEXTFILE = ExpandRelativeChainPathToAbsolute(strFileName,
+            legacyMarketDataFormat.NEXTFILE = ExpandRelativeChainPathToAbsolute(strFileName,
                     settings.getProperty("NEXTFILE"));
         }
 
         if (settings.containsKey("PREVFILE")) {
-            commonIniSettings.PREVFILE = ExpandRelativeChainPathToAbsolute(strFileName,
+            legacyMarketDataFormat.PREVFILE = ExpandRelativeChainPathToAbsolute(strFileName,
                     settings.getProperty("PREVFILE"));
         }
 
 
         if (settings.containsKey("DATEFORMAT")) {
-            commonIniSettings.DATEFORMAT = settings.getProperty("DATEFORMAT");
+            legacyMarketDataFormat.DATEFORMAT = settings.getProperty("DATEFORMAT");
         }
 
         if (settings.containsKey("TIMEFORMAT")) {
-            commonIniSettings.TIMEFORMAT = settings.getProperty("TIMEFORMAT");
+            legacyMarketDataFormat.TIMEFORMAT = settings.getProperty("TIMEFORMAT");
         }
 
         if (settings.containsKey("COLUMNFORMAT")) {
-            commonIniSettings.COLUMNFORMAT = settings.getProperty("COLUMNFORMAT").split("_");
+            legacyMarketDataFormat.COLUMNFORMAT = settings.getProperty("COLUMNFORMAT").split("_");
         }
 
         if (settings.containsKey("TIMEZONE")) {
-            commonIniSettings.TIMEZONE = settings.getProperty("TIMEZONE");
+            legacyMarketDataFormat.TIMEZONE = settings.getProperty("TIMEZONE");
         }
     }
 
@@ -261,8 +265,8 @@ public class UltraFastParser<T extends Timed> implements SimpleReader<T> {
         });
 
 
-        CommonIniSettings commonIniSettings = new CommonIniSettings();
-        ParseAndMergeCommonIni(Paths.get(strPath, "common.ini").toString(), commonIniSettings);
+        LegacyMarketDataFormat legacyMarketDataFormat = new LegacyMarketDataFormat();
+        ParseAndMergeCommonIni(Paths.get(strPath, "common.ini").toString(), legacyMarketDataFormat);
 
         //
         // Walk though files list in current folder and check for PREVFILE in individual .ini files,
@@ -283,13 +287,13 @@ public class UltraFastParser<T extends Timed> implements SimpleReader<T> {
             String strIndividualIniFile = Paths.get(filename).getParent().resolve(filename).toString(); //FIXME replace last with ini
 
 
-            ParseAndMergeCommonIni(strCommonIniFile, entry.commonIniSettings);
+            ParseAndMergeCommonIni(strCommonIniFile, entry.legacyMarketDataFormat);
 
             if (Files.exists(Paths.get(strIndividualIniFile))) {
-                ParseAndMergeCommonIni(strIndividualIniFile, entry.commonIniSettings);
+                ParseAndMergeCommonIni(strIndividualIniFile, entry.legacyMarketDataFormat);
             }
 
-            SimpleReader<T> reader = create(filename, entry.commonIniSettings);
+            MarketDataReader<T> reader = create(filename, entry.legacyMarketDataFormat);
 
             entry.utcStartDT = reader.startTime();
             entry.utcEndDT = reader.endTime();
@@ -306,7 +310,7 @@ public class UltraFastParser<T extends Timed> implements SimpleReader<T> {
         // Remove all entries that
         //
         List<SymbolCsvFileInfo> res = new ArrayList<>();
-        String prevFileReference = commonIniSettings.PREVFILE;
+        String prevFileReference = legacyMarketDataFormat.PREVFILE;
 
         for (SymbolCsvFileInfo entry : tmpList) {
             if (entry.utcStartDT.isAfter(cutDatesHigherThan.getValue())) {
@@ -349,7 +353,7 @@ public class UltraFastParser<T extends Timed> implements SimpleReader<T> {
             String strIndividualIniFile = Paths.get(removeExtension(entry.fullFileName) + ".ini").toString();
 
             if (Files.exists(Paths.get(strIndividualIniFile))) {
-                CommonIniSettings individualIniSettings = new CommonIniSettings();
+                LegacyMarketDataFormat individualIniSettings = new LegacyMarketDataFormat();
                 ParseAndMergeCommonIni(strIndividualIniFile, individualIniSettings);
 
                 if (!(individualIniSettings.PREVFILE == null || individualIniSettings.PREVFILE.trim().length() == 0)) {
@@ -423,7 +427,7 @@ public class UltraFastParser<T extends Timed> implements SimpleReader<T> {
     // ??????? ??????? ?? ????? ?????, ??????????? ????????? ?? common.ini ? ??????????????? .ini ?????.
     //
     public static class SymbolCsvFileInfo implements Comparable<SymbolCsvFileInfo> {
-        public CommonIniSettings commonIniSettings;
+        public LegacyMarketDataFormat legacyMarketDataFormat;
         // ????????? ?? common.ini ???????????? ? ?????????????? .ini ??????.
         public String fullFileName; // ?????????? ???? ? ??? .csv ?????.
         public Instant utcStartDT;

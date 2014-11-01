@@ -7,7 +7,7 @@ import firelib.domain.Timed
 /**
 
  */
-trait SimpleReader[+T <: Timed] extends AutoCloseable{
+trait MarketDataReader[+T <: Timed] extends AutoCloseable{
 
     def seek(time:Instant) : Boolean
 

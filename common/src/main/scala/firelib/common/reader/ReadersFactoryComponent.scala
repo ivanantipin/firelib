@@ -9,7 +9,7 @@ import firelib.common.config.InstrumentConfig
 import firelib.common.core.ModelConfigContext
 import firelib.common.reader.binary.{BinaryReaderRecordDescriptor, OhlcDesc, TickDesc}
 import firelib.domain.{Ohlc, Tick, Timed}
-import firelib.parser.{CommonIniSettings, IHandler, Parser, ParserHandlersProducer}
+import firelib.parser.{CsvParser, LegacyMarketDataFormatLoader, ParseHandler, ParserHandlersProducer}
 
 /**
 
@@ -38,15 +38,14 @@ trait ReadersFactoryComponent {
         private val ohlcDescr = new OhlcDesc
 
 
-        private def createReader[T <: Timed](cfg : InstrumentConfig, factory : Supplier[T], cacheDesc : BinaryReaderRecordDescriptor[T]) : SimpleReader[T] ={
+        private def createReader[T <: Timed](cfg : InstrumentConfig, factory : Supplier[T], cacheDesc : BinaryReaderRecordDescriptor[T]) : MarketDataReader[T] ={
             val path: Path = Paths.get(modelConfig.dataServerRoot, cfg.path)
             val iniFile: String = path.getParent.resolve("common.ini").toAbsolutePath.toString
-            val parseSettings: CommonIniSettings = new CommonIniSettings().loadFromFile(iniFile)
-            val generator: ParserHandlersProducer = new ParserHandlersProducer(parseSettings)
-            val ret: Parser[T] = new Parser[T](path.toAbsolutePath.toString, generator.handlers.asInstanceOf[Array[IHandler[T]]], factory)
+            val generator: ParserHandlersProducer = new ParserHandlersProducer(LegacyMarketDataFormatLoader.load(iniFile))
+            val ret: CsvParser[T] = new CsvParser[T](path.toAbsolutePath.toString, generator.handlers.asInstanceOf[Array[ParseHandler[T]]], factory)
             if(modelConfig.precacheMarketData){
                 cachedService.checkPresent(path.toAbsolutePath.toString, ret.startTime(),ret.endTime(),cacheDesc) match{
-                    case Some(reader)=>reader.asInstanceOf[SimpleReader[T]]
+                    case Some(reader)=>reader.asInstanceOf[MarketDataReader[T]]
                     case None=>{
                         cachedService.write(path.toAbsolutePath.toString,ret,cacheDesc)
                     }
@@ -56,7 +55,7 @@ trait ReadersFactoryComponent {
             }
         }
 
-        override def apply(tickerIds: Seq[InstrumentConfig], startDtGmt: Instant): Seq[SimpleReader[Timed]] = {
+        override def apply(tickerIds: Seq[InstrumentConfig], startDtGmt: Instant): Seq[MarketDataReader[Timed]] = {
             return tickerIds.map(t=>{
                 val parser =
                     if (t.mdType == MarketDataType.Tick)
