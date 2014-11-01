@@ -2,33 +2,57 @@ package firelib.common.interval
 
 import java.time.Instant
 
-import firelib.common.interval.Interval
-
+import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 
 class IntervalServiceImpl extends IntervalService {
 
-    private val listeners = new ArrayBuffer[(Interval, ArrayBuffer[Instant => Unit])]()
+    val nodes = mutable.TreeSet.empty(Ordering.by[Node,Long](a=>a.interval.durationMs).reverse)
 
-    def addListener(interval: Interval, action: Instant  => Unit) = {
-        var tuple = listeners.find(_._1 == interval)
-        if (tuple.isEmpty) {
-            listeners += ((interval, new ArrayBuffer[Instant => Unit]()))
-            tuple = listeners.find(_._1 == interval)
+    var rootNode : Node =_
+
+    class Node(val interval : Interval){
+        val childs = new ArrayBuffer[Node](3)
+        val listeners = new ArrayBuffer[Instant => Unit]()
+
+        def onStep(ms : Long, dt : Instant) : Unit = {
+            if (ms  % interval.durationMs == 0) {
+                listeners.foreach(_(dt))
+                if(childs.nonEmpty)
+                    childs.foreach(_.onStep(ms,dt))
+            }
         }
-        tuple.get._2 += action
+    }
+    def addListener(interval: Interval, action: Instant  => Unit) = {
+        addOrGetIntervalNode(interval).listeners += action
+        if(nodes.last != rootNode){
+            rootNode = nodes.last
+        }
     }
 
+    def addOrGetIntervalNode(interval: Interval): Node = {
+        nodes.find(n => n.interval == interval) match {
+            case Some(node) => node
+            case None => {
+                val node = new Node(interval)
+                nodes.find(par => depends(par.interval, interval)) match {
+                    case Some(parNode) => parNode.childs += node
+                    case None => nodes += node
+                }
+                node
+            }
+        }
+
+    }
+
+    def depends(parent : Interval, child : Interval) : Boolean = parent.durationMs % child.durationMs == 0
+
     def removeListener(interval: Interval, action: Instant  => Unit): Unit = {
-        listeners.find(_._1 == interval).get._2 -= action
+        addOrGetIntervalNode(interval).listeners -= action
     }
 
     def onStep(dt:Instant) = {
-        listeners.foreach(action => {
-            if (dt.toEpochMilli  % action._1.durationMs == 0) {
-                action._2.foreach(_(dt))
-            }
-        })
+        rootNode.onStep(dt.toEpochMilli,dt)
     }
 }

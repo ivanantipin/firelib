@@ -5,7 +5,7 @@ import java.time.Instant
 import firelib.common.threading.ThreadExecutor
 import firelib.common.{DisposableSubscription, Order, OrderStatus, OrderType, Side, Trade, TradeGateCallback}
 
-import scala.collection.mutable.{ArrayBuffer, ListBuffer}
+import scala.collection.mutable.ArrayBuffer
 
 class TradeGateStub extends TradeGate with BidAskUpdatable{
 
@@ -14,7 +14,7 @@ class TradeGateStub extends TradeGate with BidAskUpdatable{
 
     var dtGmt: Instant  =_
 
-    val orders = new ListBuffer[Order]()
+    val orders = new ArrayBuffer[Order]()
 
     private val delayedEvents = new ArrayBuffer[()=>Unit]()
 
@@ -73,25 +73,26 @@ class TradeGateStub extends TradeGate with BidAskUpdatable{
     }
 
     def checkOrders() : Unit = {
-        orders.foreach(chkOrderExecution(_))
+        var i = orders.size - 1;
+        while(i >= 0){
+            val ord = orders(i)
+            checkOrderAndGetTradePrice(ord) match {
+                case None =>
+                case Some(price)=>{
+                    tradeGateCallbacks.foreach(_.onTrade(new Trade(ord.qty, price, ord.side, ord, dtGmt)))
+                    orders.remove(i)
+                    tradeGateCallbacks.foreach(_.onOrderStatus(ord, OrderStatus.Done))
+                }
+            }
+            i-=1
+        }
     }
 
     private def playEvents() = {
-        val funcs: Array[() => Unit] = delayedEvents.toArray
-        delayedEvents.clear()
-        funcs.foreach(_())
-    }
-
-    private def chkOrderExecution(ord: Order): Unit = {
-        checkOrderAndGetTradePrice(ord) match {
-            case None => {
-                assert(ord.orderType != OrderType.Market, "market order should cause position change!!")
-            }
-            case Some(price)=>{
-                tradeGateCallbacks.foreach(_.onTrade(new Trade(ord.qty, price, ord.side, ord, dtGmt)))
-                orders -= ord
-                tradeGateCallbacks.foreach(_.onOrderStatus(ord, OrderStatus.Done))
-            }
+        if(delayedEvents.nonEmpty){
+            val funcs: Array[() => Unit] = delayedEvents.toArray
+            delayedEvents.clear()
+            funcs.foreach(_())
         }
     }
 
@@ -105,8 +106,8 @@ class TradeGateStub extends TradeGate with BidAskUpdatable{
             case (OrderType.Stop,Side.Buy) if middlePrice > ord.price => Some(ask)
             case (OrderType.Stop,Side.Sell) if middlePrice < ord.price=> Some(bid)
 
-            case (OrderType.Limit,Side.Buy) if ask < ord.price => Some(ord.price)
-            case (OrderType.Limit,Side.Sell) if bid > ord.price=> Some(ord.price)
+            case (OrderType.Limit,Side.Buy) if middlePrice < ord.price => Some(ord.price)
+            case (OrderType.Limit,Side.Sell) if middlePrice > ord.price=> Some(ord.price)
             case _ => None
         }
 

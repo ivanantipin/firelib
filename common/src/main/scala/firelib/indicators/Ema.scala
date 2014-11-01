@@ -25,9 +25,17 @@ class Ema(
     }
 }
 
+class SimpleEma(val period: Int) {
+    var koeffFunc = () => 2.0 / (period + 1)
+    var ema: Double = 0
+    def add(va: Double): Unit = {
+        val kk = koeffFunc()
+        ema = ema * (1 - kk) + va * kk
+    }
+}
 
-class Ma(
-          val period: Int,
+
+class Ma(val period: Int,
           ts: TimeSeries[Ohlc])
   extends Indicator[Double] with (TimeSeries[Ohlc] => Unit) {
 
