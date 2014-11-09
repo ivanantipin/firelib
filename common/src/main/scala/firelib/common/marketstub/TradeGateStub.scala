@@ -106,8 +106,8 @@ class TradeGateStub extends TradeGate with BidAskUpdatable{
             case (OrderType.Stop,Side.Buy) if middlePrice > ord.price => Some(ask)
             case (OrderType.Stop,Side.Sell) if middlePrice < ord.price=> Some(bid)
 
-            case (OrderType.Limit,Side.Buy) if middlePrice < ord.price => Some(ord.price)
-            case (OrderType.Limit,Side.Sell) if middlePrice > ord.price=> Some(ord.price)
+            case (OrderType.Limit,Side.Buy) if ask < ord.price => Some(ord.price)
+            case (OrderType.Limit,Side.Sell) if bid > ord.price=> Some(ord.price)
             case _ => None
         }
 
