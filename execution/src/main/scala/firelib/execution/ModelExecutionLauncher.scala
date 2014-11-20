@@ -3,6 +3,7 @@ package firelib.execution
 import java.nio.file.Paths
 import java.time.Instant
 
+import firelib.common.TradeGateCallbackAdapter
 import firelib.common.config.ModelBacktestConfig
 import firelib.common.core.{BindModelComponent, SimpleRunCtx, StepService}
 import firelib.common.mddistributor.MarketDataDistributor
@@ -61,6 +62,7 @@ class ModelExecutionLauncher(val execConfig: ModelExecutionConfig) {
 
     model.orderManagers.foreach(om=>om.replaceTradeGate(tradeGate))
 
+    model.orderManagers.foreach(om=>om.addCallback(new TradeGateCallbackAdapter(te=>runtimeTradeWriter.write(tradesPath,model.name,te))))
 
     log.info("Started ")
 

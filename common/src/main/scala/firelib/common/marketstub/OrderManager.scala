@@ -35,6 +35,8 @@ trait OrderManager {
 
     def liveOrders: Seq[Order]
 
+    def doneOrders: Seq[Order]
+
     def cancelOrderByIds(orderIds : String*)
 
     def addCallback(callback: TradeGateCallback)

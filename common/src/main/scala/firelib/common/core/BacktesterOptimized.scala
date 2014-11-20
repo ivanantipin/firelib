@@ -63,6 +63,8 @@ class BacktesterOptimized {
 
         val bm = reportProcessor.bestModels.last
 
+        reportWriter.clearReportDir(cfg.reportTargetPath)
+
         val env = new SimpleRunCtx(cfg)
         env.init()
         env.bindModelForParams(bm.properties)

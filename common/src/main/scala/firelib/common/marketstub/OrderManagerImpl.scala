@@ -42,6 +42,8 @@ class OrderManagerImpl(var tradeGate: TradeGate, val security : String, val maxO
 
     def liveOrders: Seq[Order] = id2Order.values.to[Seq]
 
+    def doneOrders: Seq[Order] = id2OrderFinalized.values.to[Seq]
+
     override def hasPendingState: Boolean = {
         id2Order.values.exists(o => (o.status.isPending || (o.orderType == OrderType.Market)))
     }

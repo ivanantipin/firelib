@@ -14,7 +14,7 @@ class Order(val orderType: OrderType, val price: Double, val qty: Int, val side:
     assert(id != null, "id must be not null!!")
     assert(security != null, "security must be not null!!")
 
-    var placementTime: Instant  = _
+    var placementTime: Instant = _
     var reason: String = _
     def status = statuses.last
     val trades = new ArrayBuffer[Trade]()

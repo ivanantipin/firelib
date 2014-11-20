@@ -32,7 +32,7 @@ object dateUtils {
         def toLondonTime : ZonedDateTime = that.atZone(londonZoneId)
         def toMoscowTime : ZonedDateTime = that.atZone(moscowZoneId)
 
-        def toStandardString : String = dateStringFormat.format(that.atZone(ZoneOffset.UTC))
+        def toStandardString : String = if(that == null) "null" else dateStringFormat.format(that.atZone(ZoneOffset.UTC))
     }
 
 }

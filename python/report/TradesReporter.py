@@ -154,41 +154,13 @@ class BacktestResults(object):
         self.lastStaticColumnInTrades = 'MFE'
 
 
-    def SanityChecks(self):
-        if not self.trades is None:
-            if ('Ticker' not in self.trades.columns):
-                raise NameError('Error: "Ticker" column not found.');
-
-            if ('BuySell' not in self.trades.columns):
-                raise NameError('Error: "BuySell" column not found.');
-
-            if ('EntryDate' not in self.trades.columns):
-                raise NameError('Error: "EntryDate" column not found.');
-
-            if ('EntryPrice' not in self.trades.columns):
-                raise NameError('Error: "EntryPrice" column not found.');
-
-            if ('ExitDate' not in self.trades.columns):
-                raise NameError('Error: "ExitDate" column not found.');
-
-            if ('ExitPrice' not in self.trades.columns):
-                raise NameError('Error: "ExitPrice" column not found.');
-
-            if ('Pnl' not in self.trades.columns):
-                raise NameError('Error: "Pnl" column not found.');
-
-            if ('nContracts' not in self.trades.columns):
-                raise NameError('Error: "nContracts" column not found.');
-
-
 
     def load(self, filename, tz=pytz.UTC):
-        self.trades = pd.read_csv(filename, index_col=False, sep=';',  parse_dates=[2, 4], date_parser=vect_str_to_datetime)
+        self.trades = pd.read_csv(filename, index_col=False, sep=';',  parse_dates=['EntryDate', 'ExitDate'], date_parser=vect_str_to_datetime)
         self.trades.dropna(inplace=True)
         self.trades['EntryDate']=self.trades['EntryDate'].map(lambda x : x.tz_localize(tz))
         self.trades['ExitDate']=self.trades['ExitDate'].map(lambda x : x.tz_localize(tz))
         self.sort()
-        self.SanityChecks()
 
     def loadOpts(self, filename):
         self.opts = pd.read_csv(filename, index_col=False, sep=';')
@@ -202,11 +174,6 @@ class BacktestResults(object):
         """
         if not self.trades is None:
             self.trades.sort(columns='EntryDate', inplace=True)
-
-
-
-
-
 
     def plotHeatMap(XC, YC, ZC, title, xlab, ylab):
         fig = plt.figure(figsize=plt.figaspect(0.5))
@@ -349,7 +316,7 @@ sys.path.append('/home/ivan/IdeaProjects/firelib/python/report/')
 import TradesReporter as tr
 reload(tr)
 bs=tr.BacktestResults()
-bs.load('/home/ivan/tmp/report/trades.csv')
+bs.load('/home/ivan/trading/reports/bigorder/trades.csv')
 bs.plotSeasonalities()
 plt.show()
 
@@ -360,3 +327,4 @@ pd.read_csv(fn, index_col=False, sep=';',  parse_dates=[2, 4], date_parser=_str_
 #bs.plot_equity_d2d_for_ticker(ticker='RSX')
 #plt.show()
 '''
+

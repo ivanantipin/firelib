@@ -46,7 +46,9 @@ class IntervalServiceImpl extends IntervalService {
 
     }
 
-    def depends(parent : Interval, child : Interval) : Boolean = parent.durationMs % child.durationMs == 0
+    def depends(parent : Interval, child : Interval) : Boolean = {
+        child.durationMs % parent.durationMs == 0
+    }
 
     def removeListener(interval: Interval, action: Instant  => Unit): Unit = {
         addOrGetIntervalNode(interval).listeners -= action

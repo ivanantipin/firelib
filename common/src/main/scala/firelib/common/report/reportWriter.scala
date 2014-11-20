@@ -14,12 +14,15 @@ import scala.collection.immutable.HashMap
  */
 object reportWriter {
 
-
-    def write(model: Model, cfg: ModelBacktestConfig, targetDir: String) : Unit = {
+    def clearReportDir(targetDir: String) : Unit = {
 
         FileUtils.deleteDirectory(Paths.get(targetDir).toFile)
 
         FileUtils.forceMkdir(Paths.get(targetDir).toFile)
+    }
+
+
+    def write(model: Model, cfg: ModelBacktestConfig, targetDir: String) : Unit = {
 
         jsonHelper.serialize(cfg,Paths.get(targetDir, "cfg.json"))
 
@@ -33,6 +36,10 @@ object reportWriter {
         var factors = if (trades(0).factors == null) new HashMap[String, String] else trades(0).factors
 
         tradesCsvWriter.write(model, Paths.get(targetDir, "trades.csv").toAbsolutePath.toString, factors.map(_._1))
+
+        for(mangs <- model.orderManagers){
+            tradesCsvWriter.writeOrders(mangs.doneOrders, Paths.get(targetDir, "orders.csv").toAbsolutePath.toString)
+        }
 
         copyJarFileToReal("/StdReport.ipynb", Paths.get(targetDir,"StdReport.ipynb").toAbsolutePath.toString)
         copyJarFileToReal("/TradesReporter.py", Paths.get(targetDir,"TradesReporter.py").toAbsolutePath.toString)
