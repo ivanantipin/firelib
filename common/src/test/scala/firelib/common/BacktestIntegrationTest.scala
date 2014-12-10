@@ -76,8 +76,8 @@ class BacktestIntegrationTest {
         backtestStarter.runBacktest(cfg)
 
 
-        //less by one because we read next at the same time
-        Assert.assertTrue("ticks number not match " + testHelper.instanceTick.NumberOfTickes + " <> " + (totalTicksNumber - 1), testHelper.instanceTick.NumberOfTickes == (totalTicksNumber - 1))
+
+        Assert.assertTrue(s"ticks number not match ${testHelper.instanceTick.NumberOfTickes}  <>  $totalTicksNumber" , testHelper.instanceTick.NumberOfTickes == totalTicksNumber)
         Assert.assertTrue("days number", testHelper.instanceTick.daysStarts.length == 4)
         Assert.assertTrue("time check", testHelper.instanceTick.daysStarts(0) == d0)
         Assert.assertEquals(d2, testHelper.instanceTick.daysStarts(2))
@@ -184,7 +184,9 @@ class BacktestIntegrationTest {
         var idx = -1
         val modelBars = testHelper.instanceOhlc.bars
 
-        Assert.assertTrue("bars number", testHelper.instanceOhlc.bars.filter(!_.interpolated).size  == totalQuotesNumber - 1)
+        val size: Int = testHelper.instanceOhlc.bars.filter(!_.interpolated).size
+        //FIXME
+        Assert.assertTrue("bars number", size  == totalQuotesNumber - 1)
 
         var curTime = startTime
         for (i <- 0 until modelBars.size) {
@@ -195,7 +197,7 @@ class BacktestIntegrationTest {
             }
             if (idx != -1) {
                 val rb = directBars(idx)
-                Assert.assertEquals(rb.O, modelBars(i).O, 0.00001)
+                Assert.assertEquals(s"wrong bar for index $idx", rb.O, modelBars(i).O, 0.00001)
                 Assert.assertEquals(rb.H, modelBars(i).H, 0.00001)
                 Assert.assertEquals(rb.L, modelBars(i).L, 0.00001)
                 Assert.assertEquals(rb.C, modelBars(i).C, 0.00001)

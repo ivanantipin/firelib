@@ -8,13 +8,13 @@ import scala.collection.mutable.ArrayBuffer
 
 class IntervalServiceImpl extends IntervalService {
 
-    val nodes = mutable.TreeSet.empty(Ordering.by[Node,Long](a=>a.interval.durationMs).reverse)
+    val nodes = mutable.TreeSet.empty(Ordering.by[Node,Long](a=>a.interval.durationMs))
 
     var rootNode : Node =_
 
     class Node(val interval : Interval){
         val childs = new ArrayBuffer[Node](3)
-        val listeners = new ArrayBuffer[Instant => Unit]()
+        val listeners = new ArrayBuffer[Instant => Unit](3)
 
         def onStep(ms : Long, dt : Instant) : Unit = {
             if (ms  % interval.durationMs == 0) {
@@ -26,9 +26,24 @@ class IntervalServiceImpl extends IntervalService {
     }
     def addListener(interval: Interval, action: Instant  => Unit) = {
         addOrGetIntervalNode(interval).listeners += action
-        if(nodes.last != rootNode){
-            rootNode = nodes.last
-        }
+        rebuildTree()
+    }
+
+    def rebuildTree(): Unit ={
+        nodes.foreach(_.childs.clear())
+
+        rootNode = nodes.head
+
+        var nodesResult = List(nodes.head)
+
+        nodes.toStream.drop(1).foreach(nd=>{
+            nodesResult.find(p=>depends(p.interval,nd.interval)) match {
+                case Some(par) => par.childs += nd
+                case None => throw new RuntimeException("no parent found!!")
+            }
+            nodesResult = nd +: nodesResult
+        })
+
     }
 
     def addOrGetIntervalNode(interval: Interval): Node = {
@@ -36,10 +51,7 @@ class IntervalServiceImpl extends IntervalService {
             case Some(node) => node
             case None => {
                 val node = new Node(interval)
-                nodes.find(par => depends(par.interval, interval)) match {
-                    case Some(parNode) => parNode.childs += node
-                    case None => nodes += node
-                }
+                nodes += node
                 node
             }
         }

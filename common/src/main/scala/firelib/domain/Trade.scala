@@ -6,7 +6,7 @@ import firelib.common.misc.utils
 
 import scala.collection.mutable
 
-class Trade(val qty: Int, val price: Double, val side: Side, val order: Order, val dtGmt:Instant) {
+class Trade(val qty: Int, val price: Double, val order: Order, val dtGmt:Instant) {
 
     assert(qty >= 0,"amount can't be negative")
 
@@ -14,23 +14,21 @@ class Trade(val qty: Int, val price: Double, val side: Side, val order: Order, v
 
     var factors: collection.mutable.Map[String, String] = _
 
-    var placementTime: Instant  = _
-
     var positionAfter: Int = _
 
     var maxHoldingPrice: Double = price
     var minHoldingPrice: Double = price
 
-    var reason: String = _
-
     def security = order.security
 
+    def side = order.side
+
     def MAE: Double = {
-        if (side == Side.Sell) price - maxHoldingPrice else minHoldingPrice - price
+        if (order.side == Side.Sell) price - maxHoldingPrice else minHoldingPrice - price
     }
 
     def MFE: Double = {
-        if (side == Side.Sell) price - minHoldingPrice else maxHoldingPrice - price
+        if (order.side == Side.Sell) price - minHoldingPrice else maxHoldingPrice - price
     }
 
 
@@ -58,10 +56,7 @@ class Trade(val qty: Int, val price: Double, val side: Side, val order: Order, v
     }
 
     def sameTradeForAmount(qty : Int) : Trade = {
-        val ret = new Trade(qty, price, side, order, dtGmt) {
-            placementTime = placementTime;
-            reason = reason
-        }
+        val ret = new Trade(qty, price, order, dtGmt)
         ret.minHoldingPrice = minHoldingPrice
         ret.maxHoldingPrice = maxHoldingPrice
         if (factors != null) {

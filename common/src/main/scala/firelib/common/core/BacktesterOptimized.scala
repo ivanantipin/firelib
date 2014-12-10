@@ -3,14 +3,23 @@ package firelib.common.core
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
+import firelib.common.Trade
 import firelib.common.config.ModelBacktestConfig
+import firelib.common.model.Model
 import firelib.common.opt.ParamsVariator
 import firelib.common.report.{ReportProcessor, backtestStatisticsCalculator, optParamsWriter, reportWriter}
 import firelib.common.threading.ThreadExecutorImpl
+import firelib.domain.OrderState
 
-/**
- *
- */
+import scala.collection.mutable.ArrayBuffer
+
+
+class ModelOutput(val model : Model){
+    val trades = new ArrayBuffer[Trade]()
+    val orderStates = new ArrayBuffer[OrderState]()
+    model.orderManagers.foreach(_.listenTrades(trades += _))
+    model.orderManagers.foreach(_.listenOrders(orderStates += _))
+}
 
 
 class BacktesterOptimized {
@@ -46,8 +55,9 @@ class BacktesterOptimized {
         while (variator.hasNext()) {
             val env = nextModelVariationsChunk(cfg, variator)
             executor.execute(() => {
+                val outputs: ArrayBuffer[ModelOutput] = env.models.map(new ModelOutput(_))
                 env.backtest.backtest()
-                reportExecutor.execute(() => reportProcessor.process(env.models))
+                reportExecutor.execute(() => reportProcessor.process(outputs))
             })
             System.out.println(s"models scheduled for optimization ${env.models.length}")
 
@@ -67,12 +77,13 @@ class BacktesterOptimized {
 
         val env = new SimpleRunCtx(cfg)
         env.init()
-        env.bindModelForParams(bm.properties)
+
+        val output: ModelOutput = new ModelOutput(env.bindModelForParams(bm.properties))
         env.backtest.backtest()
 
         assert(env.models.length == 1, "no models produced")
 
-        reportWriter.write(env.models(0), cfg, cfg.reportTargetPath)
+        reportWriter.write(output, cfg, cfg.reportTargetPath)
 
         writeOptimizedReport(cfg, reportProcessor, endOfOptimize)
 

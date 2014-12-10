@@ -1,8 +1,8 @@
 package firelib.common.report
 
+import firelib.common.core.ModelOutput
 import firelib.common.misc.utils
 import firelib.common.model.Model
-import firelib.common._
 
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.{Map, mutable}
@@ -24,7 +24,7 @@ class ReportProcessor(val metricsCalculator : MetricsCalculator, val optimizedFu
         return bestModels_.map(bm => (bm._2, bm._3)).toList
     }
 
-    def process(models: Seq[Model]) = {
+    def process(models: Seq[ModelOutput]) = {
 
         models.filter(_.trades.size >= minNumberOfTrades).foreach(model => {
 
@@ -34,11 +34,11 @@ class ReportProcessor(val metricsCalculator : MetricsCalculator, val optimizedFu
 
             val est = metrics(optimizedFunctionName)
 
-            bestModels_ += ((est, model, metrics))
+            bestModels_ += ((est, model.model, metrics))
             if(bestModels_.length > topModelsToKeep)
                 bestModels_.dequeue()
 
-            estimates += new ExecutionEstimates(extractOptParams(model), metrics)
+            estimates += new ExecutionEstimates(extractOptParams(model.model), metrics)
 
         })
         System.out.println("processed " + estimates.length + " models ")

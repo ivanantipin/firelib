@@ -2,17 +2,20 @@ package firelib.common.marketstub
 
 import java.time.Instant
 
-import firelib.common.{Order, Trade, TradeGateCallback}
+import firelib.common.model.OrderManagerUtils
+import firelib.common.{Order, Trade}
+import firelib.domain.OrderState
 
 
 trait BidAskUpdatable{
-    def updateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant)
+    def updateBidAsk(bid: Double, ask: Double)
 }
+
 
 /**
 
  */
-trait OrderManager {
+trait OrderManager extends OrderManagerUtils{
 
     /**
      * position
@@ -31,17 +34,15 @@ trait OrderManager {
 
     def submitOrders(orders: Order*)
 
-    def trades: Seq[Trade]
-
     def liveOrders: Seq[Order]
 
-    def doneOrders: Seq[Order]
+    def listenTrades(lsn : Trade=>Unit)
 
-    def cancelOrderByIds(orderIds : String*)
+    def listenOrders(lsn : OrderState=>Unit)
 
-    def addCallback(callback: TradeGateCallback)
+    def cancelOrders(orders: Order*)
 
     def nextOrderId : String
 
-    def replaceTradeGate(tg : TradeGate): Unit
+    def currentTime : Instant
 }

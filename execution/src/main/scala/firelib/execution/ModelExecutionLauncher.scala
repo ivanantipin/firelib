@@ -3,17 +3,16 @@ package firelib.execution
 import java.nio.file.Paths
 import java.time.Instant
 
-import firelib.common.TradeGateCallbackAdapter
 import firelib.common.config.ModelBacktestConfig
-import firelib.common.core.{BindModelComponent, SimpleRunCtx, StepService}
-import firelib.common.mddistributor.MarketDataDistributor
+import firelib.common.core.SimpleRunCtx
 import firelib.common.misc.{jsonHelper, utils}
 import firelib.common.model.Model
+import firelib.common.report.{StreamOrderWriter, StreamTradeCaseWriter}
 import firelib.common.threading.ThreadExecutorImpl
+import firelib.common.timeservice.TimeServiceReal
 import firelib.domain.Tick
 import firelib.execution.config.ModelExecutionConfig
 import org.slf4j.LoggerFactory
-
 
 
 class ModelExecutionLauncher(val execConfig: ModelExecutionConfig) {
@@ -22,7 +21,9 @@ class ModelExecutionLauncher(val execConfig: ModelExecutionConfig) {
 
     log.info("Starting config " + jsonHelper.toJsonString(execConfig))
 
-    val tradesPath = Paths.get(execConfig.tradeLogDirectory.getOrElse("trades_live.csv")).toFile.getName
+    val tradesPath = Paths.get(execConfig.tradeLogDirectory.getOrElse("trades_live.csv"))
+
+    val ordersPath = Paths.get(execConfig.tradeLogDirectory.getOrElse("orders.csv"))
 
     val backtestConfig: ModelBacktestConfig = execConfig.backtestConfig
 
@@ -30,39 +31,31 @@ class ModelExecutionLauncher(val execConfig: ModelExecutionConfig) {
 
     val (tradeGate, marketDataProvider) = providersFactory.create(execConfig, executor)
 
-    var backTestCtx : BindModelComponent=_
+    val bctx: SimpleRunCtx = new SimpleRunCtx(backtestConfig)
+    bctx.init();
+    private val model : Model = bctx.bindModelForParams(backtestConfig.modelParams.toMap)
 
-    private var model : Model =_
-    private var marketDataDistributor : MarketDataDistributor =_
-    private var stepService : StepService =_
 
     if (execConfig.runBacktestBeforeStrategyRun){
-        val bctx: SimpleRunCtx = new SimpleRunCtx(backtestConfig)
-        bctx.init();
-        bctx.bindModelForParams(backtestConfig.modelParams.toMap)
-        val endDtGmt: Instant = bctx.backtest.backtest()
-        bctx.backtest.stepTill(endDtGmt, backtestConfig.stepInterval.roundTime(Instant.now()))
-        model = bctx.models(0)
-        marketDataDistributor = bctx.marketDataDistributor
-        stepService = bctx.stepService
-    }else{
-        val bindCtx: BindCtx = new BindCtx(backtestConfig)
-        bindCtx.init()
-        bindCtx.bindModelForParams(backtestConfig.modelParams.toMap)
-        model = bindCtx.models(0)
-        marketDataDistributor = bindCtx.marketDataDistributor
-        stepService = bindCtx.stepService
-
+        bctx.backtest.backtest()
+        bctx.backtest.stepUntil(backtestConfig.stepInterval.roundTime(Instant.now()))
     }
 
-    marketDataDistributor.setTickToTickFunc(utils.instanceOfClass(execConfig.tickToTickFuncClass))
+    bctx.marketDataDistributor.setTickTransformFunction(utils.instanceOfClass(execConfig.tickToTickFuncClass))
 
+    private val frequencer = new Frequencer(backtestConfig.stepInterval, (dtGmt)=>bctx.intervalService.onStep(dtGmt), executor)
 
-    private val frequencer = new Frequencer(backtestConfig.stepInterval, (dtGmt)=>stepService.onStep(dtGmt), executor)
+    bctx.tradeGate = tradeGate
 
-    model.orderManagers.foreach(om=>om.replaceTradeGate(tradeGate))
+    bctx.timeService = new TimeServiceReal
 
-    model.orderManagers.foreach(om=>om.addCallback(new TradeGateCallbackAdapter(te=>runtimeTradeWriter.write(tradesPath,model.name,te))))
+    private val tradeWriter: StreamTradeCaseWriter = new StreamTradeCaseWriter(tradesPath, List[String]())
+
+    model.orderManagers.foreach(om=>om.listenTrades(tradeWriter))
+
+    private val orderWriter: StreamOrderWriter = new StreamOrderWriter(ordersPath)
+
+    model.orderManagers.foreach(om=>om.listenOrders(s=>orderWriter.apply(s.order)))
 
     log.info("Started ")
 
@@ -70,7 +63,7 @@ class ModelExecutionLauncher(val execConfig: ModelExecutionConfig) {
         for (k <- 0 until backtestConfig.instruments.length) {
             val k1 = k
             //!!!! assumed that market data provider works in the same thread
-            marketDataProvider.subscribeForTick(backtestConfig.instruments(k).ticker, (q: Tick) => marketDataDistributor.onTick(k1, q, null))
+            marketDataProvider.subscribeForTick(backtestConfig.instruments(k).ticker, (q: Tick) => bctx.marketDataDistributor.onTick(k1, q))
         }
         frequencer.start()
     }

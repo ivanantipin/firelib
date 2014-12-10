@@ -3,15 +3,13 @@ package firelib.common.report
 import java.nio.file.{Files, Paths, StandardCopyOption}
 
 import firelib.common.config.ModelBacktestConfig
+import firelib.common.core.ModelOutput
 import firelib.common.misc.{jsonHelper, statFileDumper}
-import firelib.common.model.Model
 import org.apache.commons.io.FileUtils
 
 import scala.collection.immutable.HashMap
 
-/**
 
- */
 object reportWriter {
 
     def clearReportDir(targetDir: String) : Unit = {
@@ -22,7 +20,7 @@ object reportWriter {
     }
 
 
-    def write(model: Model, cfg: ModelBacktestConfig, targetDir: String) : Unit = {
+    def write(model: ModelOutput, cfg: ModelBacktestConfig, targetDir: String) : Unit = {
 
         jsonHelper.serialize(cfg,Paths.get(targetDir, "cfg.json"))
 
@@ -30,16 +28,19 @@ object reportWriter {
 
         if (trades.length == 0) return
 
-        statFileDumper.writeRows(Paths.get(targetDir, "modelProps.properties").toAbsolutePath.toString,model.properties.map(a=>a._1 + "=" + a._2))
-
+        statFileDumper.writeRows(Paths.get(targetDir, "modelProps.properties").toAbsolutePath.toString,model.model.properties.map(a=>a._1 + "=" + a._2))
 
         var factors = if (trades(0).factors == null) new HashMap[String, String] else trades(0).factors
 
-        tradesCsvWriter.write(model, Paths.get(targetDir, "trades.csv").toAbsolutePath.toString, factors.map(_._1))
 
-        for(mangs <- model.orderManagers){
-            tradesCsvWriter.writeOrders(mangs.doneOrders, Paths.get(targetDir, "orders.csv").toAbsolutePath.toString)
-        }
+
+        val tradeWriter : StreamTradeCaseWriter = new StreamTradeCaseWriter(Paths.get(targetDir, "trades.csv").toAbsolutePath, factors.map(_._1))
+        tradeWriter.writeHeader()
+        model.trades.foreach(tradeWriter)
+
+        val orderWriter = new StreamOrderWriter(Paths.get(targetDir, "orders.csv").toAbsolutePath)
+        orderWriter.writeHeader()
+        model.orderStates.filter(_.status.isFinal).map(_.order).foreach(orderWriter)
 
         copyJarFileToReal("/StdReport.ipynb", Paths.get(targetDir,"StdReport.ipynb").toAbsolutePath.toString)
         copyJarFileToReal("/TradesReporter.py", Paths.get(targetDir,"TradesReporter.py").toAbsolutePath.toString)

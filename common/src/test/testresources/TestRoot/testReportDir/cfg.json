@@ -13,6 +13,7 @@
   "modelClassName" : "firelib.common.OhlcTestModel",
   "tickToTickFuncClass" : "firelib.common.ticknorm.NoOpTickToTick",
   "precacheMarketData" : false,
+  "networkSimulatedDelayMs" : 1,
   "modelParams" : { },
   "optConfig" : {
     "params" : [ ],

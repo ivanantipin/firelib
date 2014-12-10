@@ -1,116 +1,151 @@
 package firelib.common.marketstub
 
-import java.time.Instant
+import java.util
+import java.util.Comparator
+import java.util.function.{Function, ToDoubleFunction, ToIntFunction, ToLongFunction}
 
-import firelib.common.threading.ThreadExecutor
-import firelib.common.{DisposableSubscription, Order, OrderStatus, OrderType, Side, Trade, TradeGateCallback}
-
-import scala.collection.mutable.ArrayBuffer
-
-class TradeGateStub extends TradeGate with BidAskUpdatable{
-
-
-    private var bid,ask = Double.NaN
-
-    var dtGmt: Instant  =_
-
-    val orders = new ArrayBuffer[Order]()
-
-    private val delayedEvents = new ArrayBuffer[()=>Unit]()
-
-    private def middlePrice: Double = (bid + ask) / 2
+import firelib.common.misc.{DurableTopic, Topic}
+import firelib.common.timeservice.TimeService
+import firelib.common.{Order, OrderStatus, Side, Trade}
+import firelib.domain.OrderState
 
 
-    private val tradeGateCallbacks = ArrayBuffer[TradeGateCallback]()
+
+class NormComparator extends Comparator[OrderKey]{
+    override def compare(o1: OrderKey, o2: OrderKey): Int = {
+        if(o1.price == o2.price){
+            o1.id.compareTo(o2.id)
+        }else{
+            o1.price.compareTo(o2.price)
+        }
+    }
+    override def reversed(): Comparator[OrderKey] = super.reversed()
+    override def thenComparingDouble(keyExtractor: ToDoubleFunction[_ >: OrderKey]): Comparator[OrderKey] = super.thenComparingDouble(keyExtractor)
+    override def thenComparingInt(keyExtractor: ToIntFunction[_ >: OrderKey]): Comparator[OrderKey] = ???
+    override def thenComparing(other: Comparator[_ >: OrderKey]): Comparator[OrderKey] = ???
+    override def thenComparing[U](keyExtractor: Function[_ >: OrderKey, _ <: U], keyComparator: Comparator[_ >: U]): Comparator[OrderKey] = ???
+    override def thenComparingLong(keyExtractor: ToLongFunction[_ >: OrderKey]): Comparator[OrderKey] = ???
+}
+
+case class OrderKey(price : Long, id : String)
+
+case class OrderRec (val order : Order, val trdSubject : Topic[Trade], val ordSubject : Topic[OrderState])
+
+
+
+abstract class BookStub(val timeService : TimeService) {
+
+    protected var bid,ask = Double.NaN
+
+    def sellOrdering  : Comparator[OrderKey]
+    def buyOrdering  : Comparator[OrderKey]
+
+    def buyMatch(bid : Double, ask : Double, ordPrice : Double) : Boolean
+    def sellMatch(bid : Double, ask : Double, ordPrice : Double) : Boolean
+
+    def buyPrice(bid : Double, ask : Double, ordPrice : Double) : Double
+    def sellPrice(bid : Double, ask : Double, ordPrice : Double) : Double
+
+
+    def keyForOrder(order : Order) : OrderKey = new OrderKey(order.longPrice, order.id)
+
+    val buyOrders = new util.TreeMap[OrderKey,OrderRec](buyOrdering)
+
+    val sellOrders = new util.TreeMap[OrderKey,OrderRec](sellOrdering)
+
     /**
      * just order send
      */
-    override def sendOrder(order: Order): Unit = {
-        delayedEvents += (()=>{this.orders += order})
+    def sendOrder(order: Order): (Topic[Trade],Topic[OrderState]) = {
+        val el = OrderRec (order, new DurableTopic[Trade](),new DurableTopic[OrderState]())
+        val ords = if(order.side == Side.Buy) buyOrders else sellOrders
+        ords.put(keyForOrder(order),el)
+        checkOrders()
+        (el.trdSubject,el.ordSubject)
     }
 
+
     /**
-     * register callback to receive notifications about trades and order statuses
+     * just order cancel
      */
-    override def registerCallback(tgc: TradeGateCallback): DisposableSubscription = {
-        tradeGateCallbacks += tgc
-        return new DisposableSubscription {
-            override def unsubscribe(): Unit = tradeGateCallbacks -= tgc
-        }
+    def cancelOrder(order : Order): Unit = {
+        val ords = if(order.side == Side.Buy) buyOrders else sellOrders
+        val rec: OrderRec = ords.remove(keyForOrder(order))
+        rec.ordSubject.publish(new OrderState(order,OrderStatus.Cancelled,timeService.currentTime))
     }
 
-    /**
-     * pass configuration params to gate
-     * usually it is user/password, broker port and url etc
-     */
-    override def configure(config: Map[String, String], callbackExecutor: ThreadExecutor): Unit = {}
-
-    /**
-     * just order cancel by id
-     */
-    override def cancelOrder(orderId: String): Unit = {
-        delayedEvents += (()=>{
-            val ord = orders.find(_.id == orderId)
-            assert(ord.isDefined,"no order with id " + orderId)
-            orders -= ord.get
-            tradeGateCallbacks.foreach(_.onOrderStatus(ord.get, OrderStatus.Cancelled))
-        })
-    }
-
-    /**
-     * need to run start to finish initialization
-     */
-    override def start(): Unit = {}
-
-
-
-    def updateBidAskAndTime(bid: Double, ask: Double, dtGmt:Instant) = {
+    def updateBidAsk(bid: Double, ask: Double) = {
         this.bid = bid
         this.ask = ask
-        this.dtGmt = dtGmt
-        playEvents()
         checkOrders()
     }
 
     def checkOrders() : Unit = {
-        var i = orders.size - 1;
-        while(i >= 0){
-            val ord = orders(i)
-            checkOrderAndGetTradePrice(ord) match {
-                case None =>
-                case Some(price)=>{
-                    tradeGateCallbacks.foreach(_.onTrade(new Trade(ord.qty, price, ord.side, ord, dtGmt)))
-                    orders.remove(i)
-                    tradeGateCallbacks.foreach(_.onOrderStatus(ord, OrderStatus.Done))
-                }
+        checkOrders(buyOrders,buyMatch(bid,ask,_),buyPrice(bid,ask,_))
+        checkOrders(sellOrders,sellMatch(bid,ask,_),sellPrice(bid,ask,_))
+    }
+
+    def checkOrders(ords : util.TreeMap[OrderKey,OrderRec], matchFunc : Double=>Boolean, priceFunc : Double=>Double) : Unit = {
+        val iter = ords.entrySet().iterator()
+        var flag = true
+        while(iter.hasNext && flag){
+            val rec = iter.next().getValue
+            if(matchFunc(rec.order.price)){
+                iter.remove()
+                rec.trdSubject.publish(new Trade(rec.order.qty, priceFunc(rec.order.price), rec.order, timeService.currentTime))
+                rec.ordSubject.publish(new OrderState(rec.order, OrderStatus.Done, timeService.currentTime))
+            }else{
+                flag = false
             }
-            i-=1
         }
     }
+}
 
-    private def playEvents() = {
-        if(delayedEvents.nonEmpty){
-            val funcs: Array[() => Unit] = delayedEvents.toArray
-            delayedEvents.clear()
-            funcs.foreach(_())
-        }
+trait StopOBook {
+    def sellOrdering  : Comparator[OrderKey] = new NormComparator().reversed()
+    def buyOrdering  : Comparator[OrderKey] = new NormComparator
+
+    def buyMatch(bid : Double, ask : Double, ordPrice : Double) = ordPrice < (bid + ask)/2
+    def sellMatch(bid : Double, ask : Double, ordPrice : Double) = ordPrice > (bid + ask)/2
+
+    def buyPrice(bid : Double, ask : Double, ordPrice : Double) = ask
+    def sellPrice(bid : Double, ask : Double, ordPrice : Double) = bid
+
+}
+
+trait LimitOBook {
+    def sellOrdering  : Comparator[OrderKey] = new NormComparator()
+    def buyOrdering  : Comparator[OrderKey] = new NormComparator().reversed()
+
+    def buyMatch(bid : Double, ask : Double, ordPrice : Double) = ordPrice >= ask
+    def sellMatch(bid : Double, ask : Double, ordPrice : Double) = ordPrice <= bid
+
+    def buyPrice(bid : Double, ask : Double, ordPrice : Double) = ordPrice
+    def sellPrice(bid : Double, ask : Double, ordPrice : Double) = ordPrice
+
+}
+
+
+
+class MarketOrderStub(val timeService : TimeService) {
+
+    protected var bid,ask = Double.NaN
+
+    def price(side : Side) : Double = if(side == Side.Sell) bid else ask
+
+    /**
+     * just order send
+     */
+    def sendOrder(order: Order): (Topic[Trade],Topic[OrderState]) = {
+        val ret = (new DurableTopic[Trade](),new DurableTopic[OrderState]())
+        ret._1.publish(new Trade(order.qty, price(order.side), order, timeService.currentTime))
+        ret._2.publish(new OrderState(order, OrderStatus.Done, timeService.currentTime))
+        ret
     }
 
 
-    def checkOrderAndGetTradePrice(ord: Order): Option[Double] = {
-
-        (ord.orderType, ord.side) match {
-            case (OrderType.Market,Side.Buy) => Some(ask)
-            case (OrderType.Market,Side.Sell) => Some(bid)
-
-            case (OrderType.Stop,Side.Buy) if middlePrice > ord.price => Some(ask)
-            case (OrderType.Stop,Side.Sell) if middlePrice < ord.price=> Some(bid)
-
-            case (OrderType.Limit,Side.Buy) if ask < ord.price => Some(ord.price)
-            case (OrderType.Limit,Side.Sell) if bid > ord.price=> Some(ord.price)
-            case _ => None
-        }
-
+    def updateBidAsk(bid: Double, ask: Double) = {
+        this.bid = bid
+        this.ask = ask
     }
-
 }

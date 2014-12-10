@@ -11,9 +11,6 @@ import firelib.common.reader.binary.{BinaryReaderRecordDescriptor, OhlcDesc, Tic
 import firelib.domain.{Ohlc, Tick, Timed}
 import firelib.parser.{CsvParser, LegacyMarketDataFormatLoader, ParseHandler, ParserHandlersProducer}
 
-/**
-
- */
 trait ReadersFactoryComponent {
 
     this : ModelConfigContext =>
@@ -55,17 +52,13 @@ trait ReadersFactoryComponent {
             }
         }
 
-        override def apply(tickerIds: Seq[InstrumentConfig], startDtGmt: Instant): Seq[MarketDataReader[Timed]] = {
-            return tickerIds.map(t=>{
-                val parser =
-                    if (t.mdType == MarketDataType.Tick)
-                        createReader[Tick](t, tickFactory, tickDescr)
-                    else
-                        createReader[Ohlc](t, ohlcFactory, ohlcDescr)
-                assert(parser.seek(startDtGmt), "failed to find start date " + startDtGmt)
-                parser
-            })
-
+        override def apply(t: InstrumentConfig, startDtGmt: Instant): MarketDataReader[Timed] = {
+            val parser = if (t.mdType == MarketDataType.Tick)
+                    createReader[Tick](t, tickFactory, tickDescr)
+                else
+                    createReader[Ohlc](t, ohlcFactory, ohlcDescr)
+            assert(parser.seek(startDtGmt), "failed to find start date " + startDtGmt)
+            parser
         }
     }
 

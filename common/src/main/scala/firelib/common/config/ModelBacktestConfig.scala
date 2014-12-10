@@ -32,6 +32,8 @@ class ModelBacktestConfig {
 
     var precacheMarketData : Boolean = false
 
+    var networkSimulatedDelayMs = 1l
+
     /**
      * params passed to model apply method
      * can not be optimized

@@ -19,7 +19,7 @@ trait TimeBoundsCalculatorComponent {
         def calcStartDate(cfg: ModelBacktestConfig): Instant = {
             var startDtGmt = if (cfg.startDateGmt == null) Instant.EPOCH else cfg.startDateGmt.parseStandard
 
-            val readers = readersFactory.apply(cfg.instruments, startDtGmt)
+            val readers = cfg.instruments.map(c=>readersFactory.apply(c, startDtGmt))
 
             val maxReadersStartDate = readers.maxBy(r =>r.current.DtGmt.getEpochSecond).current.DtGmt
 

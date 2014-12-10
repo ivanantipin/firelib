@@ -15,7 +15,7 @@ import scala.collection.mutable.ArrayBuffer
 
 
 
-class TickTestModel extends BasketModel with MarketDataListener {
+class TickTestModel extends BasketModel {
 
     var endTime = Instant.MIN
 
@@ -26,13 +26,14 @@ class TickTestModel extends BasketModel with MarketDataListener {
     val uniqTimes = new util.HashSet[Instant]()
 
 
-    override def applyProperties(mprops: Map[String, String]) = {
+    override def applyProperties(mprops: Map[String, String]) : Boolean = {
         testHelper.instanceTick = this
 
-        hist = mdDistributor.activateOhlcTimeSeries(0, Interval.Min5, 10)
+        hist = enableOhlcHistory(Interval.Min5, 10)(0)
         hist.listen(On5Min)
 
-        mdDistributor.addMdListener(this)
+        bindComp.marketDataDistributor.listenTicks(0,onTick)
+        true
     }
 
 
@@ -50,7 +51,7 @@ class TickTestModel extends BasketModel with MarketDataListener {
 
     val ticks = new ArrayBuffer[Tick]()
 
-    def onTick(idx: Int, tick: Tick, next: Tick) = {
+    def onTick(tick: Tick) : Unit = {
         NumberOfTickes += 1
         assert(!uniqTimes.contains(tick.DtGmt),"dupe time " + tick.DtGmt)
         uniqTimes.add(tick.DtGmt)

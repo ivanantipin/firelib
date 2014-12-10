@@ -2,74 +2,118 @@ package firelib.common.core
 
 import java.time.Instant
 
-import firelib.common.config.InstrumentConfig
+import firelib.common.MarketDataType
+import firelib.common.agenda.AgendaComponent
+import firelib.common.interval.IntervalServiceComponent
 import firelib.common.mddistributor.MarketDataDistributorComponent
-import firelib.common.reader.{MarketDataReader, ReaderToListenerAdapter, ReaderToListenerAdapterImpl, ReadersFactoryComponent}
+import firelib.common.reader.{MarketDataReader, ReadersFactoryComponent}
 import firelib.common.timeboundscalc.TimeBoundsCalculatorComponent
-import firelib.common.{MarketDataListener, MarketDataType}
+import firelib.common.timeservice.TimeServiceManagedComponent
 import firelib.domain.{Ohlc, Tick, Timed}
 
-trait BacktestComponent{
+trait BacktestComponent {
 
-    this : TimeBoundsCalculatorComponent
-    with ModelConfigContext
-    with ReadersFactoryComponent
-    with StepServiceComponent
-    with MarketDataDistributorComponent
-    with BindModelComponent=>
+    this: TimeBoundsCalculatorComponent
+      with ModelConfigContext
+      with ReadersFactoryComponent
+      with MarketDataDistributorComponent
+      with BindModelComponent
+      with TimeServiceManagedComponent
+      with AgendaComponent
+      with IntervalServiceComponent =>
 
     val backtest = new Backtest
 
-    class Backtest{
-        def backtest() : Instant = {
-            val bounds = timeBoundsCalculator.apply(modelConfig)
-            val readers: Seq[MarketDataReader[Timed]] = readersFactory.apply(modelConfig.instruments, bounds._1)
-            var tickerPlayers: Seq[ReaderToListenerAdapter]= wrapReadersWithAdapters(readers, modelConfig.instruments)
-            tickerPlayers.foreach(_.addListener(marketDataDistributor))
-            var dtGmtcur = bounds._1
-            while (dtGmtcur.isBefore(bounds._2) && step(tickerPlayers,dtGmtcur)) {
-                dtGmtcur = dtGmtcur.plusMillis(modelConfig.stepInterval.durationMs)
+    class Backtest {
+
+
+        def stepFunc() : Unit = {
+            intervalService.onStep(timeServiceManaged.currentTime)
+            val nextTime = timeServiceManaged.currentTime.plus(modelConfig.stepInterval.duration)
+            agenda.addEvent(nextTime, stepFunc)
+        }
+
+        var readEnd = false
+
+        val readerFunctions = new Array[()=>Unit](modelConfig.instruments.length)
+
+        def backtest(): Unit = {
+
+            prep()
+
+            while (!readEnd){
+                agenda.next()
             }
+
             models.foreach(_.onBacktestEnd())
-            tickerPlayers.foreach(_.close())
-            dtGmtcur
         }
 
-        def stepTill(startDtGmt : Instant, endDtGmt : Instant): Unit = {
-            var dtGmtcur = startDtGmt
-            while (dtGmtcur.isBefore(endDtGmt)) {
-                stepService.onStep(dtGmtcur)
-                dtGmtcur = dtGmtcur.plusMillis(modelConfig.stepInterval.durationMs)
+        def stepUntil(dtEnd : Instant): Unit = {
+            while (timeServiceManaged.dtGmt.isBefore(dtEnd)){
+                agenda.next()
             }
         }
 
-        def step(tickerPlayers: Seq[ReaderToListenerAdapter], chunkEndGmt: Instant): Boolean = {
-            for (i <- 0 until tickerPlayers.length) {
-                if (!tickerPlayers(i).readUntil(chunkEndGmt)) {
-                    return false
+
+
+        def prep() {
+            val bounds = timeBoundsCalculator.apply(modelConfig)
+            val readers: Seq[MarketDataReader[Timed]] = modelConfig.instruments.map(readersFactory(_, bounds._1))
+
+            timeServiceManaged.dtGmt = Instant.EPOCH
+
+            for (idx <- 0 until modelConfig.instruments.length) {
+
+                if (modelConfig.instruments(idx).mdType == MarketDataType.Ohlc) {
+                    ohlcLambda(readers, idx)
+                } else {
+                    tickLambda(readers, idx)
                 }
             }
-            stepService.onStep(chunkEndGmt)
-            return true
+
+            val time: Instant = modelConfig.stepInterval.roundTime(bounds._1)
+
+            agenda.addEvent(time, stepFunc)
         }
 
-        def appFuncOhlc(lsn: MarketDataListener, idx: Int, curr: Ohlc, next: Ohlc): Unit = lsn.onOhlc(idx, curr, next)
+        def tickLambda(readers: Seq[MarketDataReader[Timed]], idx: Int) {
+            val reader: MarketDataReader[Tick] = readers(idx).asInstanceOf[MarketDataReader[Tick]]
+            readerFunctions(idx) = () => {
+                marketDataDistributor.onTick(idx, reader.current)
 
-        def appFuncTick(lsn: MarketDataListener, idx: Int, curr: Tick, next: Tick): Unit = lsn.onTick(idx, curr, next)
+                while (reader.read() && reader.current.dtGmt == timeServiceManaged.currentTime) {
+                    marketDataDistributor.onTick(idx, reader.current)
+                }
 
-
-
-        def wrapReadersWithAdapters(readers: Seq[MarketDataReader[Timed]], tickerCfgs: Seq[InstrumentConfig]): Seq[ReaderToListenerAdapter] = {
-            return readers.zipWithIndex.map(t => {
-                val cfg: InstrumentConfig = tickerCfgs(t._2)
-                if (cfg.mdType == MarketDataType.Ohlc)
-                    new ReaderToListenerAdapterImpl[Ohlc](t._1.asInstanceOf[MarketDataReader[Ohlc]], t._2, appFuncOhlc)
-                else
-                    new ReaderToListenerAdapterImpl[Tick](t._1.asInstanceOf[MarketDataReader[Tick]], t._2, appFuncTick)
-            })
+                if (reader.current == null) {
+                    readEnd = true
+                } else {
+                    agenda.addEvent(reader.current.DtGmt, readerFunctions(idx))
+                }
+            }
+            if (reader.current != null) {
+                agenda.addEvent(reader.current.DtGmt, readerFunctions(idx))
+            } else {
+                readEnd = true
+            }
         }
 
+        def ohlcLambda(readers: Seq[MarketDataReader[Timed]], idx: Int) {
+            val reader: MarketDataReader[Ohlc] = readers(idx).asInstanceOf[MarketDataReader[Ohlc]]
+            readerFunctions(idx) = () => {
+                marketDataDistributor.onOhlc(idx, reader.current)
+                if (!reader.read()) {
+                    readEnd = true
+                } else {
+                    agenda.addEvent(reader.current.DtGmt, readerFunctions(idx))
+                }
+            }
+            if (reader.current != null) {
+                agenda.addEvent(reader.current.dtGmtEnd, readerFunctions(idx))
+            } else {
+                readEnd = true
+            }
+        }
     }
-
 
 }

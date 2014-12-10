@@ -2,28 +2,19 @@ package firelib.common
 
 import java.time.Instant
 
-import firelib.common.misc.utils
+import firelib.common.misc.{dateUtils, utils}
 
-import scala.collection.mutable.ArrayBuffer
-
-
-class Order(val orderType: OrderType, val price: Double, val qty: Int, val side: Side, val security : String, val id: String) {
+case class Order(val orderType: OrderType, val price: Double, val qty: Int, val side: Side, val security : String, val id: String, val placementTime: Instant) {
     
-    assert(qty > 0, "order qty must be > 0!!")
-    assert(price > 0 || orderType == OrderType.Market, "price must be > 0!!")
-    assert(id != null, "id must be not null!!")
-    assert(security != null, "security must be not null!!")
+    assert(qty > 0, "order qty <= 0!!")
+    assert(price > 0 || orderType == OrderType.Market, "price <=  0!!")
+    assert(id != null, "id is null!!")
+    assert(security != null, "security is null!!")
+    assert(placementTime != null, "placement time is null!!")
 
-    var placementTime: Instant = _
-    var reason: String = _
-    def status = statuses.last
-    val trades = new ArrayBuffer[Trade]()
-    val statuses = new ArrayBuffer[OrderStatus]()
-    statuses += OrderStatus.New
+    val longPrice = (price *1000000).toLong
 
-
-
-    def remainingQty : Int = qty - trades.map(_.qty).sum
-
-    override def toString: String = s"Order(price=${utils.dbl2Str(price,6)} qty=$qty side=$side type=$orderType orderId=$id sec=$security)"
+    override def toString: String = s"Order(price=${utils.dbl2Str(price,6)} qty=$qty side=$side type=$orderType orderId=$id sec=$security time=${dateUtils.toStandardString(placementTime)}})"
 }
+
+

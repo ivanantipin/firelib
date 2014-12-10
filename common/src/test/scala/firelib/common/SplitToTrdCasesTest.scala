@@ -13,12 +13,12 @@ class SplitToTrdCasesTest {
     def TestSplittingToCases() = {
 
         val trds = List(
-            new Trade(1, 10, Side.Buy, new Order(OrderType.Market, 1, 10, Side.Buy,"sec","id"), Instant.now()),
-            new Trade(2, 11, Side.Buy, new Order(OrderType.Market, 2, 11, Side.Buy,"sec","id"), Instant.now()),
-            new Trade(3, 12, Side.Buy, new Order(OrderType.Market, 3, 12, Side.Buy,"sec","id"), Instant.now()),
-            new Trade(1, 13, Side.Sell, new Order(OrderType.Market, 1, 13, Side.Sell,"sec","id"), Instant.now()),
-            new Trade(2, 14, Side.Sell, new Order(OrderType.Market, 2, 14, Side.Sell,"sec","id"), Instant.now()),
-            new Trade(3, 15, Side.Sell, new Order(OrderType.Market, 3, 15, Side.Sell,"sec","id"), Instant.now())
+            new Trade(1, 10, new Order(OrderType.Market, 1, 10, Side.Buy,"sec","id", Instant.now()), Instant.now()),
+            new Trade(2, 11, new Order(OrderType.Market, 2, 11, Side.Buy,"sec","id", Instant.now()), Instant.now()),
+            new Trade(3, 12, new Order(OrderType.Market, 3, 12, Side.Buy,"sec","id", Instant.now()), Instant.now()),
+            new Trade(1, 13, new Order(OrderType.Market, 1, 13, Side.Sell,"sec","id", Instant.now()), Instant.now()),
+            new Trade(2, 14, new Order(OrderType.Market, 2, 14, Side.Sell,"sec","id", Instant.now()), Instant.now()),
+            new Trade(3, 15, new Order(OrderType.Market, 3, 15, Side.Sell,"sec","id", Instant.now()), Instant.now())
         )
 
         var tcs = utils.toTradingCases(trds)

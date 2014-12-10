@@ -1,81 +1,55 @@
 package firelib.common.core
 
-import java.io.{FileOutputStream, OutputStreamWriter}
-import java.nio.file.Paths
-import java.time.Instant
-import java.time.temporal.ChronoUnit
+import java.io.{BufferedOutputStream, OutputStreamWriter}
+import java.nio.file.StandardOpenOption._
+import java.nio.file.{Files, Path}
+import java.time.Duration
 
+import firelib.common.OrderStatus
 import firelib.common.config.ModelBacktestConfig
 import firelib.common.interval.Interval
-import firelib.common.misc.{dateUtils, utils}
-import firelib.common.model.Model
+import firelib.common.misc.dateUtils._
+import firelib.common.misc.{NonDurableTopic, utils}
 import firelib.common.report.reportWriter
-import firelib.common.timeseries.TimeSeries
-import firelib.common.{Order, Trade, TradeGateCallbackAdapter}
 import firelib.domain.Ohlc
 
-class MdReportWriter (val ctx: SimpleRunCtx, val model : Model, val period : Int){
 
-    val tss = new Array[TimeSeries[Ohlc]](model.orderManagers.size)
+class MDWriter(val ctx : SimpleRunCtx, val path : Path){
 
-    var writeUntil : Instant = Instant.MIN
+    val colsDef = List[(String,Ohlc=>String)](
+        ("DT",o=>o.dtGmtEnd.toStandardString),
+        ("O",o=>utils.dbl2Str(o.O,5)),
+        ("H",o=>utils.dbl2Str(o.H,5)),
+        ("L",o=>utils.dbl2Str(o.L,5)),
+        ("C",o=>utils.dbl2Str(o.C,5))
+    )
 
-    var writers = model.orderManagers.map(om=>{
-        val stream: FileOutputStream = new FileOutputStream(Paths.get(ctx.modelConfig.reportTargetPath,om.security).toFile)
-        new OutputStreamWriter(stream)
+    val eventTopic: NonDurableTopic[Any] = new NonDurableTopic[Any]
+
+    val inTopic = new NonDurableTopic[Ohlc]()
+    val outTopic = new NonDurableTopic[Ohlc]()
+
+    ctx.marketDataDistributor.activateOhlcTimeSeries(0,Interval.Min1,1).listen(ts=>inTopic.publish(ts(0)))
+
+    val slicer = new WindowSlicer[Ohlc](outTopic, inTopic, eventTopic, Duration.ofMinutes(500))
+
+    ctx.models(0).orderManagers(0).listenTrades(t=>eventTopic.publish(t))
+    ctx.models(0).orderManagers(0).listenOrders(os=>{
+        if(os.status == OrderStatus.New){
+            eventTopic.publish(os)
+        }
     })
 
-    writers.foreach(_.write("Date,O,H,L,C\n"))
+    val stream =  new OutputStreamWriter(new BufferedOutputStream(Files.newOutputStream(path, CREATE, APPEND)))
 
-    val lastWritten = Array.fill[Ohlc](model.orderManagers.size) ({new Ohlc{
-        dtGmtEnd = Instant.MIN
-    }})
+    outTopic.subscribe(write(_))
 
-    def write(ohlc : Ohlc, idx : Int) : Unit ={
-        var lst = List[String](dateUtils.toStandardString(ohlc.dtGmtEnd))
-        lst = lst :+ utils.dbl2Str(ohlc.O,6) :+ utils.dbl2Str(ohlc.H,6) :+ utils.dbl2Str(ohlc.L,6) :+ utils.dbl2Str(ohlc.C,6)
-        writers(idx).write(lst.mkString(",") + "\n")
-        lastWritten(idx) = ohlc
+    def write(ohlc : Ohlc): Unit = {
+        stream.write(colsDef.map(_._2).map(_(ohlc)).mkString(";") :+ '\n')
+        stream.flush()
     }
-
-    for(i <-0 until model.orderManagers.size){
-        tss(i) = ctx.marketDataDistributor.activateOhlcTimeSeries(i,Interval.Min1,period)
-        tss(i).listen(t=>{
-            if(writeUntil.isAfter(tss(i)(0).DtGmt)){
-                write(t.last,i)
-            }
-        })
-        model.orderManagers(i).addCallback(new TradeGateCallbackAdapter(t=>onTrade(t,i),o=>onOrder(o,i)))
-    }
-
-    def onTrade(trade: Trade, i: Int): Unit = {
-        writeOnEvent()
-
-    }
-
-    def writeOnEvent() {
-        writeUntil = tss(0)(0).DtGmt.plus(period, ChronoUnit.MINUTES)
-        for (i <- 0 until tss
-          .length) {
-            for (j <- -period to 0) {
-                val ohlc: Ohlc = tss(i)(j)
-                if (lastWritten(i).DtGmt.isBefore(ohlc.dtGmtEnd)) {
-                    write(ohlc, i)
-                }
-            }
-        }
-    }
-
-    def onOrder(order: Order, i: Int): Unit = {
-        writeOnEvent()
-    }
-
-
-    def flash() : Unit = {
-        writers.foreach(w=>{w.flush();w.close()})
-    }
-
 }
+
 
 class BacktesterSimple  {
 
@@ -88,16 +62,14 @@ class BacktesterSimple  {
 
         ctx.init()
 
-        val model: Model = ctx.bindModelForParams(cfg.modelParams.toMap)
+        val output: ModelOutput = new ModelOutput(ctx.bindModelForParams(cfg.modelParams.toMap))
 
-        val writer: MdReportWriter = new MdReportWriter(ctx,model,20)
+        //new MDWriter(ctx,Paths.get(cfg.reportTargetPath).resolve("ohlcs.csv"))
+
 
         ctx.backtest.backtest()
 
-        writer.flash()
-
-        reportWriter.write(ctx.models(0), cfg, cfg.reportTargetPath)
-
+        reportWriter.write(output, cfg, cfg.reportTargetPath)
     }
 
 }

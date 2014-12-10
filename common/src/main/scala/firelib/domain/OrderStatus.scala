@@ -11,7 +11,7 @@ object OrderStatus {
 
 }
 
-sealed class OrderStatus private (val Name: String) {
+sealed case class OrderStatus private (val Name: String) {
 
     def isFinal: Boolean = this == OrderStatus.Rejected || this == OrderStatus.Done || this == OrderStatus.Cancelled
 
@@ -22,6 +22,3 @@ sealed class OrderStatus private (val Name: String) {
     override def toString: String = Name
 
 }
-
-
-

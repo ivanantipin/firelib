@@ -68,6 +68,7 @@ class BinaryReader[T <: Timed](val fileName : String, desc : BinaryReaderRecordD
     override def read(): Boolean = {
         if(buffer.position() == buffer.limit()){
             if(fileChannel.position() == fileChannel.size()){
+                curr = null.asInstanceOf[T]
                 return false
             }
             buffer.clear()

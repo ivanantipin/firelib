@@ -7,11 +7,12 @@ import java.util.concurrent.{Executors, LinkedBlockingQueue, TimeUnit}
 
 import com.ib.client
 import com.ib.client.{Contract, Execution, TagValue}
+import firelib.common._
 import firelib.common.marketstub.TradeGate
+import firelib.common.misc.{DurableTopic, Topic}
 import firelib.common.threading.ThreadExecutor
-import firelib.common.{TradeGateCallback, _}
-import firelib.domain.{Ohlc, Tick}
-import firelib.execution.MarketDataProvider
+import firelib.domain.{OrderState, Tick}
+import firelib.execution.{Configurable, MarketDataProvider}
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable
@@ -22,8 +23,7 @@ import scala.collection.mutable.ArrayBuffer
  * IMPORTANT!! - all code must run in thread executor provided on creation
  *
  */
-class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
-    val tradeGateCallbacks = new ArrayBuffer[TradeGateCallback]()
+class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider with Configurable{
     val orders = new ArrayBuffer[OrderEntry]()
 
     var port: Int = _
@@ -36,8 +36,10 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
 
     private val orderIdQueue = new LinkedBlockingQueue[Integer]()
 
+    val executor = Executors.newSingleThreadScheduledExecutor()
 
-    case class OrderEntry(fireLibOrder: Order, ibOrder: com.ib.client.Order, ibId: Int)
+
+    case class OrderEntry(fireLibOrder: Order, ibOrder: com.ib.client.Order, ibId: Int, tradeSubj : Topic[Trade] , orderSubj : Topic[OrderState])
 
     private def nextOrderId: Option[Int] = {
         log.info("requesting order for client id " + clientId)
@@ -66,41 +68,36 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
     }
 
 
-    def sendOrder(order: Order): Unit = {
+    def sendOrder(order: Order): (Topic[Trade],Topic[OrderState]) = {
         log.info("sending order " + order)
+        val ret = (new DurableTopic[Trade], new DurableTopic[OrderState])
         nextOrderId match{
             case Some(orderId) =>{
                 val ibOrder = convertOrder(order)
-                orders += new OrderEntry(order, ibOrder, orderId)
+                orders += new OrderEntry(order, ibOrder, orderId, ret._1, ret._2)
                 clientSocket.placeOrder(orderId, parse(order.security), ibOrder)
                 log.info("order placed to socket  " + order + " order id is " + orderId)
             }
             case None =>{
                 log.error("failed to get next available order id, rejecting order " + order)
-                callbackExecutor.execute(() => tradeGateCallbacks.foreach(_.onOrderStatus(order, OrderStatus.Rejected)))
+                ret._2.publish(new OrderState(order,OrderStatus.Rejected,Instant.now()))
             }
         }
+        ret
     }
 
-    def cancelOrder(orderId: String): Unit = {
-        log.info("cancelling order " + orderId)
-        orders.find(_.fireLibOrder.id == orderId) match {
+    def cancelOrder(order: Order): Unit = {
+        log.info("cancelling order " + order)
+        orders.find(_.fireLibOrder.id == order.id) match {
             case Some(e) => {
                 clientSocket.cancelOrder(e.ibId)
                 log.info("order cancel placed to socket  " + e)
             }
-            case None => log.error("failed to find order for id " + orderId)
+            case None => log.error("failed to find order for id " + order)
         }
     }
 
-    def registerCallback(tgc: TradeGateCallback) = {
-        tradeGateCallbacks += tgc
-        new DisposableSubscription(){
-            override def unsubscribe(): Unit = tradeGateCallbacks -= tgc
-        }
-    }
-
-    def configure(config: Map[String, String],callbackExecutor: ThreadExecutor) = {
+    override def start(config: Map[String, String],callbackExecutor: ThreadExecutor) = {
         val props = new Properties();
         props.load(getClass().getResourceAsStream("/contract.properties"))
         this.symbolMapping = props.toMap
@@ -108,6 +105,11 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
         port = config("port").toInt
         clientId = config("client.id").toInt
         this.callbackExecutor = callbackExecutor
+        executor.scheduleAtFixedRate(new Runnable {
+            override def run(): Unit = heartBeat()
+        }, 8, 8, TimeUnit.HOURS)
+        connect()
+
     }
 
     private def heartBeat() = {
@@ -129,17 +131,6 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
         })
     }
 
-    val executor = Executors.newSingleThreadScheduledExecutor()
-
-
-
-    def start() = {
-        executor.scheduleAtFixedRate(new Runnable {
-            override def run(): Unit = heartBeat()
-        }, 8, 8, TimeUnit.HOURS)
-        connect()
-    }
-
     private def connect() = {
         clientSocket.eConnect("127.0.0.1", port, clientId)
         var cnt = 0
@@ -159,9 +150,7 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
 
             orders.find(_.ibId == execution.m_orderId) match {
                 case None => log.error("execution, no order found for ib order id " + execution.m_orderId)
-                case Some(entr) => tradeGateCallbacks.foreach(_.onTrade(new Trade(execution.m_shares, execution.m_price, entr.fireLibOrder.side, entr.fireLibOrder,
-                    Instant.now())))
-
+                case Some(entr) => entr.tradeSubj.publish(new Trade(execution.m_shares, execution.m_price, entr.fireLibOrder,Instant.now()))
             }
         })
     }
@@ -185,7 +174,7 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
             val entr = entrOpt.get
 
             /*
-                      *      PendingSubmit - indicates that you have transmitted the order, but have not yet received confirmation that it has been accepted by the order destination. NOTE: This order status is not sent by TWS and should be explicitly set by the API developer when an order is submitted.
+                     *      PendingSubmit - indicates that you have transmitted the order, but have not yet received confirmation that it has been accepted by the order destination. NOTE: This order status is not sent by TWS and should be explicitly set by the API developer when an order is submitted.
                      *      PendingCancel - indicates that you have sent a request to cancel the order but have not yet received cancel confirmation from the order destination. At this point, your order is not confirmed canceled. You may still receive an execution while your cancellation request is pending. NOTE: This order status is not sent by TWS and should be explicitly set by the API developer when an order is canceled.
                      *      PreSubmitted - indicates that a simulated order type has been accepted by the IB system and that this order has yet to be elected. The order is held in the IB system until the election criteria are met. At that time the order is transmitted to the order destination as specified .
                      *      Submitted - indicates that your order has been accepted at the order destination and is working.
@@ -200,13 +189,15 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
 
                 case ("PendingSubmit" | "PendingCancel") =>
 
-                case "Inactive" => tradeGateCallbacks.foreach(_.onOrderStatus(entr.fireLibOrder, OrderStatus.Rejected))
 
-                case ("PreSubmitted" | "Submitted") => tradeGateCallbacks.foreach(_.onOrderStatus(entr.fireLibOrder, OrderStatus.Accepted))
 
-                case ("Cancelled" | "ApiCancelled" | "ApiCanceled") => tradeGateCallbacks.foreach(_.onOrderStatus(entr.fireLibOrder, OrderStatus.Cancelled))
+                case "Inactive" =>  entr.orderSubj.publish(new OrderState(entr.fireLibOrder,OrderStatus.Rejected,Instant.now()))
 
-                case "Filled" => tradeGateCallbacks.foreach(_.onOrderStatus(entr.fireLibOrder, OrderStatus.Done))
+                case ("PreSubmitted" | "Submitted") => entr.orderSubj.publish(new OrderState(entr.fireLibOrder,OrderStatus.Accepted,Instant.now()))
+
+                case ("Cancelled" | "ApiCancelled" | "ApiCanceled") => entr.orderSubj.publish(new OrderState(entr.fireLibOrder,OrderStatus.Cancelled,Instant.now()))
+
+                case "Filled" => entr.orderSubj.publish(new OrderState(entr.fireLibOrder,OrderStatus.Done,Instant.now()))
 
             }
         })
@@ -331,10 +322,6 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider {
                 }
             }
         })
-
-    }
-
-    override def subscribeForOhlc(tickerId: String, lsn: (Ohlc) => Unit): Unit = {
 
     }
 }

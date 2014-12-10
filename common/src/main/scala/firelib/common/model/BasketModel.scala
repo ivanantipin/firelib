@@ -2,12 +2,12 @@ package firelib.common.model
 
 import java.time.Instant
 
-import firelib.common.Trade
+import firelib.common.core.BindModelComponent
 import firelib.common.interval.Interval
 import firelib.common.marketstub.OrderManager
-import firelib.common.mddistributor.MarketDataDistributor
-import firelib.common.model.withTradeUtils.WithTradeUtils
+import firelib.common.mddistributor.MarketDataDistributorComponent
 import firelib.common.timeseries.TimeSeries
+import firelib.common.timeservice.TimeServiceComponent
 import firelib.domain.Ohlc
 
 import scala.collection.immutable.IndexedSeq
@@ -21,29 +21,19 @@ abstract class BasketModel extends Model{
      */
     private var modelProperties: Map[String, String] = _
 
-    protected var mdDistributor: MarketDataDistributor = _
+    protected def currentTime: Instant  = bindComp.timeService.currentTime
 
-    /**
-     * this variable holds current time
-     */
-    protected var dtGmt: Instant  = Instant.MIN
+    var orderManagersFld: Array[OrderManager] =_
 
-
-    private var oms: Array[OrderManager] =_
+    var bindComp : BindModelComponent with TimeServiceComponent with MarketDataDistributorComponent = null
 
     override def properties: Map[String, String] = modelProperties
 
     override def name: String = getClass.getName
 
-    override def orderManagers: Seq[OrderManager] = oms
+    override def orderManagers: Seq[OrderManager] = orderManagersFld
 
-    override def trades: Seq[Trade] = oms.flatMap(_.trades)
-
-    override def hasValidProps() = true
-
-    override def initModel(modelProps: Map[String, String], oms: Seq[OrderManager], distr: MarketDataDistributor) = {
-        mdDistributor = distr
-        this.oms = oms.toArray
+    override def initModel(modelProps: Map[String, String]) : Boolean = {
         modelProperties = modelProps
         applyProperties(modelProps)
     }
@@ -54,23 +44,20 @@ abstract class BasketModel extends Model{
      * @return return sequence of TimeSeries objects
      */
     protected def enableOhlcHistory(intr: Interval, lengthToMaintain: Int = -1): IndexedSeq[TimeSeries[Ohlc]] = {
-        return (0 until oms.length).map(mdDistributor.activateOhlcTimeSeries(_, intr, lengthToMaintain))
+        return (0 until orderManagers.length).map(bindComp.marketDataDistributor.activateOhlcTimeSeries(_, intr, lengthToMaintain))
     }
 
     /**
      * method to provide parameters to model
      * @param mprops - configuration params to model
+     * returns false if parameters are invalid
      */
-    protected def applyProperties(mprops: Map[String, String])
+    protected def applyProperties(mprops: Map[String, String]) : Boolean
 
-    protected def onIntervalEnd(dtGmt:Instant) = {}
+
 
     override def onBacktestEnd() = {
         orderManagers.foreach(_.flattenAll())
     }
 
-    override final def onStep(dtGmt:Instant) = {
-        this.dtGmt = dtGmt
-        onIntervalEnd(dtGmt)
-    }
 }

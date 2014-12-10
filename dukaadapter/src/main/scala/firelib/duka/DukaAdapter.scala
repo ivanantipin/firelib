@@ -8,16 +8,17 @@ import com.dukascopy.api.IMessage.Type
 import com.dukascopy.api.system.{ClientFactory, IClient, ISystemListener}
 import com.dukascopy.api.{IAccount, IBar, IConsole, IContext, IEngine, IFillOrder, IHistory, IMessage, IOrder, IStrategy, ITick, Instrument, Period}
 import firelib.common.marketstub.TradeGate
+import firelib.common.misc.{DurableTopic, Topic}
 import firelib.common.threading.ThreadExecutor
-import firelib.common.{DisposableSubscription, Order, OrderStatus, OrderType, Side, Trade, TradeGateCallback}
-import firelib.domain.{Ohlc, Tick}
-import firelib.execution.MarketDataProvider
+import firelib.common.{Order, OrderStatus, OrderType, Side, Trade}
+import firelib.domain.{OrderState, Tick}
+import firelib.execution.{Configurable, MarketDataProvider}
 import org.slf4j.{Logger, LoggerFactory}
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ArrayBuffer
 
-class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener with IStrategy{
+class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener with IStrategy with Configurable{
 
     var executor : ThreadExecutor =_
 
@@ -31,14 +32,12 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     var password : String =_
 
 
-    case class OrderRecord(dukaOrder : Option[IOrder], order : Order, dukaTrades : Seq[IFillOrder])
+    case class OrderRecord(dukaOrder : Option[IOrder], order : Order, dukaTrades : Seq[IFillOrder],trdSubj : Topic[Trade],orderSubj : Topic[OrderState])
 
 
     val orders = new ConcurrentHashMap[String, OrderRecord]()
 
     val doneOrders = new ConcurrentHashMap[String, OrderRecord]()
-
-    val tradeGateCallbacks = new ArrayBuffer[TradeGateCallback]()
 
     var client: IClient =_
 
@@ -60,12 +59,13 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     }
 
 
-    override def sendOrder(order: Order) = {
+    override def sendOrder(order: Order) : (Topic[Trade],Topic[OrderState])= {
+        val ret = (new DurableTopic[Trade],new DurableTopic[OrderState])
         if(!client.isConnected){
             log.info(s"rejecting order $order as client not connected")
-            executor.execute(() => tradeGateCallbacks.foreach(_.onOrderStatus(order, OrderStatus.Rejected)))
+            ret._2.publish(new OrderState(order,OrderStatus.Rejected,Instant.now()))
         }else{
-            val tuple = new OrderRecord(None, order, List[IFillOrder]())
+            val tuple = new OrderRecord(None, order, List[IFillOrder](), ret._1, ret._2)
             val task: Future[Option[AnyRef]] = context.executeTask(new Callable[Option[AnyRef]] {
                 override def call(): Option[AnyRef] = {
                     log.info(s"placing order to engine $order")
@@ -78,7 +78,7 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
                     }catch{
                             case e : Throwable =>{
                                 executor.execute(()=>{
-                                    tradeGateCallbacks.foreach(_.onOrderStatus(order,OrderStatus.Rejected))
+                                    ret._2.publish(new OrderState(order,OrderStatus.Rejected,Instant.now(), "failed to place order to engine"))
                                 })
                                 log.error(s"failed placing order to engine $order", e)
                             }
@@ -87,6 +87,7 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
                 }
             })
         }
+        ret
     }
 
     def orderCommand (order : Order) : IEngine.OrderCommand ={
@@ -100,50 +101,52 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
         }
     }
 
-    override def registerCallback(tgc: TradeGateCallback) : DisposableSubscription = {
-        tradeGateCallbacks += tgc
-        return new DisposableSubscription(){
-            override def unsubscribe(): Unit = tradeGateCallbacks -= tgc
-        }
-    }
-
     def toSide(cmd : IEngine.OrderCommand): Side ={
         if(cmd == IEngine.OrderCommand.SELL) Side.Sell else Side.Buy
     }
 
 
 
-    override def configure(config: Map[String, String], callbackExecutor: ThreadExecutor) = {
+    override def start(config: Map[String, String], callbackExecutor: ThreadExecutor) = {
         user = config("user")
         //"https://www.dukascopy.com/client/demo/jclient/jforex.jnlp"
         url = config("url")
         password = config("password")
         instruments = config("instruments").split(',').map(Instrument.valueOf(_))
         this.executor = callbackExecutor
+
+        client = ClientFactory.getDefaultInstance
+
+        client.setSystemListener(this)
+
+        log.info("Connecting...")
+
+        client.connect(url, user, password)
+
     }
 
-    override def cancelOrder(orderId: String) = {
+    override def cancelOrder(order : Order) = {
 
-        log.info(s"canelling order $orderId")
+        log.info(s"canelling order $order")
 
-        Option(orders.getOrDefault(orderId,null)) match {
+        Option(orders.getOrDefault(order.id,null)) match {
             case Some(ord)  =>{
                 ord.dukaOrder match {
                     case Some(dukao) => try {
                         cancelOrderInDuka(dukao)
                     }catch {
                         case e : Throwable =>{
-                            tradeGateCallbacks.foreach(_.onOrderStatus(ord.order,OrderStatus.CancelFailed))
+                            ord.orderSubj.publish(new OrderState(ord.order,OrderStatus.CancelFailed,Instant.now()))
                         }
                     }
                     case None => {
                         log.error(s"no duka order is inited trying to cancel : ${ord}")
-                        tradeGateCallbacks.foreach(_.onOrderStatus(ord.order,OrderStatus.CancelFailed))
+                        ord.orderSubj.publish(new OrderState(ord.order,OrderStatus.CancelFailed,Instant.now(), "no duka order is inited"))
                     }
                 }
             }
             case None => {
-                log.error(s"trying to cancel non existed order, orderId=$orderId")
+                log.error(s"trying to cancel non existed order, order=$order")
             }
         }
     }
@@ -158,15 +161,6 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     }
 
 
-    override def start()  = {
-        client = ClientFactory.getDefaultInstance
-
-        client.setSystemListener(this)
-
-        log.info("Connecting...")
-
-        client.connect(url, user, password)
-    }
 
     private class Subscriptions(val TickerId: String) {
         val listeners = new ArrayBuffer[Tick => Unit]()
@@ -269,10 +263,8 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
                     executor.execute(()=>{
 
                         for(f <- df){
-
-                            val trade: Trade = new Trade(fromDukaAmt(f.getAmount), f.getPrice,
-                                toSide(order.getOrderCommand), rec.order, Instant.now())
-                            tradeGateCallbacks.foreach(_.onTrade(trade))
+                            val trade: Trade = new Trade(fromDukaAmt(f.getAmount), f.getPrice, rec.order, Instant.now())
+                            rec.trdSubj.publish(trade)
                         }
                         val nrec: OrderRecord = rec.copy(dukaTrades = (rec.dukaTrades ++ df))
 /* FIXME
@@ -324,12 +316,10 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     def fire(dukaId : String, status : OrderStatus) ={
         log.info(s"firing status $status for duka order id $dukaId")
         executor.execute(()=>{
-            tradeGateCallbacks.foreach(tgc=>{
-                orders.values().find(t=>t.dukaOrder.isDefined && t.dukaOrder.get.getId == dukaId) match {
-                    case Some(rec) => tgc.onOrderStatus(rec.order,status)
-                    case None => log.error(s"order not found for id ${dukaId} firing status $status")
-                }
-            })
+            orders.values().find(t=>t.dukaOrder.isDefined && t.dukaOrder.get.getId == dukaId) match {
+                case Some(rec) => rec.orderSubj.publish(new OrderState(rec.order,status,Instant.now()))
+                case None => log.error(s"order not found for id ${dukaId} firing status $status")
+            }
         })
 
     }
@@ -353,7 +343,5 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
             }
         }
     }
-
-    override def subscribeForOhlc(tickerId: String, lsn: (Ohlc) => Unit): Unit = {}
 
 }

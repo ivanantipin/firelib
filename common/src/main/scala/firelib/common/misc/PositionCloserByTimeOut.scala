@@ -2,16 +2,15 @@ package firelib.common.misc
 
 import java.time.Instant
 
+import firelib.common._
 import firelib.common.marketstub.OrderManager
-import firelib.common.model.withTradeUtils.WithTradeUtils
 import firelib.common.timeseries.TimeSeries
-import firelib.common.{TradeGateCallbackAdapter, _}
 import firelib.domain.Ohlc
 
 class PositionCloserByTimeOut(val stub: OrderManager, val holdingTimeSeconds: Int, val ts : TimeSeries[Ohlc] = null) {
 
     private var posOpenedDtGmt: Instant  = _
-    stub.addCallback(new TradeGateCallbackAdapter(onTrade))
+    stub.listenTrades(onTrade)
 
     if(ts != null){
         ts.listen(tt => closePositionIfTimeOut(ts.last.dtGmtEnd))

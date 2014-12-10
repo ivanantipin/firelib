@@ -1,6 +1,7 @@
 package firelib.common
 
 import java.nio.file.Paths
+
 import firelib.common.report.reportWriter
 import org.junit.{Assert, Test}
 

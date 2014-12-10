@@ -32,12 +32,12 @@ class OhlcTestModel extends BasketModel {
     val bars = new ArrayBuffer[Ohlc]()
 
 
-    override def applyProperties(mprops: Map[String, String]) = {
+    override def applyProperties(mprops: Map[String, String]) : Boolean = {
         testHelper.instanceOhlc = this
         hist = enableOhlcHistory(Interval.Min5, 10)(0);
         hist.listen(On5Min)
         dayHist = enableOhlcHistory(Interval.Day, 10)(0);
-
+        true
     }
 
 
@@ -46,10 +46,12 @@ class OhlcTestModel extends BasketModel {
             throw new Exception("time of day ts not correct");
         }
 
-        if (dtGmt != hh(0).getDtGmtEnd) {
+        if (currentTime != hh(0).getDtGmtEnd) {
             throw new Exception("time is not equal");
         }
-        bars +=  ohlcUtils.copy(hh(0))
+        bars +=  ohlcUtils.copy(hh(0
+        )
+        )
 
         if (bars.size > 1) {
             if ((hh(0).getDtGmtEnd.toEpochMilli - hh(-1).getDtGmtEnd.toEpochMilli) != 5*60*1000) {
