@@ -2,7 +2,7 @@ package firelib.common.core
 
 import java.io.{BufferedOutputStream, OutputStreamWriter}
 import java.nio.file.StandardOpenOption._
-import java.nio.file.{Files, Path}
+import java.nio.file.{Files, Path, Paths}
 import java.time.Duration
 
 import firelib.common.OrderStatus
@@ -29,14 +29,14 @@ class MDWriter(val ctx : SimpleRunCtx, val path : Path){
     val inTopic = new NonDurableTopic[Ohlc]()
     val outTopic = new NonDurableTopic[Ohlc]()
 
-    ctx.marketDataDistributor.activateOhlcTimeSeries(0,Interval.Min1,1).listen(ts=>inTopic.publish(ts(0)))
+    ctx.marketDataDistributor.activateOhlcTimeSeries(0,Interval.Min1,3000).listen(ts=>inTopic.publish(ts(0)))
 
     val slicer = new WindowSlicer[Ohlc](outTopic, inTopic, eventTopic, Duration.ofMinutes(500))
 
     ctx.models(0).orderManagers(0).listenTrades(t=>eventTopic.publish(t))
     ctx.models(0).orderManagers(0).listenOrders(os=>{
         if(os.status == OrderStatus.New){
-            eventTopic.publish(os)
+      //      eventTopic.publish(os)
         }
     })
 
@@ -45,6 +45,7 @@ class MDWriter(val ctx : SimpleRunCtx, val path : Path){
     outTopic.subscribe(write(_))
 
     def write(ohlc : Ohlc): Unit = {
+
         stream.write(colsDef.map(_._2).map(_(ohlc)).mkString(";") :+ '\n')
         stream.flush()
     }
@@ -64,7 +65,7 @@ class BacktesterSimple  {
 
         val output: ModelOutput = new ModelOutput(ctx.bindModelForParams(cfg.modelParams.toMap))
 
-        //new MDWriter(ctx,Paths.get(cfg.reportTargetPath).resolve("ohlcs.csv"))
+        new MDWriter(ctx,Paths.get(cfg.reportTargetPath).resolve("ohlcs.csv"))
 
 
         ctx.backtest.backtest()

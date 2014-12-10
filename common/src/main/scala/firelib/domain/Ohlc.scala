@@ -51,3 +51,14 @@ class Ohlc() extends Timed {
     @BeanProperty
     var Volume: Int = 0
 }
+
+object Ohlc{
+    def apply(dt : Instant, o : Double, h : Double, l : Double, c : Double) : Ohlc = {
+        new Ohlc{
+            dtGmtEnd = dt
+            O = o
+            H = h
+            L = c
+        }
+    }
+}

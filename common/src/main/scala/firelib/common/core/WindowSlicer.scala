@@ -14,12 +14,19 @@ class WindowSlicer[T <: Timed](val out : Topic[T], val in : Topic[T], val events
 
     var writeBefore: Instant = Instant.MIN
 
+    var lastTime = Instant.MIN
+
     events.subscribe(t => {
         updateWriteBefore()
         checkTail()
     })
 
     in.subscribe(oh => {
+        if(oh.DtGmt == lastTime){
+            println("sss")
+        }
+        lastTime = oh.DtGmt
+
         queue += oh
         checkTail()
     })
@@ -34,7 +41,6 @@ class WindowSlicer[T <: Timed](val out : Topic[T], val in : Topic[T], val events
     }
 
     def updateWriteBefore() {
-        if(queue.nonEmpty)
-            writeBefore = queue.last.DtGmt.plus(dur)
+        writeBefore = lastTime.plus(dur)
     }
 }
