@@ -8,9 +8,6 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
 import scala.collection.JavaConversions._
 
-/**
-
- */
 object jsonHelper {
 
     val mapper = new ObjectMapper()

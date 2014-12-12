@@ -2,9 +2,8 @@ package firelib.common
 
 import java.time.{Duration, Instant}
 
-import firelib.common.core.WindowSlicer
 import firelib.common.interval.Interval
-import firelib.common.misc.NonDurableTopic
+import firelib.common.misc.{NonDurableTopic, WindowSlicer}
 import firelib.domain.Ohlc
 import org.junit.{Assert, Test}
 

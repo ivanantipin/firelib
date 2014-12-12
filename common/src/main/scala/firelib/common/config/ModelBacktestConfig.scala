@@ -5,7 +5,7 @@ import firelib.common.interval.Interval
 import firelib.common.misc.utils
 import firelib.common.model.Model
 import firelib.common.report.StrategyMetric
-import firelib.common.ticknorm.NoOpTickToTick
+import firelib.common.ticknorm.NormBidAskTickFunc
 
 import scala.collection.mutable._
 
@@ -28,11 +28,11 @@ class ModelBacktestConfig {
     
     var modelClassName: String = _
 
-    var tickToTickFuncClass : String = classOf[NoOpTickToTick].getName
+    var tickToTickFuncClass : String = classOf[NormBidAskTickFunc].getName
 
     var precacheMarketData : Boolean = false
 
-    var networkSimulatedDelayMs = 1l
+    var networkSimulatedDelayMs = 30l
 
     /**
      * params passed to model apply method
@@ -46,9 +46,7 @@ class ModelBacktestConfig {
 
     /**
      * step of backtest specifies frequency when ohlc bars checked to generate
-     * also in that step ticks supplied into model in batches for whole period
      * can affect performance if interval is small
-     * for example for minutes market data does not make sense to do less than 1 Min interval
      */
     var stepInterval = Interval.Sec1
 

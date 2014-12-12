@@ -3,8 +3,8 @@ import java.time.Instant
 import firelib.common._
 import firelib.common.config.{InstrumentConfig, ModelBacktestConfig}
 import firelib.common.interval.Interval
-import firelib.common.marketstub.{OrderManager, OrderManagerImpl}
 import firelib.common.mddistributor.MarketDataDistributor
+import firelib.common.ordermanager.{OrderManager, OrderManagerImpl}
 import firelib.common.timeseries.TimeSeries
 import firelib.common.timeservice.{TimeServiceComponent, TimeServiceManagedComponent}
 import firelib.common.tradegate.{TradeGateComponent, TradeGateStub}
@@ -170,6 +170,8 @@ class OrderManagerTest {
 
         var qty = 2
         var sellQty = 1
+
+        update(tg,1, 3)
 
         om.buyAtLimit(1.5,qty)
         om.submitOrders(new Order(OrderType.Market, 2.5, sellQty, Side.Sell,om.security,"id",Instant.now()))

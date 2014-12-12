@@ -11,9 +11,9 @@
   "dataServerRoot" : "/home/ivan/IdeaProjects/firelib/common/./src/test/testresources/TestRoot/testDsRoot",
   "reportTargetPath" : "/home/ivan/IdeaProjects/firelib/common/./src/test/testresources/TestRoot/testReportDir",
   "modelClassName" : "firelib.common.OhlcTestModel",
-  "tickToTickFuncClass" : "firelib.common.ticknorm.NoOpTickToTick",
+  "tickToTickFuncClass" : "firelib.common.ticknorm.NormBidAskTickFunc",
   "precacheMarketData" : false,
-  "networkSimulatedDelayMs" : 1,
+  "networkSimulatedDelayMs" : 30,
   "modelParams" : { },
   "optConfig" : {
     "params" : [ ],
@@ -30,7 +30,14 @@
   },
   "stepInterval" : {
     "name" : "Sec1",
-    "durationMs" : 1000
+    "durationMs" : 1000,
+    "duration" : {
+      "seconds" : 1,
+      "negative" : false,
+      "zero" : false,
+      "units" : [ "SECONDS", "NANOS" ],
+      "nano" : 0
+    }
   },
   "calculatedMetrics" : [ {
     "name" : "Pf"

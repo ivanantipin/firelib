@@ -13,8 +13,8 @@ class StreamOrderWriter(val path : Path) extends OrderSerializer with (Order=>Un
         stream.write(getHeader() :+ '\n')
     }
 
-    override def apply(trade : Order): Unit = {
-        stream.write(serialize(trade) :+ '\n')
+    override def apply(order : Order): Unit = {
+        stream.write(serialize(order) :+ '\n')
         stream.flush()
     }
 }

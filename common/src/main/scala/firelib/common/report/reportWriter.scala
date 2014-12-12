@@ -30,9 +30,7 @@ object reportWriter {
 
         statFileDumper.writeRows(Paths.get(targetDir, "modelProps.properties").toAbsolutePath.toString,model.model.properties.map(a=>a._1 + "=" + a._2))
 
-        var factors = if (trades(0).factors == null) new HashMap[String, String] else trades(0).factors
-
-
+        val factors = if (trades(0).factors == null) new HashMap[String, String] else trades(0).factors
 
         val tradeWriter : StreamTradeCaseWriter = new StreamTradeCaseWriter(Paths.get(targetDir, "trades.csv").toAbsolutePath, factors.map(_._1))
         tradeWriter.writeHeader()
@@ -47,8 +45,6 @@ object reportWriter {
 
         System.out.println(s"report written to $targetDir you can run it with command 'ipython notebook StdReport.ipynb'")
 
-        //val envProps  = List("report.lib.path=" + Paths.get(baseDir, "python/report/").toAbsolutePath.toString)
-        //StatFileDumper.writeRows(Paths.get(targetDir, "reportenv.properties").toAbsolutePath.toString,  envProps)
     }
 
     def copyJarFileToReal(jarFile : String, dest : String) : Unit = {

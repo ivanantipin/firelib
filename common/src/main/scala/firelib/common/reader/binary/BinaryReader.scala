@@ -30,7 +30,7 @@ class BinaryReader[T <: Timed](val fileName : String, desc : BinaryReaderRecordD
         buffer.clear()
         prebuffer()
         while (read) {
-            if (time.compareTo(current.DtGmt) <= 0) {
+            if (time.compareTo(current.time) <= 0) {
                 return true
             }
         }
@@ -48,7 +48,7 @@ class BinaryReader[T <: Timed](val fileName : String, desc : BinaryReaderRecordD
             val buffer = ByteBuffer.allocateDirect(recLen)
             val len: Long = fileChannel.read(buffer)
             buffer.flip()
-            val first = readBuff(buffer)
+            first = readBuff(buffer).time
             ppos += inc
         }
         ppos -= 2*inc
@@ -62,7 +62,7 @@ class BinaryReader[T <: Timed](val fileName : String, desc : BinaryReaderRecordD
         val buff = ByteBuffer.allocateDirect(1000)
         fileChannel.read(buff)
         buff.flip()
-        readBuff(buff).DtGmt
+        readBuff(buff).time
     }
 
     override def read(): Boolean = {
@@ -94,7 +94,7 @@ class BinaryReader[T <: Timed](val fileName : String, desc : BinaryReaderRecordD
         val buff = ByteBuffer.allocateDirect(recLen)
         fileChannel.read(buff)
         buff.flip()
-        readBuff(buff).DtGmt
+        readBuff(buff).time
     }
 
     private var curr : T =_

@@ -21,7 +21,7 @@ trait TimeBoundsCalculatorComponent {
 
             val readers = cfg.instruments.map(c=>readersFactory.apply(c, startDtGmt))
 
-            val maxReadersStartDate = readers.maxBy(r =>r.current.DtGmt.getEpochSecond).current.DtGmt
+            val maxReadersStartDate = readers.maxBy(r =>r.current.time.getEpochSecond).current.time
 
             readers.foreach(_.close())
 

@@ -8,6 +8,8 @@ import scala.beans.BeanProperty
 
 class Tick() extends Comparable[Tick] with Timed {
 
+    //FIXME make immutable requires core refactoring
+
     private def this(last: Double, vol: Int, ssi: Int, bid: Double, ask: Double, tickNumber: Int, dtGmt: Instant) {
         this()
         this.last = last
@@ -27,7 +29,7 @@ class Tick() extends Comparable[Tick] with Timed {
         return dtGmt.compareTo(o.dtGmt)
     }
 
-    def DtGmt: Instant = {
+    def time: Instant = {
         return dtGmt
     }
 

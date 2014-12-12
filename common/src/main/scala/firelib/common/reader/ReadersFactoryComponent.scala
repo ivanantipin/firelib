@@ -37,6 +37,7 @@ trait ReadersFactoryComponent {
 
         private def createReader[T <: Timed](cfg : InstrumentConfig, factory : Supplier[T], cacheDesc : BinaryReaderRecordDescriptor[T]) : MarketDataReader[T] ={
             val path: Path = Paths.get(modelConfig.dataServerRoot, cfg.path)
+            //FIXME resolve format.properties first
             val iniFile: String = path.getParent.resolve("common.ini").toAbsolutePath.toString
             val generator: ParserHandlersProducer = new ParserHandlersProducer(LegacyMarketDataFormatLoader.load(iniFile))
             val ret: CsvParser[T] = new CsvParser[T](path.toAbsolutePath.toString, generator.handlers.asInstanceOf[Array[ParseHandler[T]]], factory)

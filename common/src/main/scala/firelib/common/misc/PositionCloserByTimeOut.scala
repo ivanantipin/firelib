@@ -3,7 +3,7 @@ package firelib.common.misc
 import java.time.Instant
 
 import firelib.common._
-import firelib.common.marketstub.OrderManager
+import firelib.common.ordermanager.OrderManager
 import firelib.common.timeseries.TimeSeries
 import firelib.domain.Ohlc
 

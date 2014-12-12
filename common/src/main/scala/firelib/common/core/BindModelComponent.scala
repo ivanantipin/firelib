@@ -1,8 +1,8 @@
 package firelib.common.core
 
-import firelib.common.marketstub.OrderManagerImpl
 import firelib.common.mddistributor.MarketDataDistributorComponent
 import firelib.common.model.{BasketModel, Model}
+import firelib.common.ordermanager.OrderManagerImpl
 import firelib.common.timeservice.TimeServiceComponent
 import firelib.common.tradegate.TradeGateComponent
 

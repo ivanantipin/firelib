@@ -2,14 +2,17 @@ package firelib.common.core
 
 import java.time.Instant
 
+import ch.qos.logback.classic.{Level, Logger}
 import firelib.common.MarketDataType
 import firelib.common.agenda.AgendaComponent
 import firelib.common.interval.IntervalServiceComponent
 import firelib.common.mddistributor.MarketDataDistributorComponent
+import firelib.common.ordermanager.OrderManagerImpl
 import firelib.common.reader.{MarketDataReader, ReadersFactoryComponent}
 import firelib.common.timeboundscalc.TimeBoundsCalculatorComponent
 import firelib.common.timeservice.TimeServiceManagedComponent
 import firelib.domain.{Ohlc, Tick, Timed}
+import org.slf4j.LoggerFactory
 
 trait BacktestComponent {
 
@@ -23,6 +26,8 @@ trait BacktestComponent {
       with IntervalServiceComponent =>
 
     val backtest = new Backtest
+
+    LoggerFactory.getLogger(classOf[OrderManagerImpl]).asInstanceOf[Logger].setLevel(Level.ERROR)
 
     class Backtest {
 
@@ -88,11 +93,11 @@ trait BacktestComponent {
                 if (reader.current == null) {
                     readEnd = true
                 } else {
-                    agenda.addEvent(reader.current.DtGmt, readerFunctions(idx))
+                    agenda.addEvent(reader.current.time, readerFunctions(idx))
                 }
             }
             if (reader.current != null) {
-                agenda.addEvent(reader.current.DtGmt, readerFunctions(idx))
+                agenda.addEvent(reader.current.time, readerFunctions(idx))
             } else {
                 readEnd = true
             }
@@ -105,7 +110,7 @@ trait BacktestComponent {
                 if (!reader.read()) {
                     readEnd = true
                 } else {
-                    agenda.addEvent(reader.current.DtGmt, readerFunctions(idx))
+                    agenda.addEvent(reader.current.time, readerFunctions(idx))
                 }
             }
             if (reader.current != null) {

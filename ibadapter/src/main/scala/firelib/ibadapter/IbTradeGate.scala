@@ -8,7 +8,6 @@ import java.util.concurrent.{Executors, LinkedBlockingQueue, TimeUnit}
 import com.ib.client
 import com.ib.client.{Contract, Execution, TagValue}
 import firelib.common._
-import firelib.common.marketstub.TradeGate
 import firelib.common.misc.{DurableTopic, Topic}
 import firelib.common.threading.ThreadExecutor
 import firelib.domain.{OrderState, Tick}

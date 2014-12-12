@@ -53,12 +53,12 @@ class TickTestModel extends BasketModel {
 
     def onTick(tick: Tick) : Unit = {
         NumberOfTickes += 1
-        assert(!uniqTimes.contains(tick.DtGmt),"dupe time " + tick.DtGmt)
-        uniqTimes.add(tick.DtGmt)
+        assert(!uniqTimes.contains(tick.time),"dupe time " + tick.time)
+        uniqTimes.add(tick.time)
         ticks += tick
 
-        if (daysStarts.size == 0 || daysStarts.last.truncatedTo(ChronoUnit.DAYS) != tick.DtGmt.truncatedTo(ChronoUnit.DAYS)) {
-            daysStarts += tick.DtGmt
+        if (daysStarts.size == 0 || daysStarts.last.truncatedTo(ChronoUnit.DAYS) != tick.time.truncatedTo(ChronoUnit.DAYS)) {
+            daysStarts += tick.time
         }
     }
 

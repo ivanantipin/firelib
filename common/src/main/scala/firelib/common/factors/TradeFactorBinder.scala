@@ -1,7 +1,7 @@
 package firelib.common.factors
 
 import firelib.common._
-import firelib.common.marketstub.OrderManager
+import firelib.common.ordermanager.OrderManager
 
 import scala.collection.mutable.ArrayBuffer
 

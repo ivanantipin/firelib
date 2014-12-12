@@ -21,6 +21,8 @@ import scala.collection.mutable.ArrayBuffer
 @Test
 class BacktestIntegrationTest {
 
+    //FIXME backtest on 2 instruments with several bars intervals
+
     val zoneId = ZoneId.of("America/New_York")
 
     def getUsTime(y: Int, month: Int, d: Int, h: Int, m: Int, s: Int, mil: Int): Instant = {

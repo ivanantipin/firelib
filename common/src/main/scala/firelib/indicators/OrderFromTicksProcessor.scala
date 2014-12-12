@@ -28,9 +28,12 @@ trait OrderListener {
 
 class OrderFromTicksProcessor (orderFilterPredicate : (Int,Side)=>Boolean = (a,b)=>true , classifyWithBidAsk  : Boolean = false){
 
+    //FIXME split components : order generator and window stats
+
     var lastTick: Tick = new Tick()
 
     val orders = new mutable.Queue[OrderInfo]()
+
     private val listeners = new ArrayBuffer[OrderListener]();
 
     private var classifySide : Tick=>Side = if (classifyWithBidAsk) classifyByBidAsk else classifyByPrev
@@ -40,7 +43,7 @@ class OrderFromTicksProcessor (orderFilterPredicate : (Int,Side)=>Boolean = (a,b
     def addTick(tick: Tick) {
         val cSide = classifySide(tick);
 
-        if (tick.tickNumber == lastTick.tickNumber + 1 && tick.DtGmt.getEpochSecond == lastTick.DtGmt.getEpochSecond &&
+        if (tick.tickNumber == lastTick.tickNumber + 1 && tick.time.getEpochSecond == lastTick.time.getEpochSecond &&
           (cSide == Side.None || currOrderInfo.side == cSide)) {
             currOrderInfo.qty += tick.vol;
             currOrderInfo.vwap += tick.last * tick.vol;
@@ -57,7 +60,7 @@ class OrderFromTicksProcessor (orderFilterPredicate : (Int,Side)=>Boolean = (a,b
             currOrderInfo.maxPrice = tick.last
             currOrderInfo.minPrice = tick.last
             currOrderInfo.vwap = tick.vol * tick.last;
-            currOrderInfo.dt = tick.DtGmt
+            currOrderInfo.dt = tick.time
             currOrderInfo.side = cSide
         }
 
@@ -69,7 +72,7 @@ class OrderFromTicksProcessor (orderFilterPredicate : (Int,Side)=>Boolean = (a,b
     class TimeWindowTrimmer(val windowSeconds: Int) extends (()=>Unit)  {
 
         override def apply(): Unit = {
-            var limitDt = lastTick.DtGmt.plus(-windowSeconds, ChronoUnit.SECONDS);
+            var limitDt = lastTick.time.plus(-windowSeconds, ChronoUnit.SECONDS);
             while (orders.length > 0 && orders.last.dt.isBefore(limitDt)) {
                 var d = orders.dequeue()
                 onOrderDequeue(d);

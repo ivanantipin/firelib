@@ -8,6 +8,8 @@ import scala.beans.BeanProperty
 
 class Ohlc() extends Timed {
 
+    //FIXME make immutable - require some core refactoring
+
     var interpolated: Boolean = true
 
     def nprice: Double = (C + H + L) / 3
@@ -34,7 +36,7 @@ class Ohlc() extends Timed {
     }
 
 
-    def DtGmt: Instant = dtGmtEnd
+    def time: Instant = dtGmtEnd
 
     @BeanProperty
     var C: Double = .0

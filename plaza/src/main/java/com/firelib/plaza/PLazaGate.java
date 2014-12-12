@@ -2,9 +2,8 @@ package com.firelib.plaza;
 
 import firelib.common.Order;
 import firelib.common.TradeGateCallback;
-import firelib.common.marketstub.TradeGate;
+import firelib.common.ordermanager.TradeGate;
 import firelib.common.threading.ThreadExecutor;
-
 import scala.collection.immutable.Map;
 
 public class PLazaGate implements TradeGate {

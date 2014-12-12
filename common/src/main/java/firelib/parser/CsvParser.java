@@ -98,7 +98,7 @@ public class CsvParser<T extends Timed> implements MarketDataReader<T> {
         }
         last = parseLine(readLine(buffer));
         while (last != null) {
-            endDt = last.DtGmt();
+            endDt = last.time();
             last = parseLine(readLine(buffer));
         }
     }
@@ -115,7 +115,7 @@ public class CsvParser<T extends Timed> implements MarketDataReader<T> {
         CharBuffer buffer = CharBuffer.allocate(2000);
         buffer(0,1000,buffer);
         T first = parseLine(readLine(buffer));
-        startDt = first.DtGmt();
+        startDt = first.time();
     }
 
 
@@ -130,7 +130,7 @@ public class CsvParser<T extends Timed> implements MarketDataReader<T> {
         }
 
         while (read()) {
-            if (time.compareTo(current().DtGmt()) <= 0) {
+            if (time.compareTo(current().time()) <= 0) {
                 return true;
             }
         }
@@ -149,7 +149,7 @@ public class CsvParser<T extends Timed> implements MarketDataReader<T> {
             }
             readLine(buffer);
             T first = parseLine(readLine(buffer));
-            if (time.compareTo(first.DtGmt()) <= 0) {
+            if (time.compareTo(first.time()) <= 0) {
                 return Math.max(0,ppos - inc);
             }
             ppos += inc;

@@ -1,6 +1,6 @@
 package firelib.common.model
 
-import firelib.common.marketstub.OrderManager
+import firelib.common.ordermanager.OrderManager
 
 /**
 

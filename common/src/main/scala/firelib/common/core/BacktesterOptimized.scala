@@ -3,23 +3,12 @@ package firelib.common.core
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-import firelib.common.Trade
 import firelib.common.config.ModelBacktestConfig
-import firelib.common.model.Model
 import firelib.common.opt.ParamsVariator
 import firelib.common.report.{ReportProcessor, backtestStatisticsCalculator, optParamsWriter, reportWriter}
 import firelib.common.threading.ThreadExecutorImpl
-import firelib.domain.OrderState
 
 import scala.collection.mutable.ArrayBuffer
-
-
-class ModelOutput(val model : Model){
-    val trades = new ArrayBuffer[Trade]()
-    val orderStates = new ArrayBuffer[OrderState]()
-    model.orderManagers.foreach(_.listenTrades(trades += _))
-    model.orderManagers.foreach(_.listenOrders(orderStates += _))
-}
 
 
 class BacktesterOptimized {

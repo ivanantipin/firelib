@@ -95,7 +95,7 @@ class MetricsCalculator:
         b = pnls[pnls < 0].sum()
         if abs(b) < 0.001:
             return None
-        return a / abs(b)
+        return a / float(abs(b))
 
 
     def __init__(self):

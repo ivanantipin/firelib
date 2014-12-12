@@ -6,16 +6,10 @@ import java.time.Instant
 import firelib.common.misc.{statFileDumper, utils}
 import firelib.common.opt.OptimizedParameter
 
-import scala.collection.immutable.StringOps
 import scala.collection.mutable.ArrayBuffer
 
-/**
+object optParamsWriter extends ReportConsts{
 
- */
-object optParamsWriter {
-
-    val decPlaces = 5
-    val separator: StringOps = ";"
     def write(targetDir: String, optEnd: Instant, estimates: Seq[ExecutionEstimates], optParams: Seq[OptimizedParameter], metrics: Seq[StrategyMetric]) = {
         var rows = new ArrayBuffer[String]()
 

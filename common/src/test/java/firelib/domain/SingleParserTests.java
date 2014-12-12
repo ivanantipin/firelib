@@ -111,7 +111,7 @@ public class SingleParserTests {
 
         Instant dt0 = LocalDateTime.of(2011, 11, 21, 2, 0, 8, 700_000_000).atZone(parserHandlersProducer.zoneId).toInstant();
 
-        Assert.assertEquals(csvParser.current().DtGmt(), dt0);
+        Assert.assertEquals(csvParser.current().time(), dt0);
     }
 
 
@@ -131,7 +131,7 @@ public class SingleParserTests {
         Assert.assertTrue(csvParser.seek(csvParser.startTime()));
 
 
-        Assert.assertEquals(csvParser.current().DtGmt(), getTime(2012, 1, 3, 10, 0, 0, 53, parserHandlersProducer.zoneId));
+        Assert.assertEquals(csvParser.current().time(), getTime(2012, 1, 3, 10, 0, 0, 53, parserHandlersProducer.zoneId));
         Assert.assertEquals(csvParser.current().last(), 137495,0.00001);
         Assert.assertEquals(csvParser.current().vol(), 1);
 //        Assert.assertEquals(parser.CurrentQuote().Ask(), 0,0.00001);
@@ -142,7 +142,7 @@ public class SingleParserTests {
         Assert.assertTrue(csvParser.read());
 
 
-        Assert.assertEquals(csvParser.current().DtGmt(), getTime(2012, 1, 3, 10, 0, 0, 53, parserHandlersProducer.zoneId));
+        Assert.assertEquals(csvParser.current().time(), getTime(2012, 1, 3, 10, 0, 0, 53, parserHandlersProducer.zoneId));
         Assert.assertEquals(csvParser.current().last(), 137500,0.00001);
         Assert.assertEquals(csvParser.current().vol(), 1);
     //    Assert.assertEquals(parser.CurrentQuote().Ask(), 0,0.00001);

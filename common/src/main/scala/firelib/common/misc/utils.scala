@@ -35,7 +35,7 @@ object utils extends DescriptiveStatsTrait {
         //return tradingCases.filter(tc => math.abs(pnlForCase(tc)) < filterThresholdInVariance * std)
     }
 
-    def toTradingCases(trades: Seq[Trade]): ArrayBuffer[(Trade, Trade)] = {
+    def toTradingCases(trades: Seq[Trade]): Seq[(Trade, Trade)] = {
         var ret = new ArrayBuffer[(Trade, Trade)]()
 
         val groupedBySecurity: Map[String, Seq[Trade]] = trades.groupBy(t => t.security)

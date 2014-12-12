@@ -4,8 +4,8 @@ import java.time.Instant
 
 import firelib.common.core.BindModelComponent
 import firelib.common.interval.Interval
-import firelib.common.marketstub.OrderManager
 import firelib.common.mddistributor.MarketDataDistributorComponent
+import firelib.common.ordermanager.OrderManager
 import firelib.common.timeseries.TimeSeries
 import firelib.common.timeservice.TimeServiceComponent
 import firelib.domain.Ohlc

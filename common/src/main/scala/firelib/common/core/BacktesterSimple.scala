@@ -9,7 +9,7 @@ import firelib.common.OrderStatus
 import firelib.common.config.ModelBacktestConfig
 import firelib.common.interval.Interval
 import firelib.common.misc.dateUtils._
-import firelib.common.misc.{NonDurableTopic, utils}
+import firelib.common.misc.{NonDurableTopic, WindowSlicer, utils}
 import firelib.common.report.reportWriter
 import firelib.domain.Ohlc
 

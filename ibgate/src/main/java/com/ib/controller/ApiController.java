@@ -3,12 +3,36 @@
 
 package com.ib.controller;
 
-import com.ib.client.*;
+import com.ib.client.CommissionReport;
+import com.ib.client.Contract;
+import com.ib.client.ContractDetails;
+import com.ib.client.EWrapper;
+import com.ib.client.Execution;
+import com.ib.client.ExecutionFilter;
+import com.ib.client.Order;
+import com.ib.client.OrderState;
+import com.ib.client.ScannerSubscription;
+import com.ib.client.TagValue;
+import com.ib.client.UnderComp;
 import com.ib.controller.ApiConnection.ILogger;
-import com.ib.controller.Types.*;
+import com.ib.controller.Types.BarSize;
+import com.ib.controller.Types.DeepSide;
+import com.ib.controller.Types.DeepType;
+import com.ib.controller.Types.DurationUnit;
+import com.ib.controller.Types.ExerciseType;
+import com.ib.controller.Types.FADataType;
+import com.ib.controller.Types.FundamentalType;
+import com.ib.controller.Types.MktDataType;
+import com.ib.controller.Types.NewsType;
+import com.ib.controller.Types.WhatToShow;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 public class ApiController implements EWrapper {
 	private ApiConnection m_client;

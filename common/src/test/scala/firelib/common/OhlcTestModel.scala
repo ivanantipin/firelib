@@ -67,8 +67,8 @@ class OhlcTestModel extends BasketModel {
         }
         uniqTimes.add(pQuote.getDtGmtEnd)
 
-        if (startTimesGmt.size == 0 || startTimesGmt.last.truncatedTo(ChronoUnit.DAYS) != pQuote.DtGmt.truncatedTo(ChronoUnit.DAYS)) {
-            startTimesGmt += pQuote.DtGmt
+        if (startTimesGmt.size == 0 || startTimesGmt.last.truncatedTo(ChronoUnit.DAYS) != pQuote.time.truncatedTo(ChronoUnit.DAYS)) {
+            startTimesGmt += pQuote.time
         }
     }
 

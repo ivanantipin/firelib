@@ -99,7 +99,7 @@ public class UltraFastParser<T extends Timed> implements MarketDataReader<T> {
             return false;
 
 
-        if (csvParser.read() && (csvParser.current().DtGmt().isBefore(symbolCsvFileInfo[fileIdx].utcEndDT.plusMillis(1)))) {
+        if (csvParser.read() && (csvParser.current().time().isBefore(symbolCsvFileInfo[fileIdx].utcEndDT.plusMillis(1)))) {
             return true;
         }
 

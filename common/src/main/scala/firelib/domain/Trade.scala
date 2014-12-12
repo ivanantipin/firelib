@@ -12,6 +12,8 @@ class Trade(val qty: Int, val price: Double, val order: Order, val dtGmt:Instant
 
     assert(order != null,"order must be present")
 
+    assert(!price.isNaN ,"price must be valid")
+
     var factors: collection.mutable.Map[String, String] = _
 
     var positionAfter: Int = _
