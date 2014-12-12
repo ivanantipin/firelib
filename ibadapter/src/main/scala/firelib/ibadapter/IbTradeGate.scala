@@ -10,6 +10,7 @@ import com.ib.client.{Contract, Execution, TagValue}
 import firelib.common._
 import firelib.common.misc.{DurableTopic, Topic}
 import firelib.common.threading.ThreadExecutor
+import firelib.common.tradegate.TradeGate
 import firelib.domain.{OrderState, Tick}
 import firelib.execution.{Configurable, MarketDataProvider}
 

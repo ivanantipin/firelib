@@ -1,6 +1,7 @@
 package firelib.execution
 
 import firelib.common.threading.ThreadExecutor
+import firelib.common.tradegate.TradeGate
 import firelib.execution.config.ModelExecutionConfig
 
 object providersFactory {
