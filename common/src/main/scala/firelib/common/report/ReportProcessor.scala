@@ -26,9 +26,17 @@ class ReportProcessor(val metricsCalculator : MetricsCalculator, val optimizedFu
 
     def process(models: Seq[ModelOutput]) = {
 
-        models.filter(_.trades.size >= minNumberOfTrades).foreach(model => {
+        val filtered: Seq[ModelOutput] = models.filter(_.trades.size >= minNumberOfTrades)
+
+        println(s"model processed ${models.length} models met min trades count criteria ${filtered.length}")
+
+        filtered.foreach(model => {
 
             val tradingCases = utils.toTradingCases(model.trades)
+
+            if(model.model.properties("end.min") == "1370" && model.model.properties("start.min") == "1120"){
+                println()
+            }
 
             val metrics = metricsCalculator(tradingCases)
 
@@ -41,7 +49,7 @@ class ReportProcessor(val metricsCalculator : MetricsCalculator, val optimizedFu
             estimates += new ExecutionEstimates(extractOptParams(model.model), metrics)
 
         })
-        System.out.println("processed " + estimates.length + " models ")
+        println(s"total model complete ${estimates.length}")
 
     }
 

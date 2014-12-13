@@ -53,6 +53,18 @@ trait BacktestComponent {
             models.foreach(_.onBacktestEnd())
         }
 
+        def backtestUntil(endDt : Instant): Unit = {
+
+            prep()
+
+            while (!readEnd && timeServiceManaged.currentTime.isBefore(endDt)){
+                agenda.next()
+            }
+
+            models.foreach(_.onBacktestEnd())
+        }
+
+
         def stepUntil(dtEnd : Instant): Unit = {
             while (timeServiceManaged.dtGmt.isBefore(dtEnd)){
                 agenda.next()

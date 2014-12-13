@@ -39,23 +39,23 @@ class BacktesterOptimized {
 
         val endOfOptimize = startDtGmt.plus(cfg.optConfig.optimizedPeriodDays, ChronoUnit.DAYS)
 
-        System.out.println("number of models " + variator.combinations)
+        println("number of models " + variator.combinations)
 
         while (variator.hasNext()) {
             val env = nextModelVariationsChunk(cfg, variator)
             executor.execute(() => {
                 val outputs: ArrayBuffer[ModelOutput] = env.models.map(new ModelOutput(_))
-                env.backtest.backtest()
+                env.backtest.backtestUntil(endOfOptimize)
                 reportExecutor.execute(() => reportProcessor.process(outputs))
             })
-            System.out.println(s"models scheduled for optimization ${env.models.length}")
+            println(s"models scheduled for optimization ${env.models.length}")
 
         }
 
         executor.shutdown()
         reportExecutor.shutdown()
 
-        System.out.println(s"Model optimized in ${(System.currentTimeMillis() - startTime) / 1000} sec")
+        println(s"Model optimized in ${(System.currentTimeMillis() - startTime) / 1000} sec")
 
 
         assert(reportProcessor.bestModels.length > 0, "no models get produced!!")
@@ -76,7 +76,7 @@ class BacktesterOptimized {
 
         writeOptimizedReport(cfg, reportProcessor, endOfOptimize)
 
-        System.out.println("Finished")
+        println("Finished")
     }
 
 
