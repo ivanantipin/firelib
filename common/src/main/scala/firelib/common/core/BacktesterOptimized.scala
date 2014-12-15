@@ -60,17 +60,17 @@ class BacktesterOptimized {
 
         assert(reportProcessor.bestModels.length > 0, "no models get produced!!")
 
-        val bm = reportProcessor.bestModels.last
+        var output = reportProcessor.bestModels.last
 
         reportWriter.clearReportDir(cfg.reportTargetPath)
 
-        val env = new SimpleRunCtx(cfg)
-        env.init()
-
-        val output: ModelOutput = new ModelOutput(env.bindModelForParams(bm.properties))
-        env.backtest.backtest()
-
-        assert(env.models.length == 1, "no models produced")
+        if(endOfOptimize.isBefore(endDtGmt)){
+            val env = new SimpleRunCtx(cfg)
+            env.init()
+            output = new ModelOutput(env.bindModelForParams(output.model.properties))
+            env.backtest.backtest()
+            assert(env.models.length == 1, "no models produced")
+        }
 
         reportWriter.write(output, cfg, cfg.reportTargetPath)
 

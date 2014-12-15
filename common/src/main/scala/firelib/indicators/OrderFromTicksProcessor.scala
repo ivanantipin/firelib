@@ -1,75 +1,23 @@
 package firelib.indicators
 
 import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 import firelib.common.Side
+import firelib.common.misc.PubTopic
 import firelib.domain.Tick
-
-import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
 
 
 class OrderInfo {
-    var dt: Instant = _
-    var side: Side = _
-    var qty: Int = _
+    var dt: Instant = Instant.EPOCH
+    var side: Side = Side.None
+    var qty: Int = 0
     var maxPrice: Double = Double.MinValue
     var minPrice: Double = Double.MaxValue
-    var vwap: Double = _
+    var vwap: Double = Double.NaN
 }
 
-
-trait OrderListener {
-    def OnOrderEnqueue(orderInfo: OrderInfo)
-
-    def OnOrderDequeue(orderInfo: OrderInfo)
-}
-
-class OrderFromTicksProcessor (orderFilterPredicate : (Int,Side)=>Boolean = (a,b)=>true , classifyWithBidAsk  : Boolean = false){
-
-    //FIXME split components : order generator and window stats
-
-    var lastTick: Tick = new Tick()
-
-    val orders = new mutable.Queue[OrderInfo]()
-
-    private val listeners = new ArrayBuffer[OrderListener]();
-
-    private var classifySide : Tick=>Side = if (classifyWithBidAsk) classifyByBidAsk else classifyByPrev
-
-    private var currOrderInfo = new OrderInfo
-
-    def addTick(tick: Tick) {
-        val cSide = classifySide(tick);
-
-        if (tick.tickNumber == lastTick.tickNumber + 1 && tick.time.getEpochSecond == lastTick.time.getEpochSecond &&
-          (cSide == Side.None || currOrderInfo.side == cSide)) {
-            currOrderInfo.qty += tick.vol;
-            currOrderInfo.vwap += tick.last * tick.vol;
-            currOrderInfo.maxPrice = Math.max(currOrderInfo.maxPrice, tick.last);
-            currOrderInfo.minPrice = Math.min(currOrderInfo.minPrice, tick.last);
-        }
-        else {
-            if (orderFilterPredicate(currOrderInfo.qty, currOrderInfo.side)) {
-                orders.enqueue(currOrderInfo);
-                listeners.foreach(_.OnOrderEnqueue(currOrderInfo))
-                currOrderInfo = new OrderInfo
-            }
-            currOrderInfo.qty = tick.vol
-            currOrderInfo.maxPrice = tick.last
-            currOrderInfo.minPrice = tick.last
-            currOrderInfo.vwap = tick.vol * tick.last;
-            currOrderInfo.dt = tick.time
-            currOrderInfo.side = cSide
-        }
-
-        trimWindow()
-
-        lastTick = tick;
-    }
-
-    class TimeWindowTrimmer(val windowSeconds: Int) extends (()=>Unit)  {
+/*
+ class TimeWindowTrimmer(val windowSeconds: Int) extends (()=>Unit)  {
 
         override def apply(): Unit = {
             var limitDt = lastTick.time.plus(-windowSeconds, ChronoUnit.SECONDS);
@@ -122,10 +70,42 @@ class OrderFromTicksProcessor (orderFilterPredicate : (Int,Side)=>Boolean = (a,b
         this
     }
 
+ */
 
-    def addOrderListener(listener: OrderListener) {
-        listeners += listener
+class OrderFromTicksProcessor (val subTopic : PubTopic[OrderInfo], classifyWithBidAsk  : Boolean = false){
+
+    var lastTick: Tick = new Tick()
+
+    private val classifySide: Tick => Side = if (classifyWithBidAsk) classifyByBidAsk else classifyByPrev
+
+    private var currOrderInfo : OrderInfo = null
+
+    def addTick(tick: Tick) {
+        val cSide = classifySide(tick);
+        if (tick.tickNumber == lastTick.tickNumber + 1 && tick.time.getEpochSecond == lastTick.time.getEpochSecond &&
+          (cSide == Side.None || currOrderInfo.side == cSide)) {
+            currOrderInfo.qty += tick.vol;
+            currOrderInfo.vwap += tick.last * tick.vol;
+            currOrderInfo.maxPrice = Math.max(currOrderInfo.maxPrice, tick.last);
+            currOrderInfo.minPrice = Math.min(currOrderInfo.minPrice, tick.last);
+        }
+        else {
+            if(currOrderInfo != null){
+                currOrderInfo.vwap /= currOrderInfo.qty
+                subTopic.publish(currOrderInfo)
+            }
+            currOrderInfo = new OrderInfo
+            currOrderInfo.qty = tick.vol
+            currOrderInfo.maxPrice = tick.last
+            currOrderInfo.minPrice = tick.last
+            currOrderInfo.vwap = tick.vol * tick.last;
+            currOrderInfo.dt = tick.time
+            currOrderInfo.side = cSide
+        }
+        lastTick = tick;
     }
+
+
 
     private def classifyByPrev(tick: Tick): Side = {
         return if(compareDbls(tick.last, lastTick.last) > 0) Side.Buy else Side.Sell
@@ -154,7 +134,5 @@ class OrderFromTicksProcessor (orderFilterPredicate : (Int,Side)=>Boolean = (a,b
         }
         return 0;
     }
-
-    def onOrderDequeue(orderInfo: OrderInfo) = listeners.foreach(_.OnOrderDequeue(orderInfo))
 
 }

@@ -11,17 +11,17 @@ class ReportProcessor(val metricsCalculator : MetricsCalculator, val optimizedFu
                       val optParams: Seq[String], val topModelsToKeep: Int = 3, val minNumberOfTrades: Int = 1, val removeOutlierTrades: Int = 2) {
 
 
-    type ModelStat = (Double, Model, Map[StrategyMetric, Double])
+    case class ModelStat (optMetric : Double, output : ModelOutput, metrics : Map[StrategyMetric, Double])
 
-    private val bestModels_ = new mutable.PriorityQueue[ModelStat]()(Ordering.by((ms : ModelStat) => ms._1 ).reverse)
+    private val bestModels_ = new mutable.PriorityQueue[ModelStat]()(Ordering.by((ms : ModelStat) => ms.optMetric ).reverse)
 
     var estimates = new ArrayBuffer[ExecutionEstimates]()
 
-    def bestModels: Seq[Model] = bestModels_.map(_._2).toList
+    def bestModels: Seq[ModelOutput] = bestModels_.map(_.output).toList
 
 
     def bestModelsWithMetrics: Seq[(Model, Map[StrategyMetric, Double])] = {
-        return bestModels_.map(bm => (bm._2, bm._3)).toList
+        return bestModels_.map(bm => (bm.output.model, bm.metrics)).toList
     }
 
     def process(models: Seq[ModelOutput]) = {
@@ -34,15 +34,11 @@ class ReportProcessor(val metricsCalculator : MetricsCalculator, val optimizedFu
 
             val tradingCases = utils.toTradingCases(model.trades)
 
-            if(model.model.properties("end.min") == "1370" && model.model.properties("start.min") == "1120"){
-                println()
-            }
-
             val metrics = metricsCalculator(tradingCases)
 
             val est = metrics(optimizedFunctionName)
 
-            bestModels_ += ((est, model.model, metrics))
+            bestModels_ += new ModelStat(est, model, metrics)
             if(bestModels_.length > topModelsToKeep)
                 bestModels_.dequeue()
 

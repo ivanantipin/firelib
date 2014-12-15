@@ -17,7 +17,7 @@
   "modelParams" : { },
   "optConfig" : {
     "params" : [ ],
-    "batchSize" : 500,
+    "batchSize" : 50,
     "threadsNumber" : 1,
     "minNumberOfTrades" : 1,
     "optimizedPeriodDays" : -1,
@@ -33,10 +33,10 @@
     "durationMs" : 1000,
     "duration" : {
       "seconds" : 1,
-      "negative" : false,
-      "zero" : false,
       "units" : [ "SECONDS", "NANOS" ],
-      "nano" : 0
+      "nano" : 0,
+      "negative" : false,
+      "zero" : false
     }
   },
   "calculatedMetrics" : [ {

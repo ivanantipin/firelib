@@ -21,6 +21,7 @@ object Interval {
     val Min15 = new Interval("Min15", 15 * 60 * 1000)
     val Min30 = new Interval("Min30", 30 * 60 * 1000)
     val Min60 = new Interval("Min60", 60 * 60 * 1000)
+    val Min120 = new Interval("Min240", 120 * 60 * 1000)
     val Min240 = new Interval("Min240", 240 * 60 * 1000)
     val Day = new Interval("Day", 1440 * 60 * 1000)
 

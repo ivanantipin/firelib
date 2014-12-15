@@ -18,7 +18,7 @@ class OptimizationConfig{
     /**
      * number of model instances that backtested in one thread in one market data replay
      */
-    var batchSize = 500
+    var batchSize = 50
 
     /**
      * number of threads used for optimization

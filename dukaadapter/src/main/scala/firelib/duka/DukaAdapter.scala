@@ -9,6 +9,7 @@ import com.dukascopy.api.system.{ClientFactory, IClient, ISystemListener}
 import com.dukascopy.api.{IAccount, IBar, IConsole, IContext, IEngine, IFillOrder, IHistory, IMessage, IOrder, IStrategy, ITick, Instrument, Period}
 import firelib.common.misc.{DurableTopic, SubTopic, Topic}
 import firelib.common.threading.ThreadExecutor
+import firelib.common.tradegate.TradeGate
 import firelib.common.{Order, OrderStatus, OrderType, Side, Trade}
 import firelib.domain.{OrderState, Tick}
 import firelib.execution.{Configurable, MarketDataProvider}

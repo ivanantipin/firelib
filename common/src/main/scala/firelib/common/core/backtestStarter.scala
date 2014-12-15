@@ -10,7 +10,7 @@ object backtestStarter {
         try{
             val start: Long = System.currentTimeMillis()
             mc.backtestMode match {
-                case BacktestMode.InOutSample => new BacktesterOptimized().run(mc)
+                case BacktestMode.Optimize => new BacktesterOptimized().run(mc)
                 case BacktestMode.SimpleRun => new BacktesterSimple().run(mc)
                 case BacktestMode.FwdTesting => throw new RuntimeException("fwd testing not supported yet")
                 case _=>throw new RuntimeException("not possible")

@@ -13,7 +13,7 @@ class PositionCloserByTimeOut(val stub: OrderManager, val holdingTimeSeconds: In
     stub.listenTrades(onTrade)
 
     if(ts != null){
-        ts.listen(tt => closePositionIfTimeOut(ts.last.dtGmtEnd))
+        ts.listen(tt => if(!tt(0).interpolated) closePositionIfTimeOut(ts.last.dtGmtEnd))
     }
 
     private def onTrade(trd: Trade) = {
