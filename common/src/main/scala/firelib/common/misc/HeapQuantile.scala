@@ -3,20 +3,24 @@ package firelib.common.misc
 import java.util
 import java.util.Comparator
 
-import scala.collection.mutable
-
 
 
 
 class  HeapQuantile(val quantile: Double, val length: Int) {
 
-    case class Node(val value: Double, var isLeft: Boolean)
+    case class Node(val value: Double, var isLeft: Boolean, val counter : Int)
 
     class NodeComparator extends Comparator[Node]{
-        override def compare(o1: Node, o2: Node): Int = o1.value.compareTo(o2.value)
+        override def compare(o1: Node, o2: Node): Int = {
+            val cmp = o1.value.compareTo(o2.value)
+            if (cmp != 0) {
+                return cmp;
+            }
+            return o1.counter - o2.counter
+        }
     }
 
-    private val ring = new mutable.Queue[Node]()
+    private val queue = new util.LinkedList[Node]()
 
     private val left = new util.TreeSet[Node](new NodeComparator)
     private val right = new util.TreeSet[Node](new NodeComparator)
@@ -39,25 +43,25 @@ class  HeapQuantile(val quantile: Double, val length: Int) {
     }
 
     def addMetric(m: Double) = {
-        if (ring.size >= length) {
-            val node = ring.dequeue()
+        if (queue.size >= length) {
+            val node = queue.poll()
             if (node.isLeft) {
-                left.remove(node)
+                assert(left.remove(node))
             }
             else {
-                right.remove(node)
+                assert(right.remove(node))
             }
         }
         cnt += 1
 
         if (m > value) {
-            var n = new Node(m, false)
-            ring += n
+            val n = new Node(m, false, cnt)
+            queue.add(n)
             right.add(n)
         }
         else {
-            var n = new Node(m, true)
-            ring += n
+            val n = new Node(m, true, cnt)
+            queue.add(n)
             left.add(n)
         }
         balance()
@@ -68,8 +72,8 @@ class  HeapQuantile(val quantile: Double, val length: Int) {
         if (diff > 0) {
             val amDiff = (left.size - 1) / quantile - (right.size + 1) / (1 - quantile)
             if (math.abs(amDiff) < math.abs(diff)) {
-                var leftMax = left.last()
-                left.remove(leftMax)
+                val leftMax = left.last()
+                assert(left.remove(leftMax))
                 right.add(leftMax)
                 leftMax.isLeft = false
 
@@ -78,8 +82,8 @@ class  HeapQuantile(val quantile: Double, val length: Int) {
         else {
             val amDiff = (left.size + 1) / quantile - (right.size - 1) / (1 - quantile)
             if (math.abs(amDiff) < math.abs(diff)) {
-                var rightMin = right.first()
-                right.remove(rightMin)
+                val rightMin = right.first()
+                assert(right.remove(rightMin))
                 left.add(rightMin)
                 rightMin.isLeft = true
             }

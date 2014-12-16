@@ -82,7 +82,7 @@ class OrderFromTicksProcessor (val subTopic : PubTopic[OrderInfo], classifyWithB
 
     def addTick(tick: Tick) {
         val cSide = classifySide(tick);
-        if (tick.tickNumber == lastTick.tickNumber + 1 && tick.time.getEpochSecond == lastTick.time.getEpochSecond &&
+        if (tick.tickNumber == lastTick.tickNumber + 1 &&  tick.time == lastTick.time &&
           (cSide == Side.None || currOrderInfo.side == cSide)) {
             currOrderInfo.qty += tick.vol;
             currOrderInfo.vwap += tick.last * tick.vol;
@@ -92,6 +92,7 @@ class OrderFromTicksProcessor (val subTopic : PubTopic[OrderInfo], classifyWithB
         else {
             if(currOrderInfo != null){
                 currOrderInfo.vwap /= currOrderInfo.qty
+                assert(currOrderInfo.vwap <= currOrderInfo.maxPrice && currOrderInfo.vwap >= currOrderInfo.minPrice)
                 subTopic.publish(currOrderInfo)
             }
             currOrderInfo = new OrderInfo
