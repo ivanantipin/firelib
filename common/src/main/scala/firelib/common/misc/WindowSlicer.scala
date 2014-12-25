@@ -5,9 +5,10 @@ import java.time.{Duration, Instant}
 import firelib.domain.Timed
 
 import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 import scala.language.{implicitConversions, postfixOps}
 
-class WindowSlicer[T <: Timed](val out : PubTopic[T], val in : SubTopic[T], val events: SubTopic[Any], val dur : Duration) {
+class WindowSlicer[T <: Timed](val windowDuration : Duration) extends (T=>Seq[T]){
 
     private val queue = new mutable.Queue[T]()
 
@@ -15,27 +16,24 @@ class WindowSlicer[T <: Timed](val out : PubTopic[T], val in : SubTopic[T], val 
 
     var lastTime = Instant.MIN
 
-    events.subscribe(t => {
-        updateWriteBefore()
-        checkTail()
-    })
-
-    in.subscribe(oh => {
-        lastTime = oh.time
-        queue += oh
-        checkTail()
-    })
-
-    def checkTail() = {
+    def checkTail() : Seq[T] = {
+        val ret = new ArrayBuffer[T](0)
         while (queue.nonEmpty && queue.head.time.isBefore(writeBefore)) {
-            out.publish(queue.dequeue())
+            ret += queue.dequeue()
         }
-        while (queue.nonEmpty && queue.last.time.getEpochSecond - queue.head.time.getEpochSecond > dur.getSeconds) {
+        while (queue.nonEmpty && queue.last.time.getEpochSecond - queue.head.time.getEpochSecond > windowDuration.getSeconds) {
             queue.dequeue()
         }
+        ret
     }
 
     def updateWriteBefore() {
-        writeBefore = lastTime.plus(dur)
+        writeBefore = lastTime.plus(windowDuration)
+    }
+
+    override def apply(oh: T): Seq[T] = {
+        lastTime = oh.time
+        queue += oh
+        checkTail()
     }
 }

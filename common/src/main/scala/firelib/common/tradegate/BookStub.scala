@@ -35,6 +35,7 @@ abstract class BookStub(val timeService : TimeService) {
         val el = OrderRec (order, new DurableTopic[Trade](),new DurableTopic[OrderState]())
         val ords = if(order.side == Side.Buy) buyOrders else sellOrders
         ords.put(keyForOrder(order),el)
+        el.ordSubject.publish(new OrderState(order,OrderStatus.Accepted,timeService.currentTime))
         checkOrders()
         (el.trdSubject,el.ordSubject)
     }
@@ -46,7 +47,11 @@ abstract class BookStub(val timeService : TimeService) {
     def cancelOrder(order : Order): Unit = {
         val ords = if(order.side == Side.Buy) buyOrders else sellOrders
         val rec: OrderRec = ords.remove(keyForOrder(order))
-        rec.ordSubject.publish(new OrderState(order,OrderStatus.Cancelled,timeService.currentTime))
+        if(rec != null){
+            //this can be null due to delay trade gate
+            rec.ordSubject.publish(new OrderState(order,OrderStatus.Cancelled,timeService.currentTime))
+        }
+
     }
 
     def updateBidAsk(bid: Double, ask: Double) = {

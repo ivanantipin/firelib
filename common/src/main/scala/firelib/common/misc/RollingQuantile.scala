@@ -6,7 +6,7 @@ import java.util.Comparator
 
 
 
-class  HeapQuantile(val quantile: Double, val length: Int) {
+class  RollingQuantile(val quantile: Double, val length: Int) {
 
     case class Node(val value: Double, var isLeft: Boolean, val counter : Int)
 
@@ -43,6 +43,7 @@ class  HeapQuantile(val quantile: Double, val length: Int) {
     }
 
     def addMetric(m: Double) = {
+        assert(!m.isNaN && !m.isInfinite)
         if (queue.size >= length) {
             val node = queue.poll()
             if (node.isLeft) {

@@ -7,11 +7,10 @@ class SimpleMovingAverage(val period: Int, val calcSko: Boolean) {
 
     private var currentSko = 0.0
     private var currentSma = 0.0
-    var enabled = false
     private var pos = 0
 
 
-    def value = currentSma / (if (enabled) period else pos)
+    def value = currentSma / period
 
     def sko = currentSko
 
@@ -26,18 +25,17 @@ class SimpleMovingAverage(val period: Int, val calcSko: Boolean) {
         pos += 1
         if (pos == closes.length) {
             pos = 0;
-            enabled = true;
         }
 
         if (calcSko) {
-            var ssma = value;
-            var per = if (enabled) pos else period
-            var sig = 0.0;
-            for (i <- 0 until per) {
-                var cl = closes(i);
-                sig += (cl - ssma) * (cl - ssma);
+            var sig = 0.0
+            var i = 0
+            while (i < period){
+                val cl = closes(i)
+                sig += (cl - value) * (cl - value)
+                i+=1
             }
-            sig /= per;
+            sig /= period;
             currentSko = math.pow(sig, 0.5);
         }
     }

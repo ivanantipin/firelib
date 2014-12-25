@@ -1,6 +1,7 @@
 package firelib.common.mddistributor
 
 import firelib.common.interval.Interval
+import firelib.common.misc.SubTopic
 import firelib.common.timeseries.TimeSeries
 import firelib.domain.{Ohlc, Tick}
 
@@ -14,6 +15,10 @@ trait MarketDataDistributor {
     def listenTicks(idx : Int, lsn : Tick=>Unit) : Unit
 
     def listenOhlc(idx : Int, lsn : Ohlc=>Unit) : Unit
+
+    def tickTopic(idx : Int) : SubTopic[Tick]
+
+    def getTs(tickerId: Int, interval: Interval) : TimeSeries[Ohlc]
 
     def setTickTransformFunction(fun : (Tick) => Tick) : Unit
 }

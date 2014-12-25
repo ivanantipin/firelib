@@ -2,6 +2,7 @@ package firelib.common.report
 
 import java.nio.file.{Files, Paths, StandardCopyOption}
 
+import firelib.common.OrderStatus
 import firelib.common.config.ModelBacktestConfig
 import firelib.common.core.ModelOutput
 import firelib.common.misc.{jsonHelper, statFileDumper}
@@ -28,7 +29,7 @@ object reportWriter {
 
         if (trades.length == 0) return
 
-        statFileDumper.writeRows(Paths.get(targetDir, "modelProps.properties").toAbsolutePath.toString,model.model.properties.map(a=>a._1 + "=" + a._2))
+        statFileDumper.writeRows(Paths.get(targetDir, "modelProps.properties").toAbsolutePath.toString,model.modelProps.map(a=>a._1 + "=" + a._2))
 
         val factors = if (trades(0).factors == null) new HashMap[String, String] else trades(0).factors
 
@@ -38,7 +39,7 @@ object reportWriter {
 
         val orderWriter = new StreamOrderWriter(Paths.get(targetDir, "orders.csv").toAbsolutePath)
         orderWriter.writeHeader()
-        model.orderStates.filter(_.status.isFinal).map(_.order).foreach(orderWriter)
+        model.orderStates.filter(_.status == OrderStatus.New).map(_.order).foreach(orderWriter)
 
         copyJarFileToReal("/StdReport.ipynb", Paths.get(targetDir,"StdReport.ipynb").toAbsolutePath.toString)
         copyJarFileToReal("/TradesReporter.py", Paths.get(targetDir,"TradesReporter.py").toAbsolutePath.toString)

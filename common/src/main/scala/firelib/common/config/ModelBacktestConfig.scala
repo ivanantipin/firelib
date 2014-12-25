@@ -30,9 +30,11 @@ class ModelBacktestConfig {
 
     var tickToTickFuncClass : String = classOf[NormBidAskTickFunc].getName
 
-    var precacheMarketData : Boolean = false
+    var precacheMarketData : Boolean = true
 
     var networkSimulatedDelayMs = 30l
+
+    var dumpOhlcData = true
 
     /**
      * params passed to model apply method

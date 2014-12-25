@@ -3,7 +3,6 @@ package firelib.indicators
 import java.time.Instant
 
 import firelib.common.Side
-import firelib.common.misc.PubTopic
 import firelib.domain.Tick
 
 
@@ -16,63 +15,7 @@ class OrderInfo {
     var vwap: Double = Double.NaN
 }
 
-/*
- class TimeWindowTrimmer(val windowSeconds: Int) extends (()=>Unit)  {
-
-        override def apply(): Unit = {
-            var limitDt = lastTick.time.plus(-windowSeconds, ChronoUnit.SECONDS);
-            while (orders.length > 0 && orders.last.dt.isBefore(limitDt)) {
-                var d = orders.dequeue()
-                onOrderDequeue(d);
-            }
-        }
-    }
-
-    class VolumeWindowTrimmer(val volumeWindow: Int) extends (()=>Unit) with OrderListener  {
-
-        var bidsVolume: Int = _
-        var asksVolume: Int = _
-
-
-        override def apply(): Unit = {
-            while (orders.length != 0 && (bidsVolume + asksVolume) > volumeWindow) {
-                var oinfo = orders.dequeue();
-                if(oinfo.side == Side.Sell){
-                    bidsVolume+=oinfo.qty
-                }else{
-                    asksVolume+=oinfo.qty
-                }
-                onOrderDequeue(oinfo);
-            }
-        }
-
-        override def OnOrderEnqueue(orderInfo: OrderInfo): Unit = {
-            if(orderInfo.side == Side.Sell){
-                bidsVolume+=orderInfo.qty
-            }else{
-                asksVolume+=orderInfo.qty
-            }
-        }
-
-        override def OnOrderDequeue(orderInfo: OrderInfo): Unit = {}
-    }
-
-
-    var trimWindow : ()=>Unit =_
-
-    def enableVolumeTrimmer(volume : Int) : OrderFromTicksProcessor = {
-        trimWindow=new this.VolumeWindowTrimmer(volume)
-        this
-    }
-
-    def enableTimeTrimmer(secs : Int) : OrderFromTicksProcessor = {
-        trimWindow=new this.TimeWindowTrimmer(secs)
-        this
-    }
-
- */
-
-class OrderFromTicksProcessor (val subTopic : PubTopic[OrderInfo], classifyWithBidAsk  : Boolean = false){
+class OrderFromTicksProcessor (classifyWithBidAsk  : Boolean = false) extends (Tick=>Seq[OrderInfo]){
 
     var lastTick: Tick = new Tick()
 
@@ -80,8 +23,9 @@ class OrderFromTicksProcessor (val subTopic : PubTopic[OrderInfo], classifyWithB
 
     private var currOrderInfo : OrderInfo = null
 
-    def addTick(tick: Tick) {
+    def apply(tick: Tick) : Seq[OrderInfo] = {
         val cSide = classifySide(tick);
+        var ret : Seq[OrderInfo] = Nil
         if (tick.tickNumber == lastTick.tickNumber + 1 &&  tick.time == lastTick.time &&
           (cSide == Side.None || currOrderInfo.side == cSide)) {
             currOrderInfo.qty += tick.vol;
@@ -93,7 +37,7 @@ class OrderFromTicksProcessor (val subTopic : PubTopic[OrderInfo], classifyWithB
             if(currOrderInfo != null){
                 currOrderInfo.vwap /= currOrderInfo.qty
                 assert(currOrderInfo.vwap <= currOrderInfo.maxPrice && currOrderInfo.vwap >= currOrderInfo.minPrice)
-                subTopic.publish(currOrderInfo)
+                ret = List(currOrderInfo)
             }
             currOrderInfo = new OrderInfo
             currOrderInfo.qty = tick.vol
@@ -104,6 +48,7 @@ class OrderFromTicksProcessor (val subTopic : PubTopic[OrderInfo], classifyWithB
             currOrderInfo.side = cSide
         }
         lastTick = tick;
+        ret
     }
 
 

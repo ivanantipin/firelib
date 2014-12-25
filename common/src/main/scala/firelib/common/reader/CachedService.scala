@@ -3,13 +3,13 @@ package firelib.common.reader
 import java.nio.file.{Path, Paths}
 import java.time.Instant
 
-import firelib.common.misc.dateUtils
+import firelib.common.misc.DateUtils
 import firelib.common.reader.binary.{BinaryReader, BinaryReaderRecordDescriptor, BinaryWriter}
 import firelib.domain.Timed
 import org.apache.commons.io.FileUtils
 
 
-class CachedService(val cacheDirectory : String){
+class CachedService(val cacheDirectory : String) extends DateUtils{
 
     private val rootDir: Path = Paths.get(cacheDirectory)
 
@@ -19,8 +19,8 @@ class CachedService(val cacheDirectory : String){
     }
 
     private def makeTimeKey(startTime : Instant, endTime : Instant ): String ={
-        val st = dateUtils.toStandardString(startTime)
-        val et = dateUtils.toStandardString(endTime)
+        val st = startTime.toStandardString
+        val et = endTime.toStandardString
         s"$st-$et"
     }
 

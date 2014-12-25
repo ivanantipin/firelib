@@ -2,7 +2,6 @@ package firelib.common.report
 
 import firelib.common.core.ModelOutput
 import firelib.common.misc.utils
-import firelib.common.model.Model
 
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.{Map, mutable}
@@ -18,11 +17,6 @@ class ReportProcessor(val metricsCalculator : MetricsCalculator, val optimizedFu
     var estimates = new ArrayBuffer[ExecutionEstimates]()
 
     def bestModels: Seq[ModelOutput] = bestModels_.map(_.output).toList
-
-
-    def bestModelsWithMetrics: Seq[(Model, Map[StrategyMetric, Double])] = {
-        return bestModels_.map(bm => (bm.output.model, bm.metrics)).toList
-    }
 
     def process(models: Seq[ModelOutput]) = {
 
@@ -42,14 +36,14 @@ class ReportProcessor(val metricsCalculator : MetricsCalculator, val optimizedFu
             if(bestModels_.length > topModelsToKeep)
                 bestModels_.dequeue()
 
-            estimates += new ExecutionEstimates(extractOptParams(model.model), metrics)
+            estimates += new ExecutionEstimates(extractOptParams(model.modelProps) , metrics)
 
         })
         println(s"total model complete ${estimates.length}")
 
     }
 
-    private def extractOptParams(model: Model): Map[String, Int] = {
-        return optParams map (s => (s, model.properties(s).toInt)) toMap
+    private def extractOptParams(props : Map[String,String]): Map[String, Int] = {
+        return optParams map (s => (s, props(s).toInt)) toMap
     }
 }

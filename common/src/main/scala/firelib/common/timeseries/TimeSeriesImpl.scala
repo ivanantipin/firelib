@@ -1,23 +1,24 @@
 package firelib.common.timeseries
 
-import scala.collection.mutable.ArrayBuffer
+import firelib.common.misc.NonDurableTopic
 
-class TimeSeriesImpl[T](val history: HistoryCircular[T]) extends TimeSeries[T] {
+import scala.reflect.ClassTag
 
-    private val listeners = new ArrayBuffer[(TimeSeries[T]) => Unit]
+class TimeSeriesImpl[T:ClassTag] (val length: Int, func: () => T) extends TimeSeries[T] {
 
-    def adjustSizeIfNeeded(historySize: Int) = this.history.adjustSizeIfNeeded(historySize)
+    val data = new RingBuffer[T](length, func)
 
-    def count = history.count
+    def adjustSizeIfNeeded(historySize: Int) = data.adjustSizeIfNeeded(historySize)
 
-    def apply(idx: Int): T = history(idx)
+    def count = data.count
 
-    def shiftAndGetLast: T = {
-        listeners.foreach(_(this))
-        history.shift
+    def apply(idx: Int): T = data(idx)
+
+    def add(t : T) = {
+        onNewBar.publish(this)
+        data.add(t)
     }
 
-    override def listen(listener: (TimeSeries[T]) => Unit): Unit = {
-        listeners += listener
-    }
+    override val onNewBar = new NonDurableTopic[TimeSeries[T]]
+
 }

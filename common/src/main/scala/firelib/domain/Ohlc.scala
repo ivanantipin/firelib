@@ -26,7 +26,7 @@ class Ohlc() extends Timed {
 
     def bodyLength: Double = Math.abs(C - O)
 
-    def Return: Double = C - O
+    def ret: Double = C - O
 
     def isInRange(vv: Double): Boolean = H > vv && vv > L
 

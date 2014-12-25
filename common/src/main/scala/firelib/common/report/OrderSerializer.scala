@@ -1,10 +1,9 @@
 package firelib.common.report
 
-import firelib.common.misc.dateUtils._
-import firelib.common.misc.utils
+import firelib.common.misc.{DateUtils, utils}
 import firelib.common.{Order, Side}
 
-trait OrderSerializer extends ReportConsts{
+trait OrderSerializer extends ReportConsts with DateUtils{
     val orderColsDef = List[(String,Order=>String)](
         ("Ticker",o=>o.security),
         ("OrderId",o=>o.id),

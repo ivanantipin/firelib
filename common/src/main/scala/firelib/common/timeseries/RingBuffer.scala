@@ -2,12 +2,7 @@ package firelib.common.timeseries
 
 import scala.reflect.ClassTag
 
-/*
- * this is simple window - convention for index is
- * idx == 0 - current value
- * idx < 0 value of idx "intervals ago"
- */
-class HistoryCircular[T:ClassTag](val length: Int, func: () => T) {
+class RingBuffer[T:ClassTag](val length: Int, func: () => T) {
 
     var data = new Array[T](0)
     var count = 0
@@ -16,14 +11,17 @@ class HistoryCircular[T:ClassTag](val length: Int, func: () => T) {
 
     def apply(idx: Int): T = data(calcIdx(idx))
 
-    def calcIdx(idx: Int): Int = (head + idx + length) % length
+    private def calcIdx(idx: Int): Int = {
+        assert(idx >= 0 && idx < data.length)
+        (head - idx + length) % length
+    }
 
     def update(idx : Int, value : T ) = data(calcIdx(idx)) = value
 
-    def shift: T = {
-        count+=1
+    def add(t : T) : Unit = {
         head = (head + 1) % length
-        data(head)
+        count += 1
+        update(0,t)
     }
 
     def adjustSizeIfNeeded(historySize: Int): Unit = {

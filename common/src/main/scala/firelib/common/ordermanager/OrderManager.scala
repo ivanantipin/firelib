@@ -2,6 +2,7 @@ package firelib.common.ordermanager
 
 import java.time.Instant
 
+import firelib.common.misc.SubTopic
 import firelib.common.{Order, Trade}
 import firelib.domain.OrderState
 
@@ -27,9 +28,9 @@ trait OrderManager extends OrderManagerUtils{
 
     def liveOrders: Seq[Order]
 
-    def listenTrades(lsn : Trade=>Unit)
+    val tradesTopic : SubTopic[Trade]
 
-    def listenOrders(lsn : OrderState=>Unit)
+    val orderStateTopic : SubTopic[OrderState]
 
     def cancelOrders(orders: Order*)
 

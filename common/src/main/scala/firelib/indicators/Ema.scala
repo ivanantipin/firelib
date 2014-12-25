@@ -11,7 +11,7 @@ class Ema(
 
     var koeffFunc = ()=> 2.0 / (period + 1)
 
-    ts.listen(this)
+    ts.onNewBar.subscribe(this)
 
     private var ema: Double = 0
 

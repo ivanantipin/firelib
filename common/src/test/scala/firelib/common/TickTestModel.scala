@@ -29,8 +29,9 @@ class TickTestModel extends BasketModel {
     override def applyProperties(mprops: Map[String, String]) : Boolean = {
         testHelper.instanceTick = this
 
-        hist = enableOhlcHistory(Interval.Min5, 10)(0)
-        hist.listen(On5Min)
+        hist = enableOhlc(Interval.Min5, 10)(0)
+        Interval.Min5.listen(On5Min)
+
 
         bindComp.marketDataDistributor.listenTicks(0,onTick)
         true
@@ -39,8 +40,8 @@ class TickTestModel extends BasketModel {
 
     val bars = new ArrayBuffer[Ohlc]()
 
-    private def On5Min(hh: TimeSeries[Ohlc]): Unit = {
-        bars += ohlcUtils.copy(hh(0))
+    private def On5Min(il: Interval): Unit = {
+        bars += ohlcUtils.copy(il.ohlcFor(0)(0))
         //System.out.println(hh(0))
     }
 

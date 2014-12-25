@@ -5,6 +5,6 @@ import java.time.Instant
 trait Agenda {
     def next(): Unit
 
-    def addEvent(time: Instant, act: () => Unit): Unit
+    def addEvent(time: Instant, act: () => Unit, prio : Int): Unit
 
 }

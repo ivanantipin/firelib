@@ -5,6 +5,10 @@ import firelib.common.report.StrategyMetric
 
 import scala.collection.mutable.ArrayBuffer
 
+
+
+
+
 /**
  * config that contains all optimization parameters
  */
@@ -15,19 +19,9 @@ class OptimizationConfig{
      */
     val params = new ArrayBuffer[OptimizedParameter]
 
-    /**
-     * number of model instances that backtested in one thread in one market data replay
-     */
-    var batchSize = 50
+    var resourceStrategy : OptResourceStrategy = new DefaultOptResourceStrategy
 
-    /**
-     * number of threads used for optimization
-     * make sense to do <= number of cores
-     */
-    var threadsNumber = 1
-
-
-    var minNumberOfTrades = 1
+    var minNumberOfTrades = 50
 
     /**
      * number of days to optimize params before out of sample run

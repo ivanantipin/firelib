@@ -34,28 +34,29 @@ class OhlcTestModel extends BasketModel {
 
     override def applyProperties(mprops: Map[String, String]) : Boolean = {
         testHelper.instanceOhlc = this
-        hist = enableOhlcHistory(Interval.Min5, 10)(0);
-        hist.listen(On5Min)
-        dayHist = enableOhlcHistory(Interval.Day, 10)(0);
+        hist = enableOhlc(Interval.Min5, 10)(0);
+        Interval.Min5.listen(On5Min)
+        dayHist = enableOhlc(Interval.Day, 10)(0);
         true
     }
 
 
-    def On5Min(hh: TimeSeries[Ohlc]): Unit = {
+    def On5Min(il: Interval): Unit = {
+        val hh = il.ohlcFor(0)
         if (dayHist.count > 0 && dayHist(0).dtGmtEnd.truncatedTo(ChronoUnit.DAYS) != dayHist(0).dtGmtEnd) {
             throw new Exception("time of day ts not correct");
         }
 
-        if (currentTime != hh(0).getDtGmtEnd) {
-            throw new Exception("time is not equal");
+        if (currentTime != hh(0).time) {
+            throw new Exception(s"time is not equal $currentTime <> ${hh(0).time}");
         }
         bars +=  ohlcUtils.copy(hh(0
         )
         )
 
         if (bars.size > 1) {
-            if ((hh(0).getDtGmtEnd.toEpochMilli - hh(-1).getDtGmtEnd.toEpochMilli) != 5*60*1000) {
-                throw new Exception("not 5 min diff " + hh(0).getDtGmtEnd + " -- " + hh(-1).getDtGmtEnd);
+            if ((hh(0).getDtGmtEnd.toEpochMilli - hh(1).getDtGmtEnd.toEpochMilli) != 5*60*1000) {
+                throw new Exception("not 5 min diff " + hh(0).getDtGmtEnd + " -- " + hh(1).getDtGmtEnd);
             }
         }
         AddOhlc(ohlcUtils.copy(hh(0)));

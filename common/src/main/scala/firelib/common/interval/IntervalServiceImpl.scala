@@ -24,8 +24,12 @@ class IntervalServiceImpl extends IntervalService {
             }
         }
     }
-    def addListener(interval: Interval, action: Instant  => Unit) = {
-        addOrGetIntervalNode(interval).listeners += action
+    def addListener(interval: Interval, action: Instant  => Unit, atTheBeginning : Boolean = false) = {
+        if(atTheBeginning){
+            addOrGetIntervalNode(interval).listeners.insert(0,action)
+        }else{
+            addOrGetIntervalNode(interval).listeners += action
+        }
         rebuildTree()
     }
 

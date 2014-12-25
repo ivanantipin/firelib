@@ -1,6 +1,8 @@
 package firelib.common.core
 
+import firelib.common.interval.IntervalServiceComponent
 import firelib.common.mddistributor.MarketDataDistributorComponent
+import firelib.common.misc.{NonDurableTopic, SubTopic, Topic}
 import firelib.common.model.{BasketModel, Model}
 import firelib.common.ordermanager.OrderManagerImpl
 import firelib.common.timeservice.TimeServiceComponent
@@ -13,9 +15,13 @@ trait BindModelComponent {
     this: ModelConfigContext
       with MarketDataDistributorComponent
       with TimeServiceComponent
-      with TradeGateComponent =>
+      with TradeGateComponent
+      with IntervalServiceComponent=>
 
-    val models = new ArrayBuffer[Model]
+
+    val onModelBinded : SubTopic[Model] = new NonDurableTopic[Model]
+
+    val bindedModels = new ArrayBuffer[Model]
 
     def bindModelForParams(params: Map[String, String]): Model = {
         val stubs = modelConfig.instruments.map(ins => new OrderManagerImpl(this, ins.ticker))
@@ -23,9 +29,10 @@ trait BindModelComponent {
         model.orderManagersFld = stubs.toArray
         model.bindComp = this
         if (model.initModel(params)) {
-            models += model
+            bindedModels += model
+            onModelBinded.asInstanceOf[Topic[Model]].publish(model)
         }
-        return model
+        model
     }
 
 }

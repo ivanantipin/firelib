@@ -18,7 +18,7 @@ class TradeGateDelay(val timeService: TimeService, val delayMillis: Long, val tr
             val sss: (SubTopic[Trade], SubTopic[OrderState]) = tradeGate.sendOrder(order)
             sss._1.subscribe(t=>trdS.publish(t))
             sss._2.subscribe(o=>ordS.publish(o))
-        })
+        },0)
         (trdS, ordS)
     }
 
@@ -28,6 +28,6 @@ class TradeGateDelay(val timeService: TimeService, val delayMillis: Long, val tr
     override def cancelOrder(order: Order): Unit = {
         agenda.addEvent(timeService.currentTime.plusMillis(delayMillis), () => {
             tradeGate.cancelOrder(order)
-        })
+        },0)
     }
 }

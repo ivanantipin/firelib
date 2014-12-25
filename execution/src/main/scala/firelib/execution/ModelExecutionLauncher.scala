@@ -51,11 +51,11 @@ class ModelExecutionLauncher(val execConfig: ModelExecutionConfig) {
 
     private val tradeWriter: StreamTradeCaseWriter = new StreamTradeCaseWriter(tradesPath, List[String]())
 
-    model.orderManagers.foreach(om=>om.listenTrades(tradeWriter))
+    model.orderManagers.foreach(om=>om.tradesTopic.subscribe(tradeWriter))
 
     private val orderWriter: StreamOrderWriter = new StreamOrderWriter(ordersPath)
 
-    model.orderManagers.foreach(om=>om.listenOrders(s=>orderWriter.apply(s.order)))
+    model.orderManagers.foreach(om=>om.orderStateTopic.subscribe(s=>orderWriter.apply(s.order)))
 
     log.info("Started ")
 

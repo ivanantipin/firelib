@@ -13,8 +13,12 @@ class DurableTopic[T] extends Topic[T]{
         msgs += t
     }
 
-    def subscribe(lsn : T=>Unit) : Unit = {
+    def subscribe(lsn : T=>Unit) : TopicSubscription= {
         listeners += lsn
         msgs.foreach(lsn(_))
+        new TopicSubscription {
+            override def unsubscribe(): Unit = listeners -= lsn
+        }
+
     }
 }

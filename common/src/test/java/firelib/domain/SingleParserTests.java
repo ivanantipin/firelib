@@ -168,7 +168,7 @@ public class SingleParserTests {
         ParserHandlersProducer parserHandlersProducer = new ParserHandlersProducer(LegacyMarketDataFormatLoader.transform(settings));
         CsvParser<Tick> csvParser = new CsvParser<>(getfile("LongFile/XG_#.csv"), parserHandlersProducer.handlers, () -> new Tick());
 
-        Instant instant = dateUtils.parseAtZone("11.03.2013 23:59:59", dateUtils.nyZoneId());
+        Instant instant = dateUtils.parseAtZone("11.03.2013 23:59:59",dateUtils.nyZoneId());
         csvParser.seek(instant);
         Assert.assertEquals(instant, csvParser.current().dtGmt());
 

@@ -3,7 +3,7 @@ package firelib.common.ordermanager
 import java.util.Random
 
 import firelib.common._
-import firelib.common.misc.{NonDurableTopic, SubTopic}
+import firelib.common.misc.NonDurableTopic
 import firelib.common.timeservice.TimeServiceComponent
 import firelib.common.tradegate.TradeGateComponent
 import firelib.domain.{OrderState, OrderWithState}
@@ -19,8 +19,6 @@ class OrderManagerImpl(val bindComp : TradeGateComponent with TimeServiceCompone
     private val id2Order = new mutable.HashMap[String,OrderWithState]()
 
     private var position_ = 0
-
-    private var orderIdCnt = 0
 
     private val log = LoggerFactory.getLogger(getClass)
 
@@ -40,12 +38,8 @@ class OrderManagerImpl(val bindComp : TradeGateComponent with TimeServiceCompone
         id2Order.values.exists(o => (o.status.isPending || (o.order.orderType == OrderType.Market)))
     }
 
-    private val tradesSubject = new NonDurableTopic[Trade]()
-    private val ordersSubject = new NonDurableTopic[OrderState]()
-
-    override def listenTrades(lsn: Trade=>Unit) = tradesSubject.subscribe(lsn)
-
-    override def listenOrders(lsn: OrderState=>Unit) = ordersSubject.subscribe(lsn)
+    override val tradesTopic = new NonDurableTopic[Trade]()
+    override val orderStateTopic = new NonDurableTopic[OrderState]()
 
     def cancelOrders(orders: Order*): Unit = {
         for (order <- orders) {
@@ -53,7 +47,7 @@ class OrderManagerImpl(val bindComp : TradeGateComponent with TimeServiceCompone
                 case Some(ord) => {
                     tradeGate.cancelOrder(order)
                     ord.statuses += OrderStatus.PendingCancel
-                    ordersSubject.publish(new OrderState(ord.order,OrderStatus.PendingCancel, currentTime))
+                    orderStateTopic.publish(new OrderState(ord.order,OrderStatus.PendingCancel, currentTime))
                 }
 
                 case None => log.error("cancelling non existing order {}", order)
@@ -65,16 +59,16 @@ class OrderManagerImpl(val bindComp : TradeGateComponent with TimeServiceCompone
     def submitOrders(orders: Order*) = {
         if(this.id2Order.size > maxOrderCount){
             log.error("max order count reached rejecting orders {}", orders)
-            orders.foreach(ord=>ordersSubject.publish(new OrderState(ord,OrderStatus.Rejected, currentTime)))
+            orders.foreach(ord=>orderStateTopic.publish(new OrderState(ord,OrderStatus.Rejected, currentTime)))
         }else{
             orders.foreach(order => {
                 val orderWithState: OrderWithState = new OrderWithState(order)
                 this.id2Order(order.id) = orderWithState
-                orders.foreach(ord=>ordersSubject.publish(new OrderState(ord,OrderStatus.New, currentTime)))
+                orders.foreach(ord=>orderStateTopic.publish(new OrderState(ord,OrderStatus.New, currentTime)))
                 log.info("submitting order {}", order)
-                val obss: (SubTopic[Trade], SubTopic[OrderState]) = tradeGate.sendOrder(order)
-                orderWithState.tradeSubscription = obss._1
-                orderWithState.orderSubscription = obss._2
+                val (tradeSubscription, orderSubscription) = tradeGate.sendOrder(order)
+                orderWithState.tradeSubscription = tradeSubscription
+                orderWithState.orderSubscription = orderSubscription
                 orderWithState.tradeSubscription.subscribe((t : Trade) =>onTrade(t, orderWithState))
                 orderWithState.orderSubscription.subscribe(onOrderState)
             })
@@ -101,7 +95,7 @@ class OrderManagerImpl(val bindComp : TradeGateComponent with TimeServiceCompone
             }
             val finalOrder: OrderWithState = id2Order.remove(state.order.id).get
         }
-        ordersSubject.publish(state)
+        orderStateTopic.publish(state)
     }
 
 
@@ -115,7 +109,7 @@ class OrderManagerImpl(val bindComp : TradeGateComponent with TimeServiceCompone
         position_ = trd.adjustPositionByThisTrade(position_)
         trd.positionAfter = position_
         if(log.isInfoEnabled()) log.info(s"position adjusted for security $security :  $prevPos -> $position")
-        tradesSubject.publish(trd)
+        tradesTopic.publish(trd)
     }
 
 

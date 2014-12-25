@@ -2,13 +2,12 @@ package firelib.common.misc
 
 import java.text.DecimalFormat
 
-import breeze.stats.DescriptiveStatsTrait
 import firelib.common.Trade
 
 import scala.collection.mutable.ArrayBuffer
 
 
-object utils extends DescriptiveStatsTrait {
+object utils {
 
     val filterThresholdInVariance: Int = 10
 
@@ -31,8 +30,6 @@ object utils extends DescriptiveStatsTrait {
 
     private def filterTradingCases(tradingCases: Seq[(Trade, Trade)]): Seq[(Trade, Trade)] = {
         return tradingCases
-        //val std = variance(tradingCases.map(pnlForCase))
-        //return tradingCases.filter(tc => math.abs(pnlForCase(tc)) < filterThresholdInVariance * std)
     }
 
     def toTradingCases(trades: Seq[Trade]): Seq[(Trade, Trade)] = {

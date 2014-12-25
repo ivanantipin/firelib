@@ -6,6 +6,9 @@ trait OrderManagerUtils {
     this : OrderManager =>
 
     def managePosTo(pos: Int): Unit = {
+        if(hasPendingState()){
+            return
+        }
         getOrderForDiff(position, pos) match {
             case Some(ord) => submitOrders(ord)
             case _ =>
@@ -41,6 +44,6 @@ trait OrderManagerUtils {
         managePosTo(0)
     }
 
-    def cancelAllOrders() = {cancelOrders(liveOrders :_*)}
+    def cancelAllOrders() = {cancelOrders(liveOrders.filter(o=>o.orderType != OrderType.Market) :_*)}
 
 }

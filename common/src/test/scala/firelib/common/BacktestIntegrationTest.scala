@@ -9,7 +9,7 @@ import java.util.function.Supplier
 import firelib.common.config.{InstrumentConfig, ModelBacktestConfig}
 import firelib.common.core.backtestStarter
 import firelib.common.interval.Interval
-import firelib.common.misc.dateUtils._
+import firelib.common.misc.DateUtils
 import firelib.domain.Ohlc
 import firelib.parser.{CsvParser, LegacyMarketDataFormatLoader, ParseHandler, ParserHandlersProducer}
 import org.junit.{Assert, Test}
@@ -19,7 +19,7 @@ import scala.collection.mutable.ArrayBuffer
 
 
 @Test
-class BacktestIntegrationTest {
+class BacktestIntegrationTest extends DateUtils{
 
     //FIXME backtest on 2 instruments with several bars intervals
 
@@ -73,7 +73,7 @@ class BacktestIntegrationTest {
         cfg.startDateGmt = "08.03.2013 05:00:00"
         cfg.stepInterval = Interval.Sec1
         cfg.precacheMarketData = false
-        var startTime = cfg.startDateGmt.parseStandard
+        var startTime = cfg.startDateGmt.parseTimeStandard
         cfg.modelClassName = "firelib.common.TickTestModel"
         backtestStarter.runBacktest(cfg)
 
@@ -176,7 +176,7 @@ class BacktestIntegrationTest {
 
         cfg.precacheMarketData = false
 
-        val startTime = cfg.startDateGmt.parseStandard
+        val startTime = cfg.startDateGmt.parseTimeStandard
 
         cfg.modelClassName = "firelib.common.OhlcTestModel"
 

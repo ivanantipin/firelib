@@ -14,16 +14,16 @@ class WindowSlicerTest {
     @Test
     def testWSlicer(): Unit ={
 
-        val out = new NonDurableTopic[Ohlc]()
+
         val in = new NonDurableTopic[Ohlc]()
-        val events = new NonDurableTopic[Any]()
+
 
         val wlen: Int = 3
-        val slicer = new WindowSlicer(out,in,events, Duration.ofMinutes(wlen))
+        val slicer = new WindowSlicer[Ohlc](Duration.ofMinutes(wlen))
 
         val lst = new ArrayBuffer[Ohlc]()
 
-        out.subscribe(lst += _)
+        in.lift(slicer).subscribe(lst += _)
 
         val t0 = Interval.Min1.roundTime(Instant.now())
 
@@ -36,7 +36,7 @@ class WindowSlicerTest {
             times += tm
             in.publish(Ohlc(tm,1,2,3,4))
             if(i == publish || i == publish + 2){
-                events.publish("some")
+                slicer.updateWriteBefore()
             }
         }
         Assert.assertEquals(times.drop(publish - wlen).take(wlen*2 + 2).toSeq, lst.map(_.dtGmtEnd).toSeq)

@@ -9,7 +9,7 @@ class ATR(period: Int, ts: TimeSeries[Ohlc]) extends Indicator[Double] with (Tim
 
     val avg = new SimpleMovingAverage(period, false)
 
-    ts.listen(this)
+    ts.onNewBar.subscribe(this)
 
     override def apply(v1: TimeSeries[Ohlc]): Unit = {
         avg.add(lastRange(v1))

@@ -3,12 +3,10 @@ package firelib.common.core
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-import firelib.common.config.ModelBacktestConfig
+import firelib.common.config.{ModelBacktestConfig, OptResourceParams}
 import firelib.common.opt.ParamsVariator
 import firelib.common.report.{ReportProcessor, backtestStatisticsCalculator, optParamsWriter, reportWriter}
 import firelib.common.threading.ThreadExecutorImpl
-
-import scala.collection.mutable.ArrayBuffer
 
 
 class BacktesterOptimized {
@@ -25,7 +23,7 @@ class BacktesterOptimized {
             minNumberOfTrades = cfg.optConfig.minNumberOfTrades)
 
         //FIXME investigate rejected tasks
-        val executor = new ThreadExecutorImpl(cfg.optConfig.threadsNumber).start()
+
         val reportExecutor = new ThreadExecutorImpl(1).start()
         val variator = new ParamsVariator(cfg.optConfig.params)
 
@@ -41,14 +39,17 @@ class BacktesterOptimized {
 
         println("number of models " + variator.combinations)
 
+        val optResourceParams: OptResourceParams = cfg.optConfig.resourceStrategy.getParams(variator.combinations)
+
+        val executor = new ThreadExecutorImpl(optResourceParams.threadCount).start()
+
         while (variator.hasNext()) {
-            val env = nextModelVariationsChunk(cfg, variator)
+            val env = nextModelVariationsChunk(cfg, variator, optResourceParams.batchSize)
             executor.execute(() => {
-                val outputs: ArrayBuffer[ModelOutput] = env.models.map(new ModelOutput(_))
-                env.backtest.backtestUntil(endOfOptimize)
+                val outputs = env.backtest.backtestUntil(endOfOptimize)
                 reportExecutor.execute(() => reportProcessor.process(outputs))
             })
-            println(s"models scheduled for optimization ${env.models.length}")
+            println(s"models scheduled for optimization ${env.bindedModels.length}")
 
         }
 
@@ -67,9 +68,11 @@ class BacktesterOptimized {
         if(endOfOptimize.isBefore(endDtGmt)){
             val env = new SimpleRunCtx(cfg)
             env.init()
-            output = new ModelOutput(env.bindModelForParams(output.model.properties))
-            env.backtest.backtest()
-            assert(env.models.length == 1, "no models produced")
+            env.bindModelForParams(output.modelProps)
+            val outputSeq= env.backtest.backtest()
+            assert(outputSeq.length == 1)
+            output = outputSeq(0)
+            assert(env.bindedModels.length == 1, "no models produced")
         }
 
         reportWriter.write(output, cfg, cfg.reportTargetPath)
@@ -90,13 +93,13 @@ class BacktesterOptimized {
     }
 
 
-    private def nextModelVariationsChunk(cfg: ModelBacktestConfig, variator: ParamsVariator): SimpleRunCtx = {
+    private def nextModelVariationsChunk(cfg: ModelBacktestConfig, variator: ParamsVariator, batchSize : Int): SimpleRunCtx = {
         val env = new SimpleRunCtx(cfg)
         env.init()
         while (variator.hasNext()) {
             var opts = variator.next
             env.bindModelForParams(cfg.modelParams.toMap ++ opts.map(t => (t._1, t._2.toString)))
-            if (env.models.length >= cfg.optConfig.batchSize) {
+            if (env.bindedModels.length >= batchSize) {
                 return env
             }
         }

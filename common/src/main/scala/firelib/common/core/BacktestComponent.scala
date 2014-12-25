@@ -3,7 +3,6 @@ package firelib.common.core
 import java.time.Instant
 
 import ch.qos.logback.classic.{Level, Logger}
-import firelib.common.MarketDataType
 import firelib.common.agenda.AgendaComponent
 import firelib.common.interval.IntervalServiceComponent
 import firelib.common.mddistributor.MarketDataDistributorComponent
@@ -11,8 +10,11 @@ import firelib.common.ordermanager.OrderManagerImpl
 import firelib.common.reader.{MarketDataReader, ReadersFactoryComponent}
 import firelib.common.timeboundscalc.TimeBoundsCalculatorComponent
 import firelib.common.timeservice.TimeServiceManagedComponent
+import firelib.common.{MarketDataType, OrderStatus}
 import firelib.domain.{Ohlc, Tick, Timed}
 import org.slf4j.LoggerFactory
+
+import scala.collection.mutable.ArrayBuffer
 
 trait BacktestComponent {
 
@@ -35,33 +37,52 @@ trait BacktestComponent {
         def stepFunc() : Unit = {
             intervalService.onStep(timeServiceManaged.currentTime)
             val nextTime = timeServiceManaged.currentTime.plus(modelConfig.stepInterval.duration)
-            agenda.addEvent(nextTime, stepFunc)
+            agenda.addEvent(nextTime, stepFunc, 1)
         }
 
         var readEnd = false
 
         val readerFunctions = new Array[()=>Unit](modelConfig.instruments.length)
 
-        def backtest(): Unit = {
+        def backtest(): Seq[ModelOutput] = {
 
-            prep()
+            prepare()
+
+            val ret = bindModelsToOutputs
 
             while (!readEnd){
                 agenda.next()
             }
 
-            models.foreach(_.onBacktestEnd())
+            bindedModels.foreach(_.onBacktestEnd())
+            ret
         }
 
-        def backtestUntil(endDt : Instant): Unit = {
+        def bindModelsToOutputs() : ArrayBuffer[ModelOutput] = {
+            val ret = bindedModels.map(m => {
+                val mo = new ModelOutput(m.properties)
+                m.orderManagers.foreach(om => om.tradesTopic.subscribe(mo.trades += _))
+                if(modelConfig.backtestMode == BacktestMode.SimpleRun){
+                    m.orderManagers.foreach(om => om.orderStateTopic.filter(os => os.status == OrderStatus.New).subscribe(mo.orderStates += _))
+                }
+                mo
+            })
+            ret
+        }
 
-            prep()
+        def backtestUntil(endDt : Instant): Seq[ModelOutput] = {
+
+            prepare()
+
+            val ret = bindModelsToOutputs
 
             while (!readEnd && timeServiceManaged.currentTime.isBefore(endDt)){
                 agenda.next()
             }
 
-            models.foreach(_.onBacktestEnd())
+            bindedModels.foreach(_.onBacktestEnd())
+
+            ret
         }
 
 
@@ -73,7 +94,7 @@ trait BacktestComponent {
 
 
 
-        def prep() {
+        def prepare() {
             val bounds = timeBoundsCalculator.apply(modelConfig)
             val readers: Seq[MarketDataReader[Timed]] = modelConfig.instruments.map(readersFactory(_, bounds._1))
 
@@ -90,7 +111,11 @@ trait BacktestComponent {
 
             val time: Instant = modelConfig.stepInterval.roundTime(bounds._1)
 
-            agenda.addEvent(time, stepFunc)
+            println(s"start time ${time.toStandardString}")
+
+            marketDataDistributor.preInitCurrentBars(time)
+
+            agenda.addEvent(time, stepFunc, 0)
         }
 
         def tickLambda(readers: Seq[MarketDataReader[Timed]], idx: Int) {
@@ -105,11 +130,11 @@ trait BacktestComponent {
                 if (reader.current == null) {
                     readEnd = true
                 } else {
-                    agenda.addEvent(reader.current.time, readerFunctions(idx))
+                    agenda.addEvent(reader.current.time, readerFunctions(idx),0)
                 }
             }
             if (reader.current != null) {
-                agenda.addEvent(reader.current.time, readerFunctions(idx))
+                agenda.addEvent(reader.current.time, readerFunctions(idx),0)
             } else {
                 readEnd = true
             }
@@ -122,11 +147,11 @@ trait BacktestComponent {
                 if (!reader.read()) {
                     readEnd = true
                 } else {
-                    agenda.addEvent(reader.current.time, readerFunctions(idx))
+                    agenda.addEvent(reader.current.time, readerFunctions(idx),0)
                 }
             }
             if (reader.current != null) {
-                agenda.addEvent(reader.current.dtGmtEnd, readerFunctions(idx))
+                agenda.addEvent(reader.current.dtGmtEnd, readerFunctions(idx),0)
             } else {
                 readEnd = true
             }

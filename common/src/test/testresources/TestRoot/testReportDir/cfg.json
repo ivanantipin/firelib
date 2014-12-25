@@ -14,12 +14,12 @@
   "tickToTickFuncClass" : "firelib.common.ticknorm.NormBidAskTickFunc",
   "precacheMarketData" : false,
   "networkSimulatedDelayMs" : 30,
+  "dumpOhlcData" : true,
   "modelParams" : { },
   "optConfig" : {
     "params" : [ ],
-    "batchSize" : 50,
-    "threadsNumber" : 1,
-    "minNumberOfTrades" : 1,
+    "resourceStrategy" : { },
+    "minNumberOfTrades" : 50,
     "optimizedPeriodDays" : -1,
     "optimizedMetric" : {
       "name" : "Sharpe"
@@ -33,10 +33,10 @@
     "durationMs" : 1000,
     "duration" : {
       "seconds" : 1,
-      "units" : [ "SECONDS", "NANOS" ],
-      "nano" : 0,
       "negative" : false,
-      "zero" : false
+      "zero" : false,
+      "units" : [ "SECONDS", "NANOS" ],
+      "nano" : 0
     }
   },
   "calculatedMetrics" : [ {

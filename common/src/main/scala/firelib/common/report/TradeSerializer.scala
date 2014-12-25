@@ -1,10 +1,9 @@
 package firelib.common.report
 
-import firelib.common.misc.dateUtils._
-import firelib.common.misc.utils
+import firelib.common.misc.{DateUtils, utils}
 import firelib.common.{Side, Trade}
 
-trait TradeSerializer extends ReportConsts{
+trait TradeSerializer extends ReportConsts with DateUtils{
 
     val colsDef = List[(String,((Trade,Trade))=>String)](
         ("Ticker",t=>t._1.security),
