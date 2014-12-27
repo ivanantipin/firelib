@@ -31,7 +31,7 @@ class OptimizationConfig{
     /**
      * optimization metrics
      */
-    var optimizedMetric = StrategyMetric.Sharpe
+    var optimizedMetric = StrategyMetric.Pf
 
 
 }

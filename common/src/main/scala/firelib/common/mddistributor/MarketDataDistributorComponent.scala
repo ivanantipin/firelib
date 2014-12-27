@@ -5,7 +5,7 @@ import java.time.Instant
 import firelib.common.core.{ModelConfigContext, OnContextInited}
 import firelib.common.interval.{Interval, IntervalServiceComponent}
 import firelib.common.misc.{NonDurableTopic, SubTopic, Topic, ohlcUtils, utils}
-import firelib.common.timeseries.{TimeSeries, TimeSeriesImpl}
+import firelib.common.timeseries.{OhlcSeries, TimeSeriesImpl}
 import firelib.domain.{Ohlc, Tick}
 
 
@@ -47,7 +47,7 @@ trait MarketDataDistributorComponent {
         }
 
 
-        def activateOhlcTimeSeries(idx: Int, interval: Interval, len: Int): TimeSeries[Ohlc] = {
+        def activateOhlcTimeSeries(idx: Int, interval: Interval, len: Int): OhlcSeries = {
             if (!timeseries(idx).contains(interval)) {
                 createTimeSeries(idx, interval, len)
             }
@@ -64,10 +64,10 @@ trait MarketDataDistributorComponent {
             }
         }
 
-        private def createTimeSeries(idx: Int, interval: Interval, len: Int): TimeSeriesImpl[Ohlc] = {
+        private def createTimeSeries(idx: Int, interval: Interval, len: Int): TimeSeriesImpl[Ohlc] with OhlcSeries = {
             val lenn = if (len == -1) DEFAULT_TIME_SERIES_HISTORY_LENGTH else len
 
-            val timeSeries = new TimeSeriesImpl[Ohlc](lenn, () => new Ohlc())
+            val timeSeries = new TimeSeriesImpl[Ohlc](lenn, () => new Ohlc()) with OhlcSeries
 
             timeseries(idx).addTs(interval, timeSeries)
 
@@ -85,7 +85,7 @@ trait MarketDataDistributorComponent {
 
         override def listenOhlc(idx : Int, lsn : Ohlc=>Unit) : Unit = ohlcListeners(idx).subscribe(lsn)
 
-        override def getTs(tickerId: Int, interval: Interval): TimeSeries[Ohlc] = timeseries(tickerId).getTs(interval)
+        override def getTs(tickerId: Int, interval: Interval): OhlcSeries = timeseries(tickerId).getTs(interval)
     }
 
 }

@@ -2,20 +2,23 @@ package firelib.common.model
 
 import java.time.{Duration, Instant}
 
+import firelib.common.ModelInitResult
 import firelib.common.core.BindModelComponent
 import firelib.common.interval.{AllIntervals, Interval, IntervalServiceComponent}
 import firelib.common.mddistributor.MarketDataDistributorComponent
 import firelib.common.misc.{DateUtils, PositionCloserByTimeOut, SubTopic}
 import firelib.common.ordermanager.OrderManager
-import firelib.common.timeseries.TimeSeries
+import firelib.common.timeseries.OhlcSeries
 import firelib.common.timeservice.TimeServiceComponent
-import firelib.domain.{Ohlc, Tick}
+import firelib.domain.Tick
 
 import scala.collection.immutable.IndexedSeq
 
 trait MiscModelUtils{
 
     this : BasketModel =>
+
+    val self = this
 
     def closePositionAfter(dur : Duration, idx : Int, checkEvery : Interval): PositionCloserByTimeOut ={
         val ret: PositionCloserByTimeOut = new PositionCloserByTimeOut(orderManagers(idx), dur)
@@ -34,7 +37,17 @@ trait MiscModelUtils{
     implicit class IntervalListenSugar(interval : Interval){
         def listen(callback : Interval=>Unit): Unit = listenInterval(interval,callback)
 
-        def ohlcFor(idx : Int): TimeSeries[Ohlc] = ohlc(idx,interval)
+        def getOhlc(instrumentIdx : Int): OhlcSeries = self.ohlc(instrumentIdx,interval)
+
+        def enableOhlc(length : Int = -1) : IndexedSeq[OhlcSeries] = self.enableOhlc(interval,length)
+
+        def enableOhlcAndListen( callback : Seq[OhlcSeries] => Unit, length : Int = -1): Unit = {
+            val tss: IndexedSeq[OhlcSeries] = interval.enableOhlc(length)
+            interval.listen(il=>{
+                callback(tss)
+            })
+        }
+
     }
 
 }
@@ -63,7 +76,7 @@ abstract class BasketModel extends Model with DateUtils with MiscModelUtils with
 
     override def orderManagers: Seq[OrderManager] = orderManagersFld
 
-    override def initModel(modelProps: Map[String, String]) : Boolean = {
+    override def initModel(modelProps: Map[String, String]) : ModelInitResult = {
         modelProperties = modelProps
         applyProperties(modelProps)
     }
@@ -74,7 +87,7 @@ abstract class BasketModel extends Model with DateUtils with MiscModelUtils with
      * @param lengthToMaintain length of enabled histories
      * @return return sequence of TimeSeries objects
      */
-    protected def enableOhlc(intr: Interval, lengthToMaintain: Int = -1): IndexedSeq[TimeSeries[Ohlc]] = {
+    def enableOhlc(intr: Interval, lengthToMaintain: Int = -1): IndexedSeq[OhlcSeries] = {
         return (0 until orderManagers.length).map(bindComp.marketDataDistributor.activateOhlcTimeSeries(_, intr, lengthToMaintain))
     }
 
@@ -85,7 +98,7 @@ abstract class BasketModel extends Model with DateUtils with MiscModelUtils with
      * @param mprops - configuration params to model
      * returns false if parameters are invalid
      */
-    protected def applyProperties(mprops: Map[String, String]) : Boolean
+    protected def applyProperties(mprops: Map[String, String]) : ModelInitResult
 
 
     protected def listenInterval(interval : Interval, callback : Interval=>Unit): Unit = {
@@ -93,7 +106,7 @@ abstract class BasketModel extends Model with DateUtils with MiscModelUtils with
     }
 
 
-    protected def ohlc(idx : Int, interval : Interval): TimeSeries[Ohlc] = bindComp.marketDataDistributor.getTs(idx,interval)
+    def ohlc(idx : Int, interval : Interval): OhlcSeries = bindComp.marketDataDistributor.getTs(idx,interval)
 
 
     override def onBacktestEnd() = {

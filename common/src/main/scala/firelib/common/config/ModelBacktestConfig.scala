@@ -50,6 +50,7 @@ class ModelBacktestConfig {
      * step of backtest specifies frequency when ohlc bars checked to generate
      * can affect performance if interval is small
      */
+    //FIXME remove
     var stepInterval = Interval.Sec1
 
 

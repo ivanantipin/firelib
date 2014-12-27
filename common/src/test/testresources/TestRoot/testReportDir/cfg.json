@@ -22,7 +22,7 @@
     "minNumberOfTrades" : 50,
     "optimizedPeriodDays" : -1,
     "optimizedMetric" : {
-      "name" : "Sharpe"
+      "name" : "Pf"
     }
   },
   "backtestMode" : {
@@ -33,10 +33,10 @@
     "durationMs" : 1000,
     "duration" : {
       "seconds" : 1,
-      "negative" : false,
-      "zero" : false,
       "units" : [ "SECONDS", "NANOS" ],
-      "nano" : 0
+      "nano" : 0,
+      "negative" : false,
+      "zero" : false
     }
   },
   "calculatedMetrics" : [ {

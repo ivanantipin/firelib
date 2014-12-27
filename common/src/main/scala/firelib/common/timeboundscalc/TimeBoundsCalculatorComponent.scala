@@ -17,7 +17,7 @@ trait TimeBoundsCalculatorComponent extends DateUtils{
     class TimeBoundsCalculatorImpl extends TimeBoundsCalculator{
 
         def calcStartDate(cfg: ModelBacktestConfig): Instant = {
-            var startDtGmt = if (cfg.startDateGmt == null) Instant.EPOCH else cfg.startDateGmt.parseTimeStandard
+            val startDtGmt = if (cfg.startDateGmt == null) Instant.EPOCH else cfg.startDateGmt.parseTimeStandard
 
             val readers = cfg.instruments.map(c=>readersFactory.apply(c, startDtGmt))
 
@@ -25,9 +25,7 @@ trait TimeBoundsCalculatorComponent extends DateUtils{
 
             readers.foreach(_.close())
 
-            val ret = if (maxReadersStartDate.isAfter(startDtGmt)) maxReadersStartDate else startDtGmt
-
-            return cfg.stepInterval.roundTime(ret)
+            return if (maxReadersStartDate.isAfter(startDtGmt)) maxReadersStartDate else startDtGmt
 
         }
 

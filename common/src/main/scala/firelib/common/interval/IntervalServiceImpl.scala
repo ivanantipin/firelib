@@ -12,6 +12,8 @@ class IntervalServiceImpl extends IntervalService {
 
     var rootNode : Node =_
 
+    def rootInterval : Interval = rootNode.interval
+
     class Node(val interval : Interval){
         val childs = new ArrayBuffer[Node](3)
         val listeners = new ArrayBuffer[Instant => Unit](3)

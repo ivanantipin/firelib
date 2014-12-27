@@ -1,5 +1,6 @@
 package firelib.common.core
 
+import firelib.common.ModelInitResult
 import firelib.common.interval.IntervalServiceComponent
 import firelib.common.mddistributor.MarketDataDistributorComponent
 import firelib.common.misc.{NonDurableTopic, SubTopic, Topic}
@@ -28,7 +29,7 @@ trait BindModelComponent {
         val model = modelConfig.newModelInstance().asInstanceOf[BasketModel]
         model.orderManagersFld = stubs.toArray
         model.bindComp = this
-        if (model.initModel(params)) {
+        if (model.initModel(params) == ModelInitResult.Success) {
             bindedModels += model
             onModelBinded.asInstanceOf[Topic[Model]].publish(model)
         }

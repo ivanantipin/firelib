@@ -7,4 +7,6 @@ import java.time.Instant
  */
 trait IntervalService  {
     def addListener(interval: Interval, action: Instant => Unit, atTheBeginning : Boolean = false)
+
+    def rootInterval : Interval
 }

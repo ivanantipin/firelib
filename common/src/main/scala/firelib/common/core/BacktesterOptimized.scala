@@ -33,9 +33,7 @@ class BacktesterOptimized {
         ctx.init()
         val (startDtGmt, endDtGmt) = ctx.timeBoundsCalculator.apply(cfg)
 
-        assert(cfg.optConfig.optimizedPeriodDays > 0, "optimized days count not set!!")
-
-        val endOfOptimize = startDtGmt.plus(cfg.optConfig.optimizedPeriodDays, ChronoUnit.DAYS)
+        val endOfOptimize =  if(cfg.optConfig.optimizedPeriodDays < 0) endDtGmt.plusMillis(100) else startDtGmt.plus(cfg.optConfig.optimizedPeriodDays, ChronoUnit.DAYS)
 
         println("number of models " + variator.combinations)
 

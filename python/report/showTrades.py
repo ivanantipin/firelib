@@ -17,9 +17,9 @@ def vect_str_to_datetime(d):
     return np.vectorize(_str_to_datetime)(d)
 
 
-dirr='/home/ivan/trading/reports/delta/'
+dirr='/home/ivan/trading/reports/sbermeanrev/'
 
-mdOhlc = pd.read_csv(dirr+'ohlcs.csv', index_col='DT', sep=';',  parse_dates=['DT'], date_parser=vect_str_to_datetime)
+mdOhlc = pd.read_csv(dirr+'ohlc_SBER.csv', index_col='DT', sep=';',  parse_dates=['DT'], date_parser=vect_str_to_datetime)
 mdOhlc.sort_index(inplace=True)
 mdOhlc.dropna(inplace=True)
 

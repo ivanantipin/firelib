@@ -36,7 +36,7 @@ trait BacktestComponent {
 
         def stepFunc() : Unit = {
             intervalService.onStep(timeServiceManaged.currentTime)
-            val nextTime = timeServiceManaged.currentTime.plus(modelConfig.stepInterval.duration)
+            val nextTime = timeServiceManaged.currentTime.plus(intervalService.rootInterval.duration)
             agenda.addEvent(nextTime, stepFunc, 1)
         }
 
@@ -96,7 +96,10 @@ trait BacktestComponent {
 
         def prepare() {
             val bounds = timeBoundsCalculator.apply(modelConfig)
-            val readers: Seq[MarketDataReader[Timed]] = modelConfig.instruments.map(readersFactory(_, bounds._1))
+
+            val time: Instant =  intervalService.rootInterval.roundTime(bounds._1)
+
+            val readers: Seq[MarketDataReader[Timed]] = modelConfig.instruments.map(readersFactory(_, time))
 
             timeServiceManaged.dtGmt = Instant.EPOCH
 
@@ -109,7 +112,7 @@ trait BacktestComponent {
                 }
             }
 
-            val time: Instant = modelConfig.stepInterval.roundTime(bounds._1)
+
 
             println(s"start time ${time.toStandardString}")
 

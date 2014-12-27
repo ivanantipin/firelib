@@ -27,3 +27,14 @@ sealed case class Side private(val Name: String, val sign: Int) {
 
 }
 
+
+object ModelInitResult {
+    val Success = new ModelInitResult("Success")
+    val Failure = new ModelInitResult("Failure")
+}
+
+sealed case class ModelInitResult private(val name: String) {
+    override def toString: String = name
+}
+
+

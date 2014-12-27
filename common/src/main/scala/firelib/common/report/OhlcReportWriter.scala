@@ -26,10 +26,10 @@ trait OhlcReportWriterComponent {
     }
 
     class OhlcReportWriter(val model : Model, val minsWindow : Int = 100) extends DateUtils{
-        val slicer = new WindowSlicer[Ohlc](minsWindow.minute)
-        model.orderManagers(0).tradesTopic.subscribe(t=>slicer.updateWriteBefore())
-        model.orderManagers(0).orderStateTopic.filter(_.status == OrderStatus.New).subscribe(o=>slicer.updateWriteBefore())
         for(instrIdx <- 0 until modelConfig.instruments.length){
+            val slicer = new WindowSlicer[Ohlc](minsWindow.minute)
+            model.orderManagers(instrIdx).tradesTopic.subscribe(t=>slicer.updateWriteBefore())
+            model.orderManagers(instrIdx).orderStateTopic.filter(_.status == OrderStatus.New).subscribe(o=>slicer.updateWriteBefore())
             val ts = marketDataDistributor.activateOhlcTimeSeries(instrIdx,Interval.Min1,minsWindow)
             val ohlcPath = Paths.get(modelConfig.reportTargetPath).resolve(s"ohlc_${modelConfig.instruments(instrIdx).ticker}.csv")
             ts.onNewBar.map(_(0)).lift(slicer).subscribe(new OhlcStreamWriter(ohlcPath))

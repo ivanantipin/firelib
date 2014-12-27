@@ -32,17 +32,17 @@ class OhlcTestModel extends BasketModel {
     val bars = new ArrayBuffer[Ohlc]()
 
 
-    override def applyProperties(mprops: Map[String, String]) : Boolean = {
+    override def applyProperties(mprops: Map[String, String]) : ModelInitResult = {
         testHelper.instanceOhlc = this
         hist = enableOhlc(Interval.Min5, 10)(0);
         Interval.Min5.listen(On5Min)
         dayHist = enableOhlc(Interval.Day, 10)(0);
-        true
+        ModelInitResult.Success
     }
 
 
     def On5Min(il: Interval): Unit = {
-        val hh = il.ohlcFor(0)
+        val hh = il.getOhlc(0)
         if (dayHist.count > 0 && dayHist(0).dtGmtEnd.truncatedTo(ChronoUnit.DAYS) != dayHist(0).dtGmtEnd) {
             throw new Exception("time of day ts not correct");
         }

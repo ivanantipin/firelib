@@ -1,6 +1,7 @@
 package firelib.common.timeseries
 
 import firelib.common.misc.SubTopic
+import firelib.domain.Ohlc
 
 trait TimeSeries[T] {
 
@@ -11,3 +12,15 @@ trait TimeSeries[T] {
     val onNewBar : SubTopic[TimeSeries[T]]
 
 }
+
+trait OhlcSeriesUtils{
+    this : TimeSeries[Ohlc] =>
+
+    def diff(len : Int) : Double = apply(0).C - apply(len - 1).C
+
+}
+
+trait OhlcSeries extends TimeSeries[Ohlc] with OhlcSeriesUtils{}
+
+
+

@@ -38,12 +38,12 @@ class ModelExecutionLauncher(val execConfig: ModelExecutionConfig) {
 
     if (execConfig.runBacktestBeforeStrategyRun){
         bctx.backtest.backtest()
-        bctx.backtest.stepUntil(backtestConfig.stepInterval.roundTime(Instant.now()))
+        bctx.backtest.stepUntil(bctx.intervalService.rootInterval.roundTime(Instant.now()))
     }
 
     bctx.marketDataDistributor.setTickTransformFunction(utils.instanceOfClass(execConfig.tickToTickFuncClass))
 
-    private val frequencer = new Frequencer(backtestConfig.stepInterval, (dtGmt)=>bctx.intervalService.onStep(dtGmt), executor)
+    private val frequencer = new Frequencer(bctx.intervalService.rootInterval, (dtGmt)=>bctx.intervalService.onStep(dtGmt), executor)
 
     bctx.tradeGate = tradeGate
 
