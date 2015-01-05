@@ -1,6 +1,6 @@
 package firelib.common.timeseries
 
-import firelib.common.misc.SubTopic
+import firelib.common.misc.SubChannel
 import firelib.domain.Ohlc
 
 trait TimeSeries[T] {
@@ -9,7 +9,7 @@ trait TimeSeries[T] {
 
     def apply(idx: Int): T
 
-    val onNewBar : SubTopic[TimeSeries[T]]
+    val onNewBar : SubChannel[TimeSeries[T]]
 
 }
 

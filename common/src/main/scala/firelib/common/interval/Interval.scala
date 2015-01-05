@@ -40,7 +40,7 @@ sealed case class Interval (val name: String, val durationMs: Int) {
 
     val duration = Duration.ofMillis(durationMs)
 
-    def roundTime(dt:Instant): Instant  = Instant.ofEpochMilli(roundEpochMs((dt.toEpochMilli)))
+    def roundTime(dt:Instant): Instant  = Instant.ofEpochMilli(truncTime((dt.toEpochMilli)))
 
     def ceilTime(dt:Instant): Instant  = {
         var ret = (dt.toEpochMilli/durationMs) * durationMs
@@ -50,7 +50,7 @@ sealed case class Interval (val name: String, val durationMs: Int) {
         Instant.ofEpochMilli(ret)
     }
 
-    def roundEpochMs(epochMs : Long): Long  =  (epochMs/durationMs) * durationMs
+    def truncTime(epochMs : Long): Long  =  (epochMs/durationMs) * durationMs
 
     override def toString: String = name
 }

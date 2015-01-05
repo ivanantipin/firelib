@@ -8,8 +8,6 @@ import firelib.common.core.ModelOutput
 import firelib.common.misc.{jsonHelper, statFileDumper}
 import org.apache.commons.io.FileUtils
 
-import scala.collection.immutable.HashMap
-
 
 object reportWriter {
 
@@ -31,7 +29,7 @@ object reportWriter {
 
         statFileDumper.writeRows(Paths.get(targetDir, "modelProps.properties").toAbsolutePath.toString,model.modelProps.map(a=>a._1 + "=" + a._2))
 
-        val factors = if (trades(0).factors == null) new HashMap[String, String] else trades(0).factors
+        val factors = trades(0).tradeStat.factors
 
         val tradeWriter : StreamTradeCaseWriter = new StreamTradeCaseWriter(Paths.get(targetDir, "trades.csv").toAbsolutePath, factors.map(_._1))
         tradeWriter.writeHeader()

@@ -7,7 +7,7 @@ import java.util.concurrent.{Callable, ConcurrentHashMap, Future}
 import com.dukascopy.api.IMessage.Type
 import com.dukascopy.api.system.{ClientFactory, IClient, ISystemListener}
 import com.dukascopy.api.{IAccount, IBar, IConsole, IContext, IEngine, IFillOrder, IHistory, IMessage, IOrder, IStrategy, ITick, Instrument, Period}
-import firelib.common.misc.{DurableTopic, SubTopic, Topic}
+import firelib.common.misc.{Channel, DurableChannel, SubChannel}
 import firelib.common.threading.ThreadExecutor
 import firelib.common.tradegate.TradeGate
 import firelib.common.{Order, OrderStatus, OrderType, Side, Trade}
@@ -32,7 +32,7 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     var password : String =_
 
 
-    case class OrderRecord(dukaOrder : Option[IOrder], order : Order, dukaTrades : Seq[IFillOrder],trdSubj : Topic[Trade],orderSubj : Topic[OrderState])
+    case class OrderRecord(dukaOrder : Option[IOrder], order : Order, dukaTrades : Seq[IFillOrder],trdSubj : Channel[Trade],orderSubj : Channel[OrderState])
 
     val orders = new ConcurrentHashMap[String, OrderRecord]()
 
@@ -56,8 +56,8 @@ class DukaAdapter extends TradeGate with MarketDataProvider with ISystemListener
     }
 
 
-    override def sendOrder(order: Order) : (SubTopic[Trade],SubTopic[OrderState])= {
-        val ret = (new DurableTopic[Trade],new DurableTopic[OrderState])
+    override def sendOrder(order: Order) : (SubChannel[Trade],SubChannel[OrderState])= {
+        val ret = (new DurableChannel[Trade],new DurableChannel[OrderState])
         if(!client.isConnected){
             log.info(s"rejecting order $order as client not connected")
             ret._2.publish(new OrderState(order,OrderStatus.Rejected,Instant.now()))

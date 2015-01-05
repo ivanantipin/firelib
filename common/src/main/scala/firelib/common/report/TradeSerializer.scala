@@ -16,8 +16,8 @@ trait TradeSerializer extends ReportConsts with DateUtils{
         ("ExitPrice",t=>utils.dbl2Str(t._2.price, decPlaces)),
         ("Pnl",t=>utils.dbl2Str(utils.pnlForCase(t), decPlaces)),
         ("Qty",t=>t._1.qty.toString),
-        ("MAE",t=>utils.dbl2Str(t._2.MAE, decPlaces)),
-        ("MFE",t=>utils.dbl2Str(t._2.MFE, decPlaces))
+        ("MAE",t=>utils.dbl2Str(t._2.tradeStat.MAE, decPlaces)),
+        ("MFE",t=>utils.dbl2Str(t._2.tradeStat.MFE, decPlaces))
     )
 
     def getHeader(): Seq[String] = (colsDef.map(_._1) )

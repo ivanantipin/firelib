@@ -2,7 +2,7 @@ package firelib.common.tradegate
 
 import firelib.common.config.ModelBacktestConfig
 import firelib.common.mddistributor.MarketDataDistributor
-import firelib.common.misc.SubTopic
+import firelib.common.misc.SubChannel
 import firelib.common.timeservice.TimeService
 import firelib.common.{Order, OrderType, Trade}
 import firelib.domain.OrderState
@@ -39,7 +39,7 @@ class TradeGateStub(val marketDataDistributor : MarketDataDistributor, val model
     /**
          * just order send
          */
-    override def sendOrder(order: Order): (SubTopic[Trade], SubTopic[OrderState]) = {
+    override def sendOrder(order: Order): (SubChannel[Trade], SubChannel[OrderState]) = {
         order.orderType match {
             case OrderType.Limit => secToBookLimit(order.security).sendOrder(order)
             case OrderType.Stop => secToBookStop(order.security).sendOrder(order)

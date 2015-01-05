@@ -23,10 +23,7 @@ package samples.java.basic;/*
 */
 
 /* 
-	Repl - ????????? ??????? ?????? ?? ??????. ?????? ???????? ??? ?????????? ????????? ? log. ??? ??????? ?????????? ???????
-	?????????? ???????. ??????? ?????????? ???.
-
-	Repl allows to receive data replica for a stream and saves all incoming messages into log file. 
+	Repl allows to receive data replica for a stream and saves all incoming messages into log file.
 	When disconnected, the replica starts over. The example does not have input parameters.
 */
 
@@ -40,13 +37,19 @@ import ru.micexrts.cgate.Listener;
 import ru.micexrts.cgate.State;
 import ru.micexrts.cgate.messages.Message;
 
-public class ReplSample {
+public class FutInfoSample {
 
 	private class Subscriber implements ISubscriber{
 
 		@Override
 		public int onMessage(Connection conn, Listener listener, Message message) {
-			System.out.println(message.toString());
+            String str = message.toString();
+            if(str.indexOf("heartbeat") < 0 ){
+                System.out.println(str);
+            }
+
+
+
 			return ErrorCode.OK;
 		}
 	}
@@ -57,17 +60,17 @@ public class ReplSample {
 
 	private static volatile boolean exitFlag = false;
 	private static volatile boolean cleanedUp = false;
-	
+
 	private int stringIndex = 0;
 	private static final int MaxStringIndex = 6;
 
 	private static void ExitOnInvalidArg()
 	{
 		System.err.println("Please set a number between 0 and 6");
-		throw new RuntimeException("Incorrect sample index."); 
+		throw new RuntimeException("Incorrect sample index.");
 	}
-	
-	public ReplSample(int index)
+
+	public FutInfoSample(int index)
 	{
 		if (index > MaxStringIndex)
 			ExitOnInvalidArg();
@@ -88,6 +91,7 @@ public class ReplSample {
 			CGate.open("ini=jrepl.ini;key=11111111");
 			connection = new Connection("p2tcp://127.0.0.1:4001;app_name=jtest_repl");
 			
+/*
 			// listener init string (you can uncomment any line
 			// to experiment with various settings)
 
@@ -104,14 +108,19 @@ public class ReplSample {
 			lsnStr[2] = "p2repl://FORTS_FUTTRADE_REPL";
 			lsnStr[3] = "p2repl://FORTS_FUTTRADE_REPL;scheme=|FILE|ini/fut_trades.ini|CustReplScheme";
 
+
+
+            //
+
 			// Defines Plaza-2 datastream listener, which provides
 			// helper functions to receive order books. See documentation for
 			// detailed description of this type of listener.
 			lsnStr[4] = "p2ordbook://FORTS_FUTTRADE_REPL;snapshot=FORTS_FUTORDERBOOK_REPL;scheme=|FILE|ini/fut_trades.ini|CustReplScheme";
 			lsnStr[5] = "p2ordbook://FORTS_ORDLOG_REPL;snapshot=FORTS_FUTORDERBOOK_REPL;scheme=|FILE|ini/ordLog_trades.ini|CustReplScheme";
 			lsnStr[6] = "p2ordbook://FORTS_FUTTRADE_REPL;snapshot=FORTS_FUTORDERBOOK_REPL";
-					
-			listener = new Listener(connection, lsnStr[stringIndex], new Subscriber());
+*/
+
+			listener = new Listener(connection, "p2repl://FORTS_FUTTRADE_REPL", new Subscriber());
 
 			while (!exitFlag) {
 
@@ -180,7 +189,7 @@ public class ReplSample {
 	 */
 	public static void main(String[] args) throws CGateException, InterruptedException{
 		if ((args.length == 0) || (!args[0].contains("index=")))
-			new ReplSample(0).run();
+			new FutInfoSample(0).run();
 		else
 		{
 			int idx = 0;
@@ -196,7 +205,7 @@ public class ReplSample {
 			{
 				ExitOnInvalidArg();
 			}
-			new ReplSample(idx).run();
+			new FutInfoSample(idx).run();
 		}
 	}
 

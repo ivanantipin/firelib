@@ -3,7 +3,7 @@ package firelib.common.ordermanager
 import java.util.Random
 
 import firelib.common._
-import firelib.common.misc.NonDurableTopic
+import firelib.common.misc.NonDurableChannel
 import firelib.common.timeservice.TimeServiceComponent
 import firelib.common.tradegate.TradeGateComponent
 import firelib.domain.{OrderState, OrderWithState}
@@ -38,8 +38,8 @@ class OrderManagerImpl(val bindComp : TradeGateComponent with TimeServiceCompone
         id2Order.values.exists(o => (o.status.isPending || (o.order.orderType == OrderType.Market)))
     }
 
-    override val tradesTopic = new NonDurableTopic[Trade]()
-    override val orderStateTopic = new NonDurableTopic[OrderState]()
+    override val tradesTopic = new NonDurableChannel[Trade]()
+    override val orderStateTopic = new NonDurableChannel[OrderState]()
 
     def cancelOrders(orders: Order*): Unit = {
         for (order <- orders) {
@@ -107,7 +107,6 @@ class OrderManagerImpl(val bindComp : TradeGateComponent with TimeServiceCompone
         }
         val prevPos = position_
         position_ = trd.adjustPositionByThisTrade(position_)
-        trd.positionAfter = position_
         if(log.isInfoEnabled()) log.info(s"position adjusted for security $security :  $prevPos -> $position")
         tradesTopic.publish(trd)
     }

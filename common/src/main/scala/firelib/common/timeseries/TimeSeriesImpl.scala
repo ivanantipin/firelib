@@ -1,6 +1,6 @@
 package firelib.common.timeseries
 
-import firelib.common.misc.NonDurableTopic
+import firelib.common.misc.NonDurableChannel
 
 import scala.reflect.ClassTag
 
@@ -19,6 +19,6 @@ class TimeSeriesImpl[T:ClassTag] (val length: Int, func: () => T) extends TimeSe
         data.add(t)
     }
 
-    override val onNewBar = new NonDurableTopic[TimeSeries[T]]
+    override val onNewBar = new NonDurableChannel[TimeSeries[T]]
 
 }

@@ -28,17 +28,6 @@
   "backtestMode" : {
     "name" : "SimpleRun"
   },
-  "stepInterval" : {
-    "name" : "Sec1",
-    "durationMs" : 1000,
-    "duration" : {
-      "seconds" : 1,
-      "units" : [ "SECONDS", "NANOS" ],
-      "nano" : 0,
-      "negative" : false,
-      "zero" : false
-    }
-  },
   "calculatedMetrics" : [ {
     "name" : "Pf"
   }, {

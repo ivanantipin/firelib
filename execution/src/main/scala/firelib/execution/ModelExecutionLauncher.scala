@@ -35,10 +35,8 @@ class ModelExecutionLauncher(val execConfig: ModelExecutionConfig) {
     bctx.init();
     private val model : Model = bctx.bindModelForParams(backtestConfig.modelParams.toMap)
 
-
     if (execConfig.runBacktestBeforeStrategyRun){
-        bctx.backtest.backtest()
-        bctx.backtest.stepUntil(bctx.intervalService.rootInterval.roundTime(Instant.now()))
+        bctx.backtest.backtestUntil(bctx.intervalService.rootInterval.roundTime(Instant.now()))
     }
 
     bctx.marketDataDistributor.setTickTransformFunction(utils.instanceOfClass(execConfig.tickToTickFuncClass))

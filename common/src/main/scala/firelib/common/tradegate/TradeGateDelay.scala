@@ -1,7 +1,7 @@
 package firelib.common.tradegate
 
 import firelib.common.agenda.Agenda
-import firelib.common.misc.{DurableTopic, SubTopic}
+import firelib.common.misc.{DurableChannel, SubChannel}
 import firelib.common.timeservice.TimeService
 import firelib.common.{Order, Trade}
 import firelib.domain.OrderState
@@ -10,12 +10,12 @@ class TradeGateDelay(val timeService: TimeService, val delayMillis: Long, val tr
     /**
     * just order send
     */
-    override def sendOrder(order: Order): (SubTopic[Trade], SubTopic[OrderState]) = {
-        val trdS = new DurableTopic[Trade]()
-        val ordS = new DurableTopic[OrderState]()
+    override def sendOrder(order: Order): (SubChannel[Trade], SubChannel[OrderState]) = {
+        val trdS = new DurableChannel[Trade]()
+        val ordS = new DurableChannel[OrderState]()
 
         agenda.addEvent(timeService.currentTime.plusMillis(delayMillis), () => {
-            val sss: (SubTopic[Trade], SubTopic[OrderState]) = tradeGate.sendOrder(order)
+            val sss: (SubChannel[Trade], SubChannel[OrderState]) = tradeGate.sendOrder(order)
             sss._1.subscribe(t=>trdS.publish(t))
             sss._2.subscribe(o=>ordS.publish(o))
         },0)

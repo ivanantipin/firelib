@@ -3,7 +3,7 @@ package firelib.common.core
 import firelib.common.ModelInitResult
 import firelib.common.interval.IntervalServiceComponent
 import firelib.common.mddistributor.MarketDataDistributorComponent
-import firelib.common.misc.{NonDurableTopic, SubTopic, Topic}
+import firelib.common.misc.{Channel, NonDurableChannel, SubChannel}
 import firelib.common.model.{BasketModel, Model}
 import firelib.common.ordermanager.OrderManagerImpl
 import firelib.common.timeservice.TimeServiceComponent
@@ -20,7 +20,7 @@ trait BindModelComponent {
       with IntervalServiceComponent=>
 
 
-    val onModelBinded : SubTopic[Model] = new NonDurableTopic[Model]
+    val onModelBinded : SubChannel[Model] = new NonDurableChannel[Model]
 
     val bindedModels = new ArrayBuffer[Model]
 
@@ -31,7 +31,7 @@ trait BindModelComponent {
         model.bindComp = this
         if (model.initModel(params) == ModelInitResult.Success) {
             bindedModels += model
-            onModelBinded.asInstanceOf[Topic[Model]].publish(model)
+            onModelBinded.asInstanceOf[Channel[Model]].publish(model)
         }
         model
     }

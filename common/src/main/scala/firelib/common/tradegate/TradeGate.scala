@@ -1,6 +1,6 @@
 package firelib.common.tradegate
 
-import firelib.common.misc.SubTopic
+import firelib.common.misc.SubChannel
 import firelib.common.{Order, Trade}
 import firelib.domain.OrderState
 
@@ -12,7 +12,7 @@ trait TradeGate {
     /**
      * just order send
      */
-    def sendOrder(order: Order) : (SubTopic[Trade],SubTopic[OrderState])
+    def sendOrder(order: Order) : (SubChannel[Trade],SubChannel[OrderState])
     /**
      * order cancel
      */

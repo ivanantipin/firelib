@@ -8,7 +8,7 @@ import java.util.concurrent.{Executors, LinkedBlockingQueue, TimeUnit}
 import com.ib.client
 import com.ib.client.{Contract, Execution, TagValue}
 import firelib.common._
-import firelib.common.misc.{DurableTopic, Topic}
+import firelib.common.misc.{Channel, DurableChannel}
 import firelib.common.threading.ThreadExecutor
 import firelib.common.tradegate.TradeGate
 import firelib.domain.{OrderState, Tick}
@@ -39,7 +39,7 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider wi
     val executor = Executors.newSingleThreadScheduledExecutor()
 
 
-    case class OrderEntry(fireLibOrder: Order, ibOrder: com.ib.client.Order, ibId: Int, tradeSubj : Topic[Trade] , orderSubj : Topic[OrderState])
+    case class OrderEntry(fireLibOrder: Order, ibOrder: com.ib.client.Order, ibId: Int, tradeSubj : Channel[Trade] , orderSubj : Channel[OrderState])
 
     private def nextOrderId: Option[Int] = {
         log.info("requesting order for client id " + clientId)
@@ -68,9 +68,9 @@ class IbTradeGate extends EWrapperImpl with TradeGate with MarketDataProvider wi
     }
 
 
-    def sendOrder(order: Order): (Topic[Trade],Topic[OrderState]) = {
+    def sendOrder(order: Order): (Channel[Trade],Channel[OrderState]) = {
         log.info("sending order " + order)
-        val ret = (new DurableTopic[Trade], new DurableTopic[OrderState])
+        val ret = (new DurableChannel[Trade], new DurableChannel[OrderState])
         nextOrderId match{
             case Some(orderId) =>{
                 val ibOrder = convertOrder(order)

@@ -4,7 +4,7 @@ import firelib.common._
 import firelib.common.config.{InstrumentConfig, ModelBacktestConfig}
 import firelib.common.interval.Interval
 import firelib.common.mddistributor.MarketDataDistributor
-import firelib.common.misc.SubTopic
+import firelib.common.misc.SubChannel
 import firelib.common.ordermanager.{OrderManager, OrderManagerImpl}
 import firelib.common.timeseries.TimeSeries
 import firelib.common.timeservice.{TimeServiceComponent, TimeServiceManagedComponent}
@@ -144,7 +144,7 @@ class OrderManagerTest {
 
         override def activateOhlcTimeSeries(tickerId: Int, interval: Interval, len: Int): TimeSeries[Ohlc] = {null}
 
-        override def tickTopic(idx: Int): SubTopic[Tick] = ???
+        override def tickTopic(idx: Int): SubChannel[Tick] = ???
 
         override def getTs(tickerId: Int, interval: Interval): TimeSeries[Ohlc] = ???
     }

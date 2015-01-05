@@ -10,7 +10,7 @@ import firelib.domain.Ohlc
 class PositionCloserByTimeOut(val stub: OrderManager, val duration : Duration) extends (TimeSeries[Ohlc]=>Unit){
 
     private var posOpenedDtGmt: Instant  = _
-    private val tradeSub: TopicSubscription = stub.tradesTopic.subscribe(onTrade)
+    private val tradeSub: ChannelSubscription = stub.tradesTopic.subscribe(onTrade)
 
     def disable(): Unit ={
         tradeSub.unsubscribe()

@@ -4,7 +4,7 @@ import java.time.Instant
 
 import firelib.common.core.{ModelConfigContext, OnContextInited}
 import firelib.common.interval.{Interval, IntervalServiceComponent}
-import firelib.common.misc.{NonDurableTopic, SubTopic, Topic, ohlcUtils, utils}
+import firelib.common.misc.{Channel, NonDurableChannel, SubChannel, ohlcUtils, utils}
 import firelib.common.timeseries.{OhlcSeries, TimeSeriesImpl}
 import firelib.domain.{Ohlc, Tick}
 
@@ -30,8 +30,8 @@ trait MarketDataDistributorComponent {
             tickTransformFunction = fun
         }
 
-        var tickListeners : Array[Topic[Tick]] = Array.fill[Topic[Tick]](modelConfig.instruments.length)(new NonDurableTopic[Tick]())
-        var ohlcListeners : Array[Topic[Ohlc]] = Array.fill[Topic[Ohlc]](modelConfig.instruments.length)(new NonDurableTopic[Ohlc]())
+        var tickListeners : Array[Channel[Tick]] = Array.fill[Channel[Tick]](modelConfig.instruments.length)(new NonDurableChannel[Tick]())
+        var ohlcListeners : Array[Channel[Ohlc]] = Array.fill[Channel[Ohlc]](modelConfig.instruments.length)(new NonDurableChannel[Ohlc]())
 
         setTickTransformFunction(utils.instanceOfClass[Tick=>Tick](modelConfig.tickToTickFuncClass))
 
@@ -81,7 +81,7 @@ trait MarketDataDistributorComponent {
 
         override def listenTicks(idx : Int, lsn : Tick=>Unit) : Unit = tickListeners(idx).subscribe(lsn)
 
-        override def tickTopic(idx : Int) : SubTopic[Tick] = tickListeners(idx)
+        override def tickTopic(idx : Int) : SubChannel[Tick] = tickListeners(idx)
 
         override def listenOhlc(idx : Int, lsn : Ohlc=>Unit) : Unit = ohlcListeners(idx).subscribe(lsn)
 

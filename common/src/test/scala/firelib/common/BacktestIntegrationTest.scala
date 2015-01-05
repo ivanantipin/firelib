@@ -8,7 +8,6 @@ import java.util.function.Supplier
 
 import firelib.common.config.{InstrumentConfig, ModelBacktestConfig}
 import firelib.common.core.backtestStarter
-import firelib.common.interval.Interval
 import firelib.common.misc.DateUtils
 import firelib.domain.Ohlc
 import firelib.parser.{CsvParser, LegacyMarketDataFormatLoader, ParseHandler, ParserHandlersProducer}
@@ -71,7 +70,6 @@ class BacktestIntegrationTest extends DateUtils{
         cfg.reportTargetPath = getReportDir()
         cfg.instruments += new InstrumentConfig("XG", fileName, MarketDataType.Tick)
         cfg.startDateGmt = "08.03.2013 05:00:00"
-        cfg.stepInterval = Interval.Sec1
         cfg.precacheMarketData = false
         var startTime = cfg.startDateGmt.parseTimeStandard
         cfg.modelClassName = "firelib.common.TickTestModel"
@@ -171,8 +169,6 @@ class BacktestIntegrationTest extends DateUtils{
         cfg.instruments += new InstrumentConfig("XG", fileName, MarketDataType.Ohlc)
 
         cfg.startDateGmt = "08.03.2013 05:00:00"
-
-        cfg.stepInterval = Interval.Sec1
 
         cfg.precacheMarketData = false
 

@@ -1,57 +1,18 @@
 package firelib.common.model
 
-import java.time.{Duration, Instant}
+import java.time.Instant
 
 import firelib.common.ModelInitResult
 import firelib.common.core.BindModelComponent
 import firelib.common.interval.{AllIntervals, Interval, IntervalServiceComponent}
 import firelib.common.mddistributor.MarketDataDistributorComponent
-import firelib.common.misc.{DateUtils, PositionCloserByTimeOut, SubTopic}
+import firelib.common.misc.{DateUtils, SubChannel}
 import firelib.common.ordermanager.OrderManager
 import firelib.common.timeseries.OhlcSeries
 import firelib.common.timeservice.TimeServiceComponent
 import firelib.domain.Tick
 
 import scala.collection.immutable.IndexedSeq
-
-trait MiscModelUtils{
-
-    this : BasketModel =>
-
-    val self = this
-
-    def closePositionAfter(dur : Duration, idx : Int, checkEvery : Interval): PositionCloserByTimeOut ={
-        val ret: PositionCloserByTimeOut = new PositionCloserByTimeOut(orderManagers(idx), dur)
-        enableOhlc(checkEvery)(idx).onNewBar.subscribe(ret)
-        ret
-    }
-
-    def enableFactor(name : String, fact : =>String): Unit = {
-        for(om <- orderManagers){
-            om.tradesTopic.subscribe(t=>{
-                t.addFactor(name,fact)
-            })
-        }
-    }
-
-    implicit class IntervalListenSugar(interval : Interval){
-        def listen(callback : Interval=>Unit): Unit = listenInterval(interval,callback)
-
-        def getOhlc(instrumentIdx : Int): OhlcSeries = self.ohlc(instrumentIdx,interval)
-
-        def enableOhlc(length : Int = -1) : IndexedSeq[OhlcSeries] = self.enableOhlc(interval,length)
-
-        def enableOhlcAndListen( callback : Seq[OhlcSeries] => Unit, length : Int = -1): Unit = {
-            val tss: IndexedSeq[OhlcSeries] = interval.enableOhlc(length)
-            interval.listen(il=>{
-                callback(tss)
-            })
-        }
-
-    }
-
-}
-
 
 /**
  * main base class for all strategies
@@ -91,7 +52,7 @@ abstract class BasketModel extends Model with DateUtils with MiscModelUtils with
         return (0 until orderManagers.length).map(bindComp.marketDataDistributor.activateOhlcTimeSeries(_, intr, lengthToMaintain))
     }
 
-    protected def tickTopic(idx : Int) : SubTopic[Tick] = bindComp.marketDataDistributor.tickTopic(idx)
+    protected def tickTopic(idx : Int) : SubChannel[Tick] = bindComp.marketDataDistributor.tickTopic(idx)
 
     /**
      * method to provide parameters to model
@@ -104,7 +65,6 @@ abstract class BasketModel extends Model with DateUtils with MiscModelUtils with
     protected def listenInterval(interval : Interval, callback : Interval=>Unit): Unit = {
         bindComp.intervalService.addListener(interval,time=>callback(interval), true)
     }
-
 
     def ohlc(idx : Int, interval : Interval): OhlcSeries = bindComp.marketDataDistributor.getTs(idx,interval)
 

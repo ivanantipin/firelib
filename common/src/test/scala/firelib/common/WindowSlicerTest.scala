@@ -3,7 +3,7 @@ package firelib.common
 import java.time.{Duration, Instant}
 
 import firelib.common.interval.Interval
-import firelib.common.misc.{NonDurableTopic, WindowSlicer}
+import firelib.common.misc.{NonDurableChannel, WindowSlicer}
 import firelib.domain.Ohlc
 import org.junit.{Assert, Test}
 
@@ -15,7 +15,7 @@ class WindowSlicerTest {
     def testWSlicer(): Unit ={
 
 
-        val in = new NonDurableTopic[Ohlc]()
+        val in = new NonDurableChannel[Ohlc]()
 
 
         val wlen: Int = 3

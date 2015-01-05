@@ -22,7 +22,7 @@ class StreamTradeCaseWriter(val path : Path, val factors : Iterable[String]) ext
     override def apply(trade : Trade): Unit = {
         val gen=generatorMap.getOrElseUpdate(trade.security,new StreamTradeCaseGenerator)
         for(c <- gen(trade)){
-            stream.write((serialize(c) ++ factors.map(c._1.factors(_))).mkString(separator) :+ '\n')
+            stream.write((serialize(c) ++ factors.map(c._1.tradeStat.factors(_))).mkString(separator) :+ '\n')
         }
         stream.flush()
     }

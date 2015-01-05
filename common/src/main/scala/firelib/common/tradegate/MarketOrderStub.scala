@@ -1,6 +1,6 @@
 package firelib.common.tradegate
 
-import firelib.common.misc.{DurableTopic, Topic}
+import firelib.common.misc.{Channel, DurableChannel}
 import firelib.common.timeservice.TimeService
 import firelib.common.{Order, OrderStatus, Side, Trade}
 import firelib.domain.OrderState
@@ -15,8 +15,8 @@ class MarketOrderStub(val timeService : TimeService) {
     /**
      * just order send
      */
-    def sendOrder(order: Order): (Topic[Trade],Topic[OrderState]) = {
-        val ret = (new DurableTopic[Trade](),new DurableTopic[OrderState]())
+    def sendOrder(order: Order): (Channel[Trade],Channel[OrderState]) = {
+        val ret = (new DurableChannel[Trade](),new DurableChannel[OrderState]())
         val trdPrice: Double = price(order.side)
         if(trdPrice.isNaN){
             ret._2.publish(new OrderState(order, OrderStatus.Rejected, timeService.currentTime))

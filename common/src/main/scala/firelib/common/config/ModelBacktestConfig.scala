@@ -1,7 +1,6 @@
 package firelib.common.config
 
 import firelib.common.core.BacktestMode
-import firelib.common.interval.Interval
 import firelib.common.misc.utils
 import firelib.common.model.Model
 import firelib.common.report.StrategyMetric
@@ -10,7 +9,7 @@ import firelib.common.ticknorm.NormBidAskTickFunc
 import scala.collection.mutable._
 
 /**
- * keeps configuration for model backtest
+ * configuration for model backtest
  */
 class ModelBacktestConfig {
     /**
@@ -22,18 +21,36 @@ class ModelBacktestConfig {
 
     var endDate: String = _
 
+    /**
+    * market data folder
+     * all instrument configs related to that folder
+    */
     var dataServerRoot: String = _
 
+    /*
+    * report will be written into this directory
+     */
     var reportTargetPath: String = _
-    
+
+
     var modelClassName: String = _
 
     var tickToTickFuncClass : String = classOf[NormBidAskTickFunc].getName
 
+    /*
+    * translatest csv data to binary format to speedup backtest
+    * that increase read speed from 300k msg/sec => 10 mio msg/sec
+     */
     var precacheMarketData : Boolean = true
 
+    /*
+    * simulates roundtrip delay between market and strategy
+    */
     var networkSimulatedDelayMs = 30l
 
+    /**
+    * dump ohlc data for backtest reporting
+    */
     var dumpOhlcData = true
 
     /**
@@ -42,18 +59,17 @@ class ModelBacktestConfig {
      */
     val modelParams = HashMap[String, String]()
 
+    /*
+    * optimization config, used only for BacktestMode.Optimize
+     */
     val optConfig : OptimizationConfig= new OptimizationConfig
 
     var backtestMode = BacktestMode.SimpleRun
 
-    /**
-     * step of backtest specifies frequency when ohlc bars checked to generate
-     * can affect performance if interval is small
+
+    /*
+    * this metrics will be available for optimization
      */
-    //FIXME remove
-    var stepInterval = Interval.Sec1
-
-
     val calculatedMetrics = List(
         StrategyMetric.Pf,
         StrategyMetric.Pnl,

@@ -3,7 +3,7 @@ package firelib.common.tradegate
 import java.util
 import java.util.Comparator
 
-import firelib.common.misc.{DurableTopic, SubTopic}
+import firelib.common.misc.{DurableChannel, SubChannel}
 import firelib.common.timeservice.TimeService
 import firelib.common.{Order, OrderStatus, Side, Trade}
 import firelib.domain.OrderState
@@ -31,8 +31,8 @@ abstract class BookStub(val timeService : TimeService) {
     /**
      * just order send
      */
-    def sendOrder(order: Order): (SubTopic[Trade],SubTopic[OrderState]) = {
-        val el = OrderRec (order, new DurableTopic[Trade](),new DurableTopic[OrderState]())
+    def sendOrder(order: Order): (SubChannel[Trade],SubChannel[OrderState]) = {
+        val el = OrderRec (order, new DurableChannel[Trade](),new DurableChannel[OrderState]())
         val ords = if(order.side == Side.Buy) buyOrders else sellOrders
         ords.put(keyForOrder(order),el)
         el.ordSubject.publish(new OrderState(order,OrderStatus.Accepted,timeService.currentTime))

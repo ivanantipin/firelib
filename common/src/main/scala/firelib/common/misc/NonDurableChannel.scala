@@ -3,11 +3,11 @@ package firelib.common.misc
 import scala.collection.mutable.ArrayBuffer
 
 
-trait TopicSubscription{
+trait ChannelSubscription{
     def unsubscribe()
 }
 
-class NonDurableTopic[T] extends Topic[T]{
+class NonDurableChannel[T] extends Channel[T]{
 
     val listeners = new ArrayBuffer[T=>Unit]()
 
@@ -15,9 +15,9 @@ class NonDurableTopic[T] extends Topic[T]{
         listeners.foreach(_(t))
     }
 
-    def subscribe(lsn : T=>Unit) : TopicSubscription = {
+    def subscribe(lsn : T=>Unit) : ChannelSubscription = {
         listeners += lsn
-        new TopicSubscription {
+        new ChannelSubscription {
             override def unsubscribe(): Unit = listeners -= lsn
         }
     }
